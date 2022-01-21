@@ -1,0 +1,103 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevaTipoRopaForm">
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<div class="row">
+					<div class="col-6">
+						<p:outputLabel for="nuevaTipoRopaNombre"
+							value="Nombre Nuevo Tipo ropa" />
+					</div>
+					<div class="col-6">
+						<p:inputText id="nuevaTipoRopaNombre" title="TipoRopa"
+							required="true" requiredMessage="Obligatorio"
+							value="#{tipoRopaController.nuevaTipoRopa}" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-6">
+						<p:outputLabel for="nuevaTipoTalla" value="Tipo de talla" />
+					</div>
+					<div class="col-6">
+						<p:selectOneButton id="nuevaTipoTalla"
+							requiredMessage="Obligatorio" required="true"
+							value="#{tipoRopaController.nuevaTipoTalla}">
+							<f:selectItem itemLabel="Numérico" itemValue="NUMERICO" />
+							<f:selectItem itemLabel="Letras" itemValue="LETRAS" />
+							<f:selectItem itemLabel="Única" itemValue="UNICA" />
+						</p:selectOneButton>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-6">
+						<p:commandButton title="Guardar" type="submit" process="@form"
+							update="@all" action="#{tipoRopaController.guardarTipoRopa()}" />
+					</div>
+
+					<div class="col-6">
+						<p:commandButton title="Volver a Inicio" type="submit"
+							process="@this" action="#{inicioController.verPaginaInicio()}" />
+					</div>
+				</div>
+
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<br />
+		<hr />
+		<br />
+
+		<h:form id="listaTipoRopas">
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-sm-3"></div>
+
+				<div class="col-sm-6">
+					<p:dataTable value="#{tipoRopaController.listaTipoRopas}"
+						var="tipoRopa">
+
+						<p:column style="text-align:center"
+							headerText="Nombre tipo de ropa">
+							<h:outputText value="#{tipoRopa.tipoRopa}" />
+						</p:column>
+
+						<p:column style="text-align:center"
+							headerText="tipo de talla">
+							<h:outputText value="#{tipoRopa.tipoTalla}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<h:commandButton styleClass="btn btn-primary"
+								actionListener="#{tipoRopaController.eliminarTipoRopa(tipoRopa)}"
+								value="Eliminar">
+								<p:ajax update="@all" />
+							</h:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-sm-3"></div>
+
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

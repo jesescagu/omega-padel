@@ -1,0 +1,57 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="productDetail">
+
+			<div class="product card">
+
+				<p:dataView value="#{zapatillaController.listaAnunciosPorMarca}" var="product"
+					rows="12" paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					gridIcon="pi pi-th-large" listIcon="pi pi-bars" layout="grid"
+					gridRowStyleClass="p-lg-6 p-xl-4" flex="true">
+
+					<p:dataViewGridItem>
+						<div class="product-grid-item card border-1">
+							<p:graphicImage value="resources/images/nature4.jpg"
+								width="100px" height="100px" />
+							<div class="product-list-detail">
+								<div class="product-name">#{product.titulo}</div>
+								<div class="product-description">#{product.descripcion}</div>
+								<p:rating readonly="true" value="#{product.notaMedia()}" />
+							</div>
+							<div class="product-grid-item-bottom">
+								<h:outputText value="#{product.precio}"
+									styleClass="product-price">
+									<f:convertNumber currencySymbol="€" type="currency" />
+								</h:outputText>
+								<br />
+								<h:commandButton value="Ver producto"
+									action="#{inicioController.verProducto()}"
+									icon="pi pi-shopping-cart" process="@this">
+									<f:setPropertyActionListener value="#{product}"
+										target="#{inicioController.selectedProduct}" />
+								</h:commandButton>
+								<br /> <span class="product-badge">#{product.stock().toLowerCase()}</span>
+							</div>
+						</div>
+					</p:dataViewGridItem>
+				</p:dataView>
+			</div>
+
+
+		</h:form>
+
+
+
+
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,29 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="content">
+
+		<h:form prependId="false">
+
+			<p:panelGrid columns="1" styleClass="ui-fluid center ui-noborder">
+				<h2>Por favor, introduce su usuario</h2>
+
+				<p:outputLabel value="Datos erroneos!" styleClass="red"
+					rendered="${!empty param['error']}" />
+
+				<p:inputText id="username" placeholder="Nombre de usuario" />
+				<p:password id="password" placeholder="Contraseña" />
+
+				<p:commandButton value="Login" ajax="false" />
+			</p:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

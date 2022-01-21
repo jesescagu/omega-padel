@@ -1,0 +1,85 @@
+package com.omegapadel.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
+
+@MappedSuperclass
+public class EntidadBase implements Serializable {
+
+	private static final long serialVersionUID = -3019687232984868307L;
+	
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	protected Integer id;
+	protected Integer version;
+	protected Date fechaCreacion;
+	protected Date fechaActualizacion;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Date getFechaActualizacion() {
+		return fechaActualizacion;
+	}
+
+	public void setFechaActualizacion(Date fechaActualizacion) {
+		this.fechaActualizacion = fechaActualizacion;
+	}
+
+	public boolean esnuevo() {
+		return this.id == null;
+	}
+
+	@PrePersist
+	protected void prePersist() {
+		if (this.fechaCreacion == null)
+			fechaCreacion = new Date();
+		if (this.fechaActualizacion == null)
+			fechaActualizacion = new Date();
+		if (this.version == null)
+			this.version = 1;
+	}
+
+	@PreUpdate
+	protected void preUpdate() {
+		this.fechaActualizacion = new Date();
+		this.version++;
+	}
+
+	@PreRemove
+	protected void preRemove() {
+		this.fechaActualizacion = new Date();
+		this.version++;
+	}
+
+}

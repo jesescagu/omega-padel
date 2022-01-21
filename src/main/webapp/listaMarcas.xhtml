@@ -1,0 +1,81 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevaMarcaForm">
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<div class="row">
+					<div class="col-6">
+						<p:outputLabel for="nuevaMarcaNombre" value="Nombre Nueva Marca" />
+					</div>
+					<div class="col-6">
+						<p:inputText id="nuevaMarcaNombre" title="Marca" required="true"
+							requiredMessage="Obligatorio"
+							value="#{marcaController.nuevaMarca}" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-6">
+						<p:commandButton title="Guardar" type="submit" process="@form"
+							update="@all" action="#{marcaController.guardarMarca()}" />
+					</div>
+
+					<div class="col-6">
+						<p:commandButton title="Volver a Inicio" type="submit"
+							process="@this" action="#{inicioController.verPaginaInicio()}" />
+					</div>
+				</div>
+
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<br />
+		<hr />
+		<br />
+
+		<h:form id="listaMarcas">
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-3"></div>
+
+				<div class="col-6">
+					<p:dataTable value="#{marcaController.listaMarcas}" var="marca">
+
+						<p:column style="text-align:center" headerText="Nombre">
+							<h:outputText value="#{marca.nombre}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<h:commandButton styleClass="btn btn-primary"
+								actionListener="#{marcaController.eliminarMarca(marca)}"
+								value="Eliminar">
+								<p:ajax update="@all" />
+							</h:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-3"></div>
+
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

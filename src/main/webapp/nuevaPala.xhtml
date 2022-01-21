@@ -1,0 +1,138 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevaPalaForm" enctype="multipart/form-data">
+
+			<h:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<div>
+					<p:outputLabel styleClass="col-sm-2" for="marcaPala" value="Marca" />
+					<p:selectOneMenu label="Marca" id="marcaPala" styleClass="col-sm-6"
+						value="#{palaController.marcaEscogida}">
+						<f:selectItems var="marca" value="#{palaController.listaMarcas}"
+							itemLabel="#{marca.nombre}" itemValue="#{marca.nombre}" />
+					</p:selectOneMenu>
+				</div>
+
+				<div>
+					<p:outputLabel styleClass="col-sm-2" for="stockPalaNumber"
+						value="Stock inicial" />
+					<p:inputNumber id="stockPalaNumber" padControl="false"
+						styleClass="col-sm-6" thousandSeparator="" decimalSeparator="."
+						decimalPlaces="0" value="#{palaController.stockNuevaPala}" />
+				</div>
+
+
+				<div>
+					<p:outputLabel styleClass="col-sm-2" for="modeloPalaTexto"
+						value="Modelo" />
+					<p:inputText id="modeloPalaTexto" styleClass="col-sm-6"
+						value="#{palaController.modeloNuevaPala}" />
+
+				</div>
+
+				<div>
+					<p:outputLabel styleClass="col-sm-2" for="temporadaPalaNumber"
+						value="Temporada" />
+					<p:selectOneMenu id="temporadaPalaNumber" styleClass="col-sm-6"
+						value="#{palaController.temporadaEscogida}">
+
+						<f:selectItems var="temp"
+							value="#{palaController.getTemporadasPosibles()}" />
+
+					</p:selectOneMenu>
+				</div>
+
+
+			</h:panelGroup>
+
+			<hr />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton title="Guardar" type="submit" update="@all"
+					resetValues="true" action="#{palaController.guardarPala()}" />
+				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+		<h:form id="ImagenesNuevaPalaForm" enctype="multipart/form-data">
+
+			<h:panelGroup id="uploadFilePalaId" layout="block" styleClass="row">
+
+				<div class="col-sm-12">
+					<div class="col-sm-6">
+						<h5>Imágenes</h5>
+						<p:fileUpload id="fileUploadPala" label="Examinar..."
+							styleClass="block" mode="simple" multiple="false"
+							skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+							fileLimit="1" cancelLabel="Cancelar" uploadLabel="Adjuntar"
+							dragDropSupport="true" value="#{palaController.imagenPalaNueva}">
+						</p:fileUpload>
+					</div>
+					<div class="col-sm-6">
+						<h:commandButton id="btnfileUploadPala"
+							actionListener="#{palaController.nuevaImagen()}" value="Adjuntar"
+							styleClass="btn btn-primary btn-block">
+						</h:commandButton>
+					</div>
+				</div>
+			</h:panelGroup>
+
+			<h:panelGroup id="tablaImagenesPala"
+				rendered="#{not empty palaController.imagenesPalaNueva}"
+				layout="block" styleClass="container-fluid">
+				<div class="col-md-12">
+					<h1 class="title-informacion-sede">
+						<h:outputText value="Imagenes adjuntadas" />
+					</h1>
+				</div>
+
+				<div class="row">
+
+					<div class="col-md-3"></div>
+
+					<div class="col-md-6">
+						<p:dataTable var="elem"
+							value="#{palaController.imagenesPalaNueva}"
+							class="table table-striped table-responsive table-bordered nowrap"
+							id="tablaDocumentos">
+							<p:column class="col-md-6" headerText="Imagen">
+								<h:graphicImage
+									value="data:image/jpg;base64,#{palaController.getBytesDeImagen(elem)}"
+									width="100%" height="100%" />
+							</p:column>
+							<p:column class="col-md-6" headerText="Nombre imagen">
+								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
+							</p:column>
+							<p:column class="col-md-6" headerText="Acciones">
+								<h:commandButton styleClass="btn btn-primary"
+									actionListener="#{palaController.eliminaImagen(elem)}"
+									value="Eliminar">
+								</h:commandButton>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="col-md-3"></div>
+
+				</div>
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

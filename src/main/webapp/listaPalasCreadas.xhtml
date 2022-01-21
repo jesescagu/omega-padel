@@ -1,0 +1,81 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="listaPalas">
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<p:messages errorStyle="color: red" globalOnly="true" />
+				<br />
+
+				<div class="col-1"></div>
+
+				<div class="col-10">
+					<p:dataTable value="#{palaController.listaPalasCreadas}" var="pala">
+
+						<p:column headerText="Imagen">
+							<div class="row">
+								<ui:repeat value="#{palaController.getImagenesDePala(pala.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{palaController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</div>
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Marca">
+							<h:outputText value="#{pala.marca.nombre}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Modelo">
+							<h:outputText value="#{pala.modelo}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Temporada">
+							<h:outputText value="#{pala.temporada}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Stock">
+							<h:outputText value="#{pala.stock}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<h:commandButton styleClass="btn btn-primary" process="@this"
+								resetValues="true"
+								action="#{palaController.verEditarPala(pala)}" value="Editar">
+							</h:commandButton>
+							<h:commandButton styleClass="btn btn-primary"
+								actionListener="#{palaController.eliminarPala(pala)}"
+								value="Eliminar">
+								<p:ajax update="@all" />
+							</h:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-1"></div>
+
+			</h:panelGroup>
+
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton title="Nueva Pala" process="@this"
+					resetValues="true" action="#{palaController.verNuevaPala()}" />
+				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

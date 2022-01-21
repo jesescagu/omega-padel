@@ -1,0 +1,14 @@
+version: "2.2"
+
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=omegapadel
+      - MYSQL_DATABASE=omegapadel
+    volumes:
+      - "./conf.d:/etc/mysql/conf.d:ro"

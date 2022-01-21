@@ -1,0 +1,61 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevoDireccionPostalForm" enctype="multipart/form-data">
+
+			<h:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+
+				<p:outputLabel styleClass="col-2" for="direccionDireccionPostal"
+					value="Dirección" />
+				<p:inputText id="direccionDireccionPostal" styleClass="col-2"
+					value="#{direccionPostalController.direccionSeleccionada}" />
+
+				<br />
+
+				<p:outputLabel  for="codigoPostalDireccionPostal" styleClass="col-2"
+					value="Código postal" />
+				<p:inputText id="codigoPostalDireccionPostal" styleClass="col-2"
+					value="#{direccionPostalController.codigoPostalSeleccionado}" />
+
+				<br />
+
+				<p:outputLabel styleClass="col-2" for="municipioDireccionPostal" value="Municipio" />
+				<p:selectOneMenu styleClass="col-2" id="municipioDireccionPostal"
+					value="#{direccionPostalController.codigoMunicipioSeleccionado}">
+					
+					<f:selectItem itemLabel="Selecciona municipio" />
+					<f:selectItems var="temp" itemLabel="#{temp.descripcion}" itemValue="#{temp.codigo}"
+						value="#{direccionPostalController.listaMunicipios}" />
+
+				</p:selectOneMenu>
+
+				<br />
+				
+			</h:panelGroup>
+
+			<hr />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton title="Guardar" type="submit"
+					update="@all" resetValues="true"
+					action="#{direccionPostalController.guardarDireccionPostal()}" />
+				<p:commandButton title="Cancelar" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

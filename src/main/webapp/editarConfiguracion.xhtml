@@ -1,0 +1,169 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevoConfiguracionForm" enctype="multipart/form-data">
+
+			<h:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<h:panelGroup styleClass="row">
+					<p:outputLabel styleClass="col-4" for="precioEnvioConfiguracion"
+						value="Precio del envío" />
+					<p:inputText id="precioEnvioConfiguracion" styleClass="col-2"
+						value="#{configuracionController.precioEnvio}" />
+				</h:panelGroup>
+
+				<h:panelGroup styleClass="row">
+					<p:selectBooleanCheckbox styleClass="col-6"
+						value="#{configuracionController.hayEnvioGratis}"
+						itemLabel="Envío gratis a partir de un precio">
+						<p:ajax
+							update=":nuevoConfiguracionForm:precioEnvioGratisConfiguracionPanel" />
+					</p:selectBooleanCheckbox>
+
+					<h:panelGroup id="precioEnvioGratisConfiguracionPanel"
+						styleClass="col-6">
+						<p:outputLabel
+							rendered="#{configuracionController.hayEnvioGratis eq true}"
+							styleClass="col-8" for="precioEnvioGratisConfiguracion"
+							value="Precio de la compra para envío gratis" />
+						<p:inputText id="precioEnvioGratisConfiguracion"
+							styleClass="col-4"
+							rendered="#{configuracionController.hayEnvioGratis eq true}"
+							value="#{configuracionController.precioaPartirEnvioGratis}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup styleClass="row">
+					<p:selectBooleanCheckbox styleClass="col-12"
+						value="#{configuracionController.mostrarBanners}"
+						itemLabel="Mostrar banners en la pagina">
+						<p:ajax update="@all" />
+					</p:selectBooleanCheckbox>
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton title="Guardar" type="submit" update="@all"
+					resetValues="true"
+					action="#{configuracionController.guardarEdicionConfiguracion()}" />
+				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+		</h:form>
+
+		<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<h:form rendered="#{configuracionController.mostrarBanners eq true}"
+			id="ImagenesNuevaConfiguracionForm" enctype="multipart/form-data">
+
+			<h:panelGroup id="uploadFileConfiguracionId" layout="block"
+				styleClass="row">
+
+				<div class="col-sm-12">
+					<h5>Imágenes de Banners</h5>
+					<div class="col-sm-6">
+						<p:fileUpload id="fileUploadConfiguracion" label="Examinar..."
+							styleClass="block" mode="simple" multiple="false"
+							skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+							fileLimit="1" cancelLabel="Cancelar" uploadLabel="Adjuntar"
+							dragDropSupport="true"
+							value="#{configuracionController.imagenBannerNueva}">
+						</p:fileUpload>
+					</div>
+
+					<div class="col-sm-12">
+						<p:outputLabel styleClass="col-4" for="urlBannerTexto"
+							value="URL del banner" />
+						<p:inputText id="urlBannerTexto" styleClass="col-6"
+							value="#{configuracionController.urlBanner}" />
+					</div>
+
+					<div class="col-sm-6">
+						<h:commandButton id="btnfileUploadConfiguracion"
+							update=":ImagenesNuevaConfiguracionForm:uploadFileConfiguracionId :ImagenesNuevaConfiguracionForm:tablaImagenesConfiguracion"
+							actionListener="#{configuracionController.nuevaImagen()}"
+							value="Adjuntar" styleClass="btn btn-primary btn-block">
+						</h:commandButton>
+					</div>
+				</div>
+			</h:panelGroup>
+
+			<h:panelGroup id="tablaImagenesConfiguracion" layout="block"
+				styleClass="container-fluid">
+				<div class="col-md-12">
+					<h1 class="title-informacion-sede">
+						<h:outputText value="Imagenes adjuntadas" />
+					</h1>
+				</div>
+
+				<div class="row">
+
+					<div class="col-md-1"></div>
+
+					<div class="col-md-10">
+						<p:dataTable var="elem"
+							value="#{configuracionController.listaImagenesBanners}"
+							class="table table-striped table-responsive table-bordered nowrap"
+							id="tablaDocumentosConfiguracion">
+							<p:column class="col-md-2" headerText="Imagen">
+								<h:graphicImage
+									value="data:image/jpg;base64,#{configuracionController.getBytesDeImagen(elem)}"
+									width="100%" height="100%" />
+							</p:column>
+							<p:column class="col-md-2" headerText="Nombre imagen">
+								<h:outputText title="#{elem}" value="#{elem}" />
+							</p:column>
+							<p:column class="col-md-4" headerText="URL de redirección">
+								<h:outputText title="#{configuracionController.mapaBannersConRedireccion.get(elem)}" value="#{configuracionController.mapaBannersConRedireccion.get(elem)}" />
+							</p:column>
+							<p:column class="col-md-2" headerText="Acciones">
+								<h:commandButton styleClass="btn btn-primary"
+									actionListener="#{configuracionController.eliminaImagen(elem)}"
+									value="Eliminar">
+								</h:commandButton>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="col-md-1"></div>
+
+				</div>
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

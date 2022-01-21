@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+ 
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      # MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root (Para tener la contraseña en un archivo y no sea publico)
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=omegapadel
+      - MYSQL_DATABASE=omegapadel
+    command: mysqld --user=root
+    volumes:
+      - C:\Users\jeses\Documents\dumps\Dump:/docker-entrypoint-initdb.d
+   
+   
+  omega-padel:
+    image: tomcat:9.0.56-jdk8
+    ports: 
+      - 8080:8080
+    volumes:
+      - C:\Users\jeses\Desktop\pruebaVolumen\omega-padel\:/usr/local/tomcat/webapps/
+    depends_on:
+      - mysql
+  
+    # docker run -it -v /tmp/:/usr/local/tomcat/webapps/ 19387c581496
+    # docker run -it -v C:\Users\jeses\Desktop\pruebaVolumen:/usr/local/tomcat/webapps/ 19387c581496
+    
+    
+   # docker run --name mysql-omega-test -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_USER=user -e MYSQL_PASSWORD=omegapadel -e MYSQL_DATABASE=omegapadel -d mysql:8.0
+   
+
+   

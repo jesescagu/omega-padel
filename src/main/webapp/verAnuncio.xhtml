@@ -1,0 +1,202 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="detalleAnuncio">
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<h:panelGroup styleClass="row">
+					<h:panelGroup styleClass="col-6">
+
+						<h:panelGroup styleClass="row">
+							<p:commandButton title="Editar" styleClass="col-3"
+								rendered="#{anuncioController.estaEmpleadoLogado}"
+								action="#{anuncioController.editarAnuncio(anuncioController.anuncioSeleccionado)}" />
+
+							<p:commandButton title="Desactivar" styleClass="col-3"
+								rendered="#{anuncioController.estaEmpleadoLogado and anuncioController.anuncioSeleccionado.activo eq true}"
+								action="#{anuncioController.desactivarAnuncio(anuncioController.anuncioSeleccionado)}" />
+
+							<p:commandButton title="Activar" styleClass="col-3"
+								rendered="#{anuncioController.estaEmpleadoLogado and anuncioController.anuncioSeleccionado.activo eq false}"
+								action="#{anuncioController.activarAnuncio(anuncioController.anuncioSeleccionado)}" />
+
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="row">
+
+							<p:galleria widgetVar="galleriaWidget" panelWidth="500"
+								panelHeight="350" effectSpeed="1000" autoPlay="true"
+								transitionInterval="3000"
+								value="#{anuncioController.imagenesAMostrarDelAnuncio}"
+								var="elem">
+
+								<h:graphicImage value="data:image/jpg;base64,#{elem}"
+									alt="Description" title="#{elem}" width="500" height="350" />
+
+								<f:facet name="thumbnail">
+									<h:graphicImage value="data:image/jpg;base64,#{elem}" />
+								</f:facet>
+							</p:galleria>
+
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="row">
+
+
+							<br />
+
+							<h5>Comentarios</h5>
+
+							<h:panelGroup rendered="#{anuncioController.estaClienteLogado}"
+								layout="block" styleClass="container-fluid">
+
+								<h:messages errorStyle="color:red;" globalOnly="true" />
+
+								<br />
+
+								<div class="row">
+									<div class="col-2">
+										<p:outputLabel for="tituloNuevoComentario" value="Título" />
+									</div>
+									<div class="col-8">
+										<p:inputText id="tituloNuevoComentario"
+											value="#{anuncioController.nuevoTituloComentario}" />
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-2">
+										<p:outputLabel for="descripcionNuevoComentario"
+											value="Descripción" />
+									</div>
+									<div class="col-8">
+										<p:inputTextarea rows="5" id="descripcionNuevoComentario"
+											styleClass="col-sm-6"
+											value="#{anuncioController.nuevaDescripcionComentario}" />
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-2">
+										<p:outputLabel for="calificacionNuevoComentario"
+											value="Calificación" />
+									</div>
+									<div class="col-8">
+										<p:rating id="calificacionNuevoComentario"
+											value="#{anuncioController.nuevaCalificacionComentario}" />
+
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-6">
+										<p:commandButton title="Guardar" update="@all"
+											action="#{anuncioController.guardarComentario(anuncioController.anuncioSeleccionado)}" />
+									</div>
+
+								</div>
+							</h:panelGroup>
+
+							<h:panelGroup styleClass="row">
+
+								<h:panelGroup styleClass="col-12">
+
+
+									<p:dataTable
+										value="#{anuncioController.listaComentariosAnuncio}"
+										emptyMessage="Actualmente no existen comentarios del producto"
+										var="coment">
+
+										<p:column style="text-align:center" headerText="Nick">
+											<h:outputText value="#{coment.actor.usuario.usuario}" />
+										</p:column>
+
+										<p:column style="text-align:center" headerText="Título">
+											<h:outputText value="#{coment.titulo}" />
+										</p:column>
+
+										<p:column style="text-align:center" headerText="Descripción">
+											<h:outputText value="#{coment.descripcion}" />
+										</p:column>
+
+										<p:column style="text-align:center" headerText="Calificación">
+											<p:rating readonly="true" value="#{coment.calificacion}" />
+										</p:column>
+
+										<p:column rendered="#{anuncioController.estaEmpleadoLogado}"
+											style="text-align:center" headerText="Acciones">
+											<h:commandButton styleClass="btn btn-primary"
+												actionListener="#{anuncioController.eliminarComentario(coment)}"
+												value="Eliminar">
+												<p:ajax update="@all" />
+											</h:commandButton>
+										</p:column>
+
+									</p:dataTable>
+
+
+
+								</h:panelGroup>
+
+							</h:panelGroup>
+
+
+						</h:panelGroup>
+
+
+
+					</h:panelGroup>
+					<h:panelGroup styleClass="col-6">
+
+						<h3>
+							<h:outputText
+								value="#{anuncioController.anuncioSeleccionado.titulo}" />
+						</h3>
+						<hr />
+
+						<h:panelGroup styleClass="row">
+
+							<h:panelGroup styleClass="col-2">
+								<h:outputText style="font-size:2em;font-weight: bold;color:red;"
+									value="#{anuncioController.anuncioSeleccionado.precio} €" />
+							</h:panelGroup>
+							<h:commandButton
+								actionListener="#{cestaController.addAnuncioAlCarrito(anuncioController.anuncioSeleccionado)}"
+								value="Comprar" />
+							<p:staticMessage
+								rendered="#{anuncioController.estaClienteLogado eq false}"
+								severity="warn"
+								detail="Inicie sesión para comprar este producto."
+								style="width: 100%" />
+						</h:panelGroup>
+
+						<hr />
+
+						<h:panelGroup styleClass="row">
+							<p:outputLabel for="notaMediaAnuncio" value="Media de opiniones" />
+							<p:rating readonly="true" id="notaMediaAnuncio"
+								value="#{anuncioController.notaMedia(anuncioController.anuncioSeleccionado)}" />
+						</h:panelGroup>
+
+						<hr />
+
+						<h:panelGroup styleClass="row">
+							<h:outputText escape="false"
+								value="#{anuncioController.anuncioSeleccionado.descripcion}" />
+						</h:panelGroup>
+
+					</h:panelGroup>
+				</h:panelGroup>
+
+			</h:panelGroup>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<f:view>
+	<h:head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>MUSHO PADEL</title>
+
+		<link type="text/css"
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous" />
+
+		<link href="resources/css/style.css" type="text/css" rel="stylesheet" />
+
+		<style type="text/css">
+* {
+	box-sizing: border-box
+}
+
+.slideshow-container {
+	max-width: 1000px;
+	position: relative;
+	margin: auto;
+}
+
+.mySlides {
+	display: none;
+}
+
+.prev, .next {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	width: auto;
+	margin-top: -22px;
+	padding: 16px;
+	color: white;
+	font-weight: bold;
+	font-size: 18px;
+	transition: 0.6s ease;
+	border-radius: 0 3px 3px 0;
+}
+
+.next {
+	right: 0;
+	border-radius: 3px 0 0 3px;
+}
+
+.prev:hover, .next:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.text {
+	color: #f2f2f2;
+	font-size: 15px;
+	padding: 8px 12px;
+	position: absolute;
+	bottom: 8px;
+	width: 100%;
+	text-align: center;
+}
+
+.numbertext {
+	color: #f2f2f2;
+	font-size: 12px;
+	padding: 8px 12px;
+	position: absolute;
+	top: 0;
+}
+
+.fade {
+	-webkit-animation-name: fade;
+	-webkit-animation-duration: 1.5s;
+	animation-name: fade;
+	animation-duration: 1.5s;
+}
+
+@
+-webkit-keyframes fade {
+	from {opacity: .4
+}
+
+to {
+	opacity: 1
+}
+
+}
+@
+keyframes fade {
+	from {opacity: .4
+}
+
+to {
+	opacity: 1
+}
+
+}
+ul.ui-menu-child {
+	white-space: nowrap;
+	width: auto !important;
+}
+
+.ui-selectonemenu {
+	white-space: nowrap;
+	width: auto !important;
+}
+</style>
+
+	</h:head>
+	<h:body>
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+			integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+			crossorigin="anonymous"></script>
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+			integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+			crossorigin="anonymous"></script>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.js"
+			integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+			crossorigin="anonymous"></script>
+
+		<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"
+			integrity="sha256-xH4q8N0pEzrZMaRmd7gQVcTZiFei+HfRTBPJ1OGXC0k="
+			crossorigin="anonymous"></script>
+
+
+
+		<h:form>
+			<div class="container-fluid">
+
+				<div class="card">
+					<p:commandLink action="#{inicioController.verPaginaInicio()}">
+						<p:graphicImage value="resources/images/omegaPadel.jpg"
+							width="300px" height="100px" />
+					</p:commandLink>
+				</div>
+
+				<c:forEach items="#{templateController.listaMarcasTodas}" var="m">
+					<ui:param name="#{m.nombre}" value="#{m.nombre}" />
+				</c:forEach>
+
+				<p:menubar model="#{templateController.model}">
+
+					<f:facet style="float:right !important;" name="options">
+						<p:outputPanel style="display:inline;">
+							<p:outputPanel style="display:inline;">
+								<i class="pi pi-fw pi-search" />
+								<p:inputText placeholder="Search" />
+							</p:outputPanel>
+							<p:outputPanel style="display:inline;">
+								<p:badge
+									style="background-color:rgba(255, 0, 0, 0.5);font-size:10px;color:white;margin:5px;padding:3px;"
+									value="#{cestaController.numeroProductosCarritoCliente()}"
+									severity="warning">
+									<p:commandButton
+										actionListener="#{cestaController.verCarritoCompraCliente()}"
+										icon="pi pi-shopping-cart" />
+								</p:badge>
+							</p:outputPanel>
+						</p:outputPanel>
+					</f:facet>
+				</p:menubar>
+			</div>
+
+			<h:panelGroup rendered="#{templateController.mostrarBanners eq true}">
+
+				<p:carousel id="bannerImages"
+					value="#{templateController.listaImagenesBanners}" var="elem"
+					numVisible="1" numScroll="1" circular="true" effect="slide"
+					style="heigth:350px;" autoplayInterval="20000">
+
+					<p:commandLink
+						action="#{templateController.navegaUrlBanner(elem)}">
+						
+						<h:graphicImage width="100%" height="350px"
+							value="data:image/jpg;base64,#{templateController.getBytesDeImagen(elem)}"
+							title="#{templateController.mapaBannersConRedireccion.get(elem)}" />
+					</p:commandLink>
+
+				</p:carousel>
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<div class="row">
+			<div class="col-md-12">
+				<br /> <br />
+				<ui:insert name="content" />
+			</div>
+		</div>
+
+	</h:body>
+</f:view>
+</html>

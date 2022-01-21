@@ -1,0 +1,81 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevaTipoAccesorioForm">
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<div class="row">
+					<div class="col-6">
+						<p:outputLabel for="nuevaTipoAccesorioNombre" value="Nombre Nuevo Tipo accesorio" />
+					</div>
+					<div class="col-6">
+						<p:inputText id="nuevaTipoAccesorioNombre" title="TipoAccesorio" required="true"
+							requiredMessage="Obligatorio"
+							value="#{tipoAccesorioController.nuevaTipoAccesorio}" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-6">
+						<p:commandButton title="Guardar" type="submit" process="@form"
+							update="@all" action="#{tipoAccesorioController.guardarTipoAccesorio()}" />
+					</div>
+
+					<div class="col-6">
+						<p:commandButton title="Volver a Inicio" type="submit"
+							process="@this" action="#{inicioController.verPaginaInicio()}" />
+					</div>
+				</div>
+
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<br />
+		<hr />
+		<br />
+
+		<h:form id="listaTipoAccesorios">
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-sm-3"></div>
+
+				<div class="col-sm-6">
+					<p:dataTable value="#{tipoAccesorioController.listaTipoAccesorios}" var="tipoAccesorio">
+
+						<p:column style="text-align:center" headerText="Nombre">
+							<h:outputText value="#{tipoAccesorio.nombre}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<h:commandButton styleClass="btn btn-primary"
+								actionListener="#{tipoAccesorioController.eliminarTipoAccesorio(tipoAccesorio)}"
+								value="Eliminar">
+								<p:ajax update="@all" />
+							</h:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-sm-3"></div>
+
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

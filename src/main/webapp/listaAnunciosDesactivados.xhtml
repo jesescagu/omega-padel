@@ -1,0 +1,66 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="listaAnuncios">
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-1"></div>
+
+				<div class="col-10">
+					<p:dataTable value="#{anuncioController.listaAnunciosDesactivados}"
+						var="anuncio">
+
+						<p:column headerText="Imagen">
+							<div class="row">
+								<ui:repeat
+									value="#{anuncioController.getImagenesDelAnuncio(anuncio.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</div>
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Titulo">
+							<h:outputText value="#{anuncio.titulo}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="precio">
+							<h:outputText value="#{anuncio.precio}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<h:commandButton styleClass="btn btn-primary" process="@this"
+								resetValues="true"
+								action="#{anuncioController.mostrarAnuncio(anuncio)}"
+								value="Ver anuncio">
+							</h:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-1"></div>
+
+			</h:panelGroup>
+
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

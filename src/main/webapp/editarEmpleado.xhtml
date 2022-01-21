@@ -1,0 +1,100 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="editarEmpleadoForm" enctype="multipart/form-data">
+
+			<h:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+
+				<p:outputLabel styleClass="col-2" for="nickEmpleado"
+					value="Nombre de usuario" />
+				<p:inputText id="nickEmpleado" styleClass="col-2" readonly="true"
+					disabled="true" value="#{empleadoController.nickEscogido}" />
+
+				<br />
+
+				<p:outputLabel styleClass="col-2" for="contrasenyaActualEmpleado"
+					value="Contraseña Actual" rendered="#{!empleadoController.edicionPorAdministrador}" />
+				<p:inputText type="password" id="contrasenyaActualEmpleado"
+					rendered="#{!empleadoController.edicionPorAdministrador}" styleClass="col-2"
+					value="#{empleadoController.contrasenyaActual}" />
+
+				<br />
+
+				<p:outputLabel styleClass="col-2" for="contrasenyaEmpleado"
+					rendered="#{!empleadoController.edicionPorAdministrador}" value="Contraseña" />
+				<p:inputText type="password" id="contrasenyaEmpleado"
+					rendered="#{!empleadoController.edicionPorAdministrador}" styleClass="col-2"
+					value="#{empleadoController.contrasenyaEscogida}" />
+
+				<br />
+
+				<p:outputLabel styleClass="col-2"
+					rendered="#{!empleadoController.edicionPorAdministrador}"
+					for="contrasenyaConfirmacionEmpleado" value="Confirmar Contraseña" />
+				<p:inputText type="password" id="contrasenyaConfirmacionEmpleado"
+					styleClass="col-2" rendered="#{!empleadoController.edicionPorAdministrador}"
+					value="#{empleadoController.contrasenyaConfirmacion}" />
+
+				<br />
+
+				<p:outputLabel styleClass="col-2" for="dniEmpleado" value="DNI" />
+				<p:inputText id="dniEmpleado" styleClass="col-2"
+					value="#{empleadoController.dniEscogido}" />
+
+				<br />
+
+				<p:outputLabel for="nombreEmpleado" styleClass="col-2"
+					value="Nombre" />
+				<p:inputText id="nombreEmpleado" styleClass="col-2"
+					value="#{empleadoController.nombreEscogido}" />
+
+				<br />
+
+				<p:outputLabel for="apellidosEmpleado" styleClass="col-2"
+					value="Apellidos" />
+				<p:inputText id="apellidosEmpleado" styleClass="col-2"
+					value="#{empleadoController.apellidosEscogido}" />
+
+				<br />
+
+				<p:outputLabel for="emailEmpleado" styleClass="col-2" value="Email" />
+				<p:inputText id="emailEmpleado" styleClass="col-2"
+					value="#{empleadoController.emailEscogido}" />
+
+				<br />
+
+				<p:outputLabel for="telefonoEmpleado" styleClass="col-2"
+					value="Teléfono" />
+				<p:inputText id="telefonoEmpleado" styleClass="col-2"
+					value="#{empleadoController.telefonoEscogido}" />
+
+				<br />
+
+			</h:panelGroup>
+
+			<hr />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton title="Guardar" type="submit"
+					update="@all" resetValues="true"
+					action="#{empleadoController.guardarEdicionEmpleado()}" />
+				<p:commandButton title="Cancelar" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

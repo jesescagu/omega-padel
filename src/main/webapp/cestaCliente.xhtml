@@ -1,0 +1,175 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="detalleCesta">
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+
+				<p:dataTable value="#{cestaController.listaProductosCesta}"
+					emptyMessage="El carrito de compra está vacio." var="prod">
+
+					<p:column style="text-align:center" headerText="Descripción">
+
+						<h:commandLink
+							actionListener="#{anuncioController.mostrarAnuncio(prod)}">
+							<h:panelGroup styleClass="row">
+								<h:panelGroup styleClass="col-6">
+						<!--			<h:graphicImage
+										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(prod.id))}"
+										width="200" height="200" />
+						-->
+								</h:panelGroup>
+
+								<h:panelGroup styleClass="col-6">
+									<h:outputText value="#{prod.titulo}" />
+									<br />
+									<h:outputText value="prod.referencia" />
+								</h:panelGroup>
+
+							</h:panelGroup>
+						</h:commandLink>
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Cantidad">
+
+						<h:panelGroup id="panelGroupCantidad" style="text-align:center"
+							styleClass="row">
+
+							<div class="col-4"></div>
+
+							<h:commandButton styleClass="col-1"
+								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
+								actionListener="#{cestaController.quitarUnProductoDelCarrito(prod)}"
+								value="-">
+								<p:ajax update="@this" />
+							</h:commandButton>
+
+							<h:inputText styleClass="col-2" style="text-align:center"
+								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
+								readonly="true"
+								value="#{cestaController.getCantidadProductoEnCesta(prod)}" />
+
+							<h:inputText styleClass="col-4" style="text-align:center"
+								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
+								value="#{cestaController.valorCantidadEnEdicion}">
+								<p:ajax update="@all" />
+							</h:inputText>
+
+							<h:commandButton styleClass="col-1"
+								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
+								actionListener="#{cestaController.addUnProductoDelCarrito(prod)}"
+								value="+">
+								<p:ajax update="@this" />
+							</h:commandButton>
+
+							<div class="col-4"></div>
+
+						</h:panelGroup>
+
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Total">
+						<h:outputText value="#{cestaController.totalPrecioProducto(prod)}" />
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Acciones">
+
+						<h:commandButton styleClass="btn btn-primary"
+							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
+							actionListener="#{cestaController.cambiarCantidadManualmenteProductoDelCarrito(prod)}"
+							value="Cambiar cantidad manualmente">
+							<p:ajax update="@all" />
+						</h:commandButton>
+
+						<h:commandButton styleClass="btn btn-primary"
+							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
+							actionListener="#{cestaController.cambioCantidadProducto(prod)}"
+							value="Guardar cantidad">
+							<p:ajax update="@all" />
+						</h:commandButton>
+
+						<h:commandButton styleClass="btn btn-primary"
+							actionListener="#{cestaController.eliminarProductoDelCarrito(prod)}"
+							value="Eliminar">
+							<p:ajax update="@all" />
+						</h:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+				<h:outputText
+					value="Total productos  (IVA incl.): #{cestaController.getTotalProductos()}€" />
+				<br />
+				<h:outputText rendered="#{cestaController.getImporteEnvio() eq 0.0}"
+					value="Total envío: GRATIS!" />
+					<h:outputText rendered="#{cestaController.getImporteEnvio() ne 0.0}"
+					value="Total envío: #{cestaController.getImporteEnvio()}€" />
+				<br />
+				<h:outputText
+					value="IMPORTE TOTAL DE TU COMPRA: #{cestaController.getTotalPrecio()}€" />
+
+			</h:panelGroup>
+
+			<br />
+			<hr />
+			<br />
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-1"></div>
+
+				<div class="col-10">
+					<p:dataTable value="#{cestaController.listaDireccionesUsuario}"
+						emptyMessage="No hay productos en la cesta." var="dp">
+
+						<p:column style="text-align:center" headerText="Dirección">
+							<h:outputText value="#{dp.direccion}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Código postal">
+							<h:outputText value="#{dp.codigoPostal}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Municipio">
+							<h:outputText value="#{dp.municipio.descripcion}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<h:commandButton styleClass="btn btn-primary" process="@this"
+								resetValues="true" rendered="#{cestaController.renderDireccionSeleccionada(dp) eq false}"
+								action="#{cestaController.seleccionarDireccion(dp)}"
+								value="Seleccionar">
+							</h:commandButton>
+							<h:outputText rendered="#{cestaController.renderDireccionSeleccionada(dp) eq true}" value="Seleccionada" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-1"></div>
+
+			</h:panelGroup>
+
+
+			<h:commandButton styleClass="btn btn-primary"
+				actionListener="#{cestaController.cancelarCarrito()}"
+				value="Cancelar compra">
+				<p:ajax update="@all" />
+			</h:commandButton>
+			<h:commandButton styleClass="btn btn-primary"
+				rendered="#{not empty cestaController.listaProductosCesta}"
+				actionListener="#{cestaController.pagarCarrito()}" value="Comprar">
+				<p:ajax update="@all" />
+			</h:commandButton>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

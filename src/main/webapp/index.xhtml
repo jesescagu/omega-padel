@@ -1,0 +1,58 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="productDetail">
+
+			<div class="container-fluid">
+
+				<p:dataView value="#{inicioController.listaAnuncios}" var="product"
+					rows="12" paginator="false"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					gridIcon="pi pi-th-large" listIcon="pi pi-bars" layout="grid">
+
+					<p:dataViewGridItem>
+
+						<p:commandLink
+							action="#{anuncioController.mostrarAnuncio(product)}">
+
+							<p:panel id="pnl" header="#{product.titulo}"
+								style="text-align:center">
+
+								<h:panelGrid columns="1" style="width:100%">
+
+									<div class="product-grid-item card border-1">
+
+										<!-- 
+										<h:graphicImage
+											value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(product.id))}"
+											width="200" height="200" />
+											
+											 -->
+										<div>
+											<p:rating readonly="true"
+												value="#{anuncioController.notaMedia(product)}" />
+										</div>
+
+										<div>
+											<h:outputText value="#{product.precio}" style="color:red;"
+												styleClass="product-price">
+												<f:convertNumber currencySymbol="€" type="currency" />
+											</h:outputText>
+											<br /> <span class="product-badge">#{product.stock().toLowerCase()}</span>
+										</div>
+									</div>
+								</h:panelGrid>
+							</p:panel>
+						</p:commandLink>
+					</p:dataViewGridItem>
+				</p:dataView>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
