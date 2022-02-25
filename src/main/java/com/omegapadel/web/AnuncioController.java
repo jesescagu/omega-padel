@@ -27,7 +27,6 @@ import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Comentario;
 import com.omegapadel.model.Empleado;
 import com.omegapadel.model.Imagen;
-import com.omegapadel.model.Pelota;
 import com.omegapadel.model.Producto;
 import com.omegapadel.service.AnuncioService;
 import com.omegapadel.service.ClienteService;
@@ -288,8 +287,18 @@ public class AnuncioController implements Serializable {
 			}
 
 			if (!hayError) {
-				User user = (User) auth.getPrincipal();
-				String nombreUsuario = user.getUsername();
+//				User user = (User) auth.getPrincipal();
+//				String nombreUsuario = user.getUsername();
+				
+				String nombreUsuario = null;
+				Object princ = auth.getPrincipal();
+				if (princ instanceof User) {
+					User user = (User) princ;
+					nombreUsuario = user.getUsername();
+				} else {
+					nombreUsuario = (String) auth.getPrincipal();
+				}
+				
 				Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
 				Comentario comentario = comentarioService.create(nuevoTituloComentario, nuevaDescripcionComentario,

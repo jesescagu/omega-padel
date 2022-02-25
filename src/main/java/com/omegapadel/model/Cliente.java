@@ -1,5 +1,7 @@
 package com.omegapadel.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -67,7 +69,7 @@ public class Cliente extends Actor {
 	}
 
 	public List<Anuncio> getAnunciosFavoritos() {
-		return anunciosFavoritos;
+		return new ArrayList<Anuncio>(anunciosFavoritos);
 	}
 
 	public void setAnunciosFavoritos(List<Anuncio> anunciosFavoritos) {

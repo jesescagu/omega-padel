@@ -17,9 +17,10 @@
 	<name>omegapadel</name>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<maven.copile.source>1.8</maven.copile.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<org.apache.myfaces.version>2.3.6</org.apache.myfaces.version>
-		<org.primefaces.version>10.0.0</org.primefaces.version>
+		<org.primefaces.version>11.0.0</org.primefaces.version>
 		<joinfaces.version>4.1.5</joinfaces.version>
 	</properties>
 
@@ -132,13 +133,6 @@
 			<version>1.0.10</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>4.6.0</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>
@@ -149,6 +143,25 @@
 
 	</dependencies>
 	<build>
+		<filters>
+			<filter>src/main/filters/${env}</filter>
+		</filters>
+		<defaultGoal>install</defaultGoal>
+
+		<resources>
+			<resource>
+				<directory>src/main/filters</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -164,4 +177,24 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>redsys-desarrollo.properties</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>redsys-produccion.properties</env>
+			</properties>
+		</profile>
+	</profiles>
+
 </project>

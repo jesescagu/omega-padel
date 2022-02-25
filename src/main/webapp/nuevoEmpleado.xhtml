@@ -14,76 +14,78 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="nickEmpleado"
+						value="Nombre de usuario" />
+					<p:inputText id="nickEmpleado" styleClass="col-sm-6"
+						value="#{empleadoController.nickEscogido}" />
+
+				</div>
+
+				<div class="row">
+
+					<p:outputLabel styleClass="col-sm-6" for="contrasenyaEmpleado"
+						value="Contraseña" />
+					<p:inputText type="password" id="contrasenyaEmpleado"
+						styleClass="col-sm-6"
+						value="#{empleadoController.contrasenyaEscogida}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="dniEmpleado" value="DNI" />
+					<p:inputText id="dniEmpleado" styleClass="col-sm-6"
+						value="#{empleadoController.dniEscogido}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="puestoTrabajoEmpelado"
+						value="Puesto trabajo" />
+					<p:selectOneMenu id="puestoTrabajoEmpelado" styleClass="col-sm-6"
+						value="#{empleadoController.puestoTrabajoEscogido}">
+						<f:selectItems var="p"
+							value="#{empleadoController.listaPuestosTrabajo}"
+							itemLabel="#{p.nombre}" itemValue="#{p.id}" />
+					</p:selectOneMenu>
+				</div>
+
+				<div class="row">
+					<p:outputLabel for="nombreEmpleado" styleClass="col-sm-6"
+						value="Nombre" />
+					<p:inputText id="nombreEmpleado" styleClass="col-sm-6"
+						value="#{empleadoController.nombreEscogido}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel for="apellidosEmpleado" styleClass="col-sm-6"
+						value="Apellidos" />
+					<p:inputText id="apellidosEmpleado" styleClass="col-sm-6"
+						value="#{empleadoController.apellidosEscogido}" />
+				</div>
 
 
-				<p:outputLabel styleClass="col-2" for="nickEmpleado"
-					value="Nombre de usuario" />
-				<p:inputText id="nickEmpleado" styleClass="col-2"
-					value="#{empleadoController.nickEscogido}" />
+				<div class="row">
+					<p:outputLabel for="emailEmpleado" styleClass="col-sm-6" value="Email" />
+					<p:inputText id="emailEmpleado" styleClass="col-sm-6"
+						value="#{empleadoController.emailEscogido}" />
+				</div>
 
-				<br />
-
-				<p:outputLabel styleClass="col-2" for="contrasenyaEmpleado"
-					value="Contraseña" />
-				<p:inputText type="password" id="contrasenyaEmpleado"
-					styleClass="col-2"
-					value="#{empleadoController.contrasenyaEscogida}" />
-
-				<br />
-
-				<p:outputLabel styleClass="col-2" for="dniEmpleado" value="DNI" />
-				<p:inputText id="dniEmpleado" styleClass="col-2"
-					value="#{empleadoController.dniEscogido}" />
-
-				<br />
-
-				<p:outputLabel styleClass="col-2" for="puestoTrabajoEmpelado"
-					value="Puesto trabajo" />
-				<p:selectOneMenu id="puestoTrabajoEmpelado" styleClass="col-2"
-					value="#{empleadoController.puestoTrabajoEscogido}">
-					<f:selectItems var="p"
-						value="#{empleadoController.listaPuestosTrabajo}"
-						itemLabel="#{p.nombre}" itemValue="#{p.id}" />
-				</p:selectOneMenu>
-
-				<br />
-
-				<p:outputLabel for="nombreEmpleado" styleClass="col-2"
-					value="Nombre" />
-				<p:inputText id="nombreEmpleado" styleClass="col-2"
-					value="#{empleadoController.nombreEscogido}" />
-
-				<br />
-
-				<p:outputLabel for="apellidosEmpleado" styleClass="col-2"
-					value="Apellidos" />
-				<p:inputText id="apellidosEmpleado" styleClass="col-2"
-					value="#{empleadoController.apellidosEscogido}" />
-
-				<br />
-
-				<p:outputLabel for="emailEmpleado" styleClass="col-2" value="Email" />
-				<p:inputText id="emailEmpleado" styleClass="col-2"
-					value="#{empleadoController.emailEscogido}" />
-
-				<br />
-
-				<p:outputLabel for="telefonoEmpleado" styleClass="col-2"
-					value="Teléfono" />
-				<p:inputText id="telefonoEmpleado" styleClass="col-2"
-					value="#{empleadoController.telefonoEscogido}" />
-
-				<br />
+				<div class="row">
+					<p:outputLabel for="telefonoEmpleado" styleClass="col-sm-6"
+						value="Teléfono" />
+					<p:inputText id="telefonoEmpleado" styleClass="col-sm-6"
+						value="#{empleadoController.telefonoEscogido}" />
+				</div>
 
 			</h:panelGroup>
 
-			<hr />
+			<br />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Guardar" type="submit" update="@all"
+				<p:commandButton value="Guardar" type="submit" update="@all"
 					resetValues="true" action="#{empleadoController.guardarEmpleado()}" />
-				<p:commandButton title="Cancelar" resetValues="true"
+				<p:commandButton value="Cancelar" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 

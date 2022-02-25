@@ -8,8 +8,8 @@
 	<ui:define name="content">
 		<h:form id="productDetail">
 			<div class="product card">
-				<p:dataView value="#{paleteroController.listaAnunciosPorMarca}" var="product"
-					rows="12" paginator="false"
+				<p:dataView value="#{paleteroController.listaAnunciosPorMarca}"
+					var="product" rows="12" paginator="false"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 					gridIcon="pi pi-th-large" listIcon="pi pi-bars" layout="grid">
 
@@ -25,12 +25,10 @@
 
 									<div class="product-grid-item card border-1">
 
-										<!-- 
 										<h:graphicImage
 											value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(product.id))}"
 											width="200" height="200" />
-											
-											 -->
+
 										<div>
 											<p:rating readonly="true"
 												value="#{anuncioController.notaMedia(product)}" />

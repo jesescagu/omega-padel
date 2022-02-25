@@ -12,18 +12,18 @@
 			<h:panelGroup layout="block" styleClass="container-fluid">
 
 				<h:panelGroup styleClass="row">
-					<h:panelGroup styleClass="col-6">
+					<h:panelGroup styleClass="col-sm-6">
 
 						<h:panelGroup styleClass="row">
-							<p:commandButton title="Editar" styleClass="col-3"
+							<p:commandButton value="Editar" styleClass="col-sm-3"
 								rendered="#{anuncioController.estaEmpleadoLogado}"
 								action="#{anuncioController.editarAnuncio(anuncioController.anuncioSeleccionado)}" />
 
-							<p:commandButton title="Desactivar" styleClass="col-3"
+							<p:commandButton value="Desactivar" styleClass="col-sm-3"
 								rendered="#{anuncioController.estaEmpleadoLogado and anuncioController.anuncioSeleccionado.activo eq true}"
 								action="#{anuncioController.desactivarAnuncio(anuncioController.anuncioSeleccionado)}" />
 
-							<p:commandButton title="Activar" styleClass="col-3"
+							<p:commandButton value="Activar" styleClass="col-sm-3"
 								rendered="#{anuncioController.estaEmpleadoLogado and anuncioController.anuncioSeleccionado.activo eq false}"
 								action="#{anuncioController.activarAnuncio(anuncioController.anuncioSeleccionado)}" />
 
@@ -52,7 +52,9 @@
 
 							<br />
 
-							<h5>Comentarios</h5>
+							<h1>
+								<h:outputText value="Comentarios" />
+							</h1>
 
 							<h:panelGroup rendered="#{anuncioController.estaClienteLogado}"
 								layout="block" styleClass="container-fluid">
@@ -62,49 +64,41 @@
 								<br />
 
 								<div class="row">
-									<div class="col-2">
-										<p:outputLabel for="tituloNuevoComentario" value="Título" />
-									</div>
-									<div class="col-8">
-										<p:inputText id="tituloNuevoComentario"
-											value="#{anuncioController.nuevoTituloComentario}" />
-									</div>
+									<p:outputLabel styleClass="col-sm-2"
+										for="tituloNuevoComentario" value="Título" />
+									<p:inputText id="tituloNuevoComentario" styleClass="col-sm-9" maxlength="150"
+										value="#{anuncioController.nuevoTituloComentario}" />
 								</div>
 
 								<div class="row">
-									<div class="col-2">
-										<p:outputLabel for="descripcionNuevoComentario"
-											value="Descripción" />
-									</div>
-									<div class="col-8">
-										<p:inputTextarea rows="5" id="descripcionNuevoComentario"
-											styleClass="col-sm-6"
-											value="#{anuncioController.nuevaDescripcionComentario}" />
-									</div>
+									<p:outputLabel styleClass="col-sm-2"
+										for="descripcionNuevoComentario" value="Descripción" />
+									<p:inputTextarea rows="5" id="descripcionNuevoComentario"
+										styleClass="col-sm-9" maxlength="500"
+										value="#{anuncioController.nuevaDescripcionComentario}" />
 								</div>
 
 								<div class="row">
-									<div class="col-2">
-										<p:outputLabel for="calificacionNuevoComentario"
-											value="Calificación" />
-									</div>
-									<div class="col-8">
-										<p:rating id="calificacionNuevoComentario"
-											value="#{anuncioController.nuevaCalificacionComentario}" />
+									<p:outputLabel styleClass="col-sm-2"
+										for="calificacionNuevoComentario" value="Calificación" />
+									<p:rating styleClass="col-sm-2" style="padding:0px;"
+										id="calificacionNuevoComentario"
+										value="#{anuncioController.nuevaCalificacionComentario}" />
 
-									</div>
 								</div>
 
+								<br />
+
 								<div class="row">
-									<div class="col-6">
-										<p:commandButton title="Guardar" update="@all"
+									<div class="col-sm-6">
+										<p:commandButton value="Guardar" update="@all"
 											action="#{anuncioController.guardarComentario(anuncioController.anuncioSeleccionado)}" />
 									</div>
 
 								</div>
 							</h:panelGroup>
 
-							<h:panelGroup styleClass="row">
+							<h:panelGroup id="grupoTablaComentarios" styleClass="row">
 
 								<h:panelGroup styleClass="col-12">
 
@@ -114,29 +108,24 @@
 										emptyMessage="Actualmente no existen comentarios del producto"
 										var="coment">
 
-										<p:column style="text-align:center" headerText="Nick">
-											<h:outputText value="#{coment.actor.usuario.usuario}" />
-										</p:column>
-
-										<p:column style="text-align:center" headerText="Título">
+										<p:column width="25%" style="text-align:center" headerText="Título">
 											<h:outputText value="#{coment.titulo}" />
 										</p:column>
 
-										<p:column style="text-align:center" headerText="Descripción">
+										<p:column width="35%" style="text-align:center" headerText="Descripción">
 											<h:outputText value="#{coment.descripcion}" />
 										</p:column>
 
-										<p:column style="text-align:center" headerText="Calificación">
+										<p:column  width="20%" style="text-align:center" headerText="Calificación">
 											<p:rating readonly="true" value="#{coment.calificacion}" />
 										</p:column>
 
-										<p:column rendered="#{anuncioController.estaEmpleadoLogado}"
+										<p:column  width="20%" rendered="#{anuncioController.estaEmpleadoLogado}"
 											style="text-align:center" headerText="Acciones">
-											<h:commandButton styleClass="btn btn-primary"
+											<p:commandButton styleClass="btn btn-primary" process="@this" update=":detalleAnuncio:grupoTablaComentarios"
 												actionListener="#{anuncioController.eliminarComentario(coment)}"
 												value="Eliminar">
-												<p:ajax update="@all" />
-											</h:commandButton>
+											</p:commandButton>
 										</p:column>
 
 									</p:dataTable>
@@ -153,24 +142,28 @@
 
 
 					</h:panelGroup>
-					<h:panelGroup styleClass="col-6">
+					<h:panelGroup style="background-color:#fafaf4;border:solid;"
+						styleClass="col-sm-6">
 
-						<h3>
-							<h:outputText
-								value="#{anuncioController.anuncioSeleccionado.titulo}" />
-						</h3>
+						<h:panelGroup styleClass="row">
+							<h1>
+								<h:outputText
+									value="#{anuncioController.anuncioSeleccionado.titulo}" />
+							</h1>
+						</h:panelGroup>
+
 						<hr />
 
 						<h:panelGroup styleClass="row">
 
-							<h:panelGroup styleClass="col-2">
-								<h:outputText style="font-size:2em;font-weight: bold;color:red;"
-									value="#{anuncioController.anuncioSeleccionado.precio} €" />
-							</h:panelGroup>
-							<h:commandButton
+							<h:outputText styleClass="col-sm-3"
+								style="font-size:2em;font-weight: bold;color:red;"
+								value="#{anuncioController.anuncioSeleccionado.precio} €" />
+							<p:commandButton styleClass="col-sm-7" process="@this" update="@all"
+								disabled="#{anuncioController.estaClienteLogado eq false}"
 								actionListener="#{cestaController.addAnuncioAlCarrito(anuncioController.anuncioSeleccionado)}"
-								value="Comprar" />
-							<p:staticMessage
+								value="Añadir al carrito" />
+							<p:staticMessage styleClass="col-sm-12"
 								rendered="#{anuncioController.estaClienteLogado eq false}"
 								severity="warn"
 								detail="Inicie sesión para comprar este producto."
@@ -180,7 +173,10 @@
 						<hr />
 
 						<h:panelGroup styleClass="row">
-							<p:outputLabel for="notaMediaAnuncio" value="Media de opiniones" />
+							<h4>
+								<p:outputLabel for="notaMediaAnuncio" value="Media de opiniones" />
+							</h4>
+
 							<p:rating readonly="true" id="notaMediaAnuncio"
 								value="#{anuncioController.notaMedia(anuncioController.anuncioSeleccionado)}" />
 						</h:panelGroup>

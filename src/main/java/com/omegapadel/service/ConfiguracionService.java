@@ -45,4 +45,16 @@ public class ConfiguracionService {
 		return config;
 	}
 	
+	public Double getImporteEnvio(Double precioProductos) {
+
+		Configuracion config = findConfiguracion();
+
+		if (config.getHayEnvioGratis() && precioProductos >= config.getPrecioaPartirEnvioGratis()) {
+			return 0.0;
+		} else {
+			return config.getPrecioEnvio();
+		}
+
+	}
+	
 }

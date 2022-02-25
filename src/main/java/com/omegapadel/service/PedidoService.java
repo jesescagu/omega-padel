@@ -1,8 +1,11 @@
 package com.omegapadel.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
@@ -10,7 +13,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.omegapadel.model.Anuncio;
+import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.DireccionPostal;
 import com.omegapadel.model.EstadoPedido;
@@ -25,6 +28,12 @@ public class PedidoService {
 	private PedidoRepository pedidoRepository;
 	@Inject
 	private EstadoPedidoService estadoPedidoService;
+	@Inject
+	private ConfiguracionService configuracionService;
+	@Inject
+	private AnuncioService anuncioService;
+	@Inject
+	private CestaService cestaService;
 
 	public <S extends Pedido> S save(S entity) {
 		return pedidoRepository.save(entity);
@@ -54,31 +63,43 @@ public class PedidoService {
 		pedidoRepository.delete(entity);
 	}
 
-	public Pedido create(Cliente cliente, DireccionPostal direccionPostal, List<Anuncio> anuncios) {
+	public Pedido create(Cliente cliente, DireccionPostal direccionPostal, Map<Integer, Integer> anuncios, String referencia) {
 		Pedido p = new Pedido();
-		p.setAnuncios(anuncios);
+		p.setMapaAnunciosCantidad(anuncios);
 		p.setCliente(cliente);
 		p.setDireccionPostal(direccionPostal);
-		p.setReferenciaPedido(getReferenciaPedidoUnicoGenerado());
+		p.setReferenciaPedido(referencia);
 
-		List<EstadoPedido> estados = new ArrayList<EstadoPedido>();
-		EstadoPedido ep = estadoPedidoService.createEstadoRealizado();
+		Double precioProductos = getPrecioTotalAnuncios(anuncios);
+		p.setPrecioTotalProductos(precioProductos);
+		Double precioEnvio = configuracionService.getImporteEnvio(precioProductos);
+		p.setPrecioEnvio(precioEnvio);
+
+		SortedSet<EstadoPedido> estados = new TreeSet<EstadoPedido>();
+		EstadoPedido ep = estadoPedidoService.createEstadoPendientePago();
 		estados.add(ep);
 		p.setListaEstados(estados);
 		return p;
 	}
 
-	public List<Pedido> getPedidosDeClienteConId(Integer idCliente) {
-		return pedidoRepository.getPedidosDeClienteConId(idCliente);
-	}
+	public Double getPrecioTotalAnuncios(Map<Integer, Integer> mapaAnunciosCantidad) {
 
-	public Optional<Pedido> getPedidoPorReferencia(String referencia) {
-		return pedidoRepository.getPedidoPorReferencia(referencia);
-	}
+		Double total = 0.0;
 
+		Set<Integer> setCesta = mapaAnunciosCantidad.keySet();
+		for (Integer anuncioId : setCesta) {
+			Double precio = anuncioService.findById(anuncioId).get().getPrecio();
+			Integer cantidad = mapaAnunciosCantidad.get(anuncioId);
+			total = total + (precio * cantidad);
+		}
+
+		return total;
+
+	}
+	
 	public String getReferenciaPedidoUnicoGenerado() {
 		String cadenaGenerada = "";
-		String banco = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		String banco = "1234567890";
 		Integer longitud = 10;
 		String resultado = "";
 
@@ -90,13 +111,26 @@ public class PedidoService {
 
 		resultado = cadenaGenerada;
 
-		Optional<Pedido> oi = getPedidoPorReferencia(resultado);
+		Optional<Pedido> oPedido = getPedidoPorReferencia(resultado);
+		Optional<Cesta> oCesta = cestaService.getCestaPorReferencia(resultado);
 
-		if (oi.isPresent()) {
+		if (oPedido.isPresent() || oCesta.isPresent()) {
 			return getReferenciaPedidoUnicoGenerado();
 		} else {
 			return resultado;
 		}
+	}
+
+	public List<Pedido> getPedidosDeClienteConId(Integer idCliente) {
+		return pedidoRepository.getPedidosDeClienteConId(idCliente);
+	}
+
+	public Optional<Pedido> getPedidoPorReferencia(String referencia) {
+		return pedidoRepository.getPedidoPorReferencia(referencia);
+	}
+
+	public List<Pedido> getPedidoPorUltimoEstado(String ultimoEstado) {
+		return pedidoRepository.getPedidoPorUltimoEstado(ultimoEstado);
 	}
 
 }

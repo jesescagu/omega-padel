@@ -255,17 +255,17 @@ public class TemplateController implements Serializable {
 		Rol r5 = rolService.create("empleado2", "empleado");
 		rolService.saveRol(r5);
 
-//		TODO
-//		DireccionPostal dp = direccPostalService.
+		Configuracion config = configuracionService.creaConfiguracionEjemploInicial();
+		configuracionService.save(config);
 
 		Administrador a1 = administratorService.create(u1, null);
 		administratorService.save(a1);
 
 		Cliente cl1 = clienteService.create("Pepe", "Amador Jerez", "paj@google.es", new ArrayList<DireccionPostal>(),
-				u2, new ArrayList<Anuncio>(), null);
+				u2, new ArrayList<Anuncio>());
 		Cliente cli1Saved = clienteService.save(cl1);
 		Cliente cl2 = clienteService.create("Juan", "Perez Lopez", "jpl@google.es", new ArrayList<DireccionPostal>(),
-				u3, new ArrayList<Anuncio>(), null);
+				u3, new ArrayList<Anuncio>());
 		Cliente cli2Saved = clienteService.save(cl2);
 
 		PuestoTrabajo pt = puestoTrabajoService.create("trabajador");
@@ -472,9 +472,9 @@ public class TemplateController implements Serializable {
 		DireccionPostal d5 = direccionPostalService.create("Chipiona, 3A", "41166", sev, emp2Saved);
 		DireccionPostal d5Saved = direccionPostalService.save(d5);
 
-		List<Anuncio> anuncios = new ArrayList<Anuncio>();
-		anuncios.add(an1Saved);
-		Pedido pedido1 = pedidoService.create(cl1, d1Saved, anuncios);
+		Map<Integer, Integer> anuncios = new HashMap<Integer, Integer>();
+		anuncios.put(an1Saved.getId(), 2);
+		Pedido pedido1 = pedidoService.create(cl1, d1Saved, anuncios, cestaService.getReferenciaPedidoUnicoGenerado());
 		Pedido pedido1Saved = pedidoService.save(pedido1);
 
 		List<Pedido> pedidosPrueba = new ArrayList<Pedido>();
@@ -502,9 +502,6 @@ public class TemplateController implements Serializable {
 		dps5.add(d5Saved);
 		emp2Saved.setDireccionesPostales(dps5);
 		empleadoService.save(emp2Saved);
-
-		Configuracion config = configuracionService.creaConfiguracionEjemploInicial();
-		configuracionService.save(config);
 
 	}
 
@@ -535,9 +532,9 @@ public class TemplateController implements Serializable {
 	@PostConstruct
 	public void init() {
 
-		if (usuarioService.findAll().isEmpty()) {
-			cargaDatos();
-		}
+//		if (usuarioService.findAll().isEmpty()) {
+//			cargaDatos();
+//		}
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -671,6 +668,10 @@ public class TemplateController implements Serializable {
 					.ajax(false).command("#{anuncioController.verListaAnunciosDesactivados()}").build();
 			submenuEmpleado.getElements().add(itemListaAnuncios);
 
+			DefaultMenuItem pedidosParaTramitar = DefaultMenuItem.builder().value("Lista de pedidos para tramitar")
+					.ajax(false).command("#{pedidoController.abrirPedidosParaTramitar()}").build();
+			submenuEmpleado.getElements().add(pedidosParaTramitar);
+
 			model.getElements().add(submenuEmpleado);
 		}
 
@@ -679,7 +680,7 @@ public class TemplateController implements Serializable {
 			DefaultSubMenu submenuAdministrador = DefaultSubMenu.builder().label("Menu Administrador").build();
 
 			DefaultMenuItem itemPT = DefaultMenuItem.builder().value("Puestos de trabajo").ajax(false)
-					.command("#{empleadoController.verListaPuestoTrabajo()}").build();
+					.command("#{puestoTrabajoController.verListaPuestoTrabajo()}").build();
 			submenuAdministrador.getElements().add(itemPT);
 
 			DefaultMenuItem itemEmpleado = DefaultMenuItem.builder().value("Lista empleados").ajax(false)
@@ -710,8 +711,17 @@ public class TemplateController implements Serializable {
 
 		} else {
 
-			User user = (User) auth.getPrincipal();
-			String nombreUsuario = user.getUsername();
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
+
+//			User user = (User) auth.getPrincipal();
+//			String nombreUsuario = user.getUsername();
 
 			DefaultSubMenu subMenuUsuario = DefaultSubMenu.builder().label(nombreUsuario)
 					.style("float:right;width:150px;").build();

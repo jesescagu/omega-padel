@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-import com.omegapadel.model.Actor;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.DireccionPostal;
 import com.omegapadel.model.Empleado;
@@ -77,8 +76,17 @@ public class DireccionPostalController implements Serializable {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 			if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-				User user = (User) auth.getPrincipal();
-				String nombreUsuario = user.getUsername();
+//				User user = (User) auth.getPrincipal();
+//				String nombreUsuario = user.getUsername();
+				
+				String nombreUsuario = null;
+				Object princ = auth.getPrincipal();
+				if (princ instanceof User) {
+					User user = (User) princ;
+					nombreUsuario = user.getUsername();
+				} else {
+					nombreUsuario = (String) auth.getPrincipal();
+				}
 
 				Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 				this.listaDireccionesPostales = clienteLogado.getDireccionesPostales();
@@ -163,8 +171,17 @@ public class DireccionPostalController implements Serializable {
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 				if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-					User user = (User) auth.getPrincipal();
-					String nombreUsuario = user.getUsername();
+//					User user = (User) auth.getPrincipal();
+//					String nombreUsuario = user.getUsername();
+					
+					String nombreUsuario = null;
+					Object princ = auth.getPrincipal();
+					if (princ instanceof User) {
+						User user = (User) princ;
+						nombreUsuario = user.getUsername();
+					} else {
+						nombreUsuario = (String) auth.getPrincipal();
+					}
 
 					Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 					dp = direccionPostalService.create(direccionSeleccionada, codigoPostalSeleccionado,
@@ -210,8 +227,17 @@ public class DireccionPostalController implements Serializable {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 			if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-				User user = (User) auth.getPrincipal();
-				String nombreUsuario = user.getUsername();
+//				User user = (User) auth.getPrincipal();
+//				String nombreUsuario = user.getUsername();
+				
+				String nombreUsuario = null;
+				Object princ = auth.getPrincipal();
+				if (princ instanceof User) {
+					User user = (User) princ;
+					nombreUsuario = user.getUsername();
+				} else {
+					nombreUsuario = (String) auth.getPrincipal();
+				}
 
 				Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 				List<DireccionPostal> listDPs = clienteLogado.getDireccionesPostales();

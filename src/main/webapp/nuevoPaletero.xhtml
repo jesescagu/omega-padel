@@ -14,28 +14,31 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
-				<div>
-					<p:outputLabel styleClass="col-sm-2" for="marcaPaletero" value="Marca" />
-					<p:selectOneMenu label="Marca" id="marcaPaletero" styleClass="col-sm-6"
-						value="#{paleteroController.marcaEscogida}">
-						<f:selectItems var="marca" value="#{paleteroController.listaMarcas}"
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="marcaPaletero"
+						value="Marca" />
+					<p:selectOneMenu label="Marca" id="marcaPaletero"
+						styleClass="col-sm-6" value="#{paleteroController.marcaEscogida}">
+						<f:selectItems var="marca"
+							value="#{paleteroController.listaMarcas}"
 							itemLabel="#{marca.nombre}" itemValue="#{marca.nombre}" />
 					</p:selectOneMenu>
 				</div>
 
-				<div>
-					<p:outputLabel styleClass="col-sm-2" for="stockPaleteroNumber"
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="stockPaleteroNumber"
 						value="Stock inicial" />
 					<p:inputNumber id="stockPaleteroNumber" padControl="false"
-						styleClass="col-sm-6" thousandSeparator="" decimalSeparator="."
-						decimalPlaces="0" value="#{paleteroController.stockNuevoPaletero}" />
+						style="padding:0px;" styleClass="col-sm-6" thousandSeparator=""
+						decimalSeparator="." decimalPlaces="0"
+						value="#{paleteroController.stockNuevoPaletero}" />
 				</div>
 
 
-				<div>
-					<p:outputLabel styleClass="col-sm-2" for="modeloPaleteroTexto"
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="modeloPaleteroTexto"
 						value="Modelo" />
 					<p:inputText id="modeloPaleteroTexto" styleClass="col-sm-6"
 						value="#{paleteroController.modeloNuevoPaletero}" />
@@ -46,10 +49,10 @@
 
 			<hr />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Guardar" type="submit" update="@all"
+			<h:panelGroup layout="block" styleClass="container">
+				<p:commandButton value="Guardar" type="submit" update="@all"
 					resetValues="true" action="#{paleteroController.guardarPaletero()}" />
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 
@@ -57,55 +60,59 @@
 
 		<h:form id="ImagenesNuevoPaleteroForm" enctype="multipart/form-data">
 
-			<h:panelGroup id="uploadFilePaleteroId" layout="block" styleClass="row">
+			<h:panelGroup id="uploadFilePaleteroId" layout="block"
+				styleClass="container-fluid">
 
-				<div class="col-sm-12">
-					<div class="col-sm-6">
-						<h5>Imágenes</h5>
-						<p:fileUpload id="fileUploadPaletero" label="Examinar..."
-							styleClass="block" mode="simple" multiple="false"
-							skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
-							fileLimit="1" cancelLabel="Cancelar" uploadLabel="Adjuntar"
-							dragDropSupport="true" value="#{paleteroController.imagenPaleteroNuevo}">
-						</p:fileUpload>
-					</div>
-					<div class="col-sm-6">
-						<h:commandButton id="btnfileUploadPaletero"
-							actionListener="#{paleteroController.nuevaImagen()}" value="Adjuntar"
-							styleClass="btn btn-primary btn-block">
-						</h:commandButton>
-					</div>
+				<div class="col-sm">
+					<h1>
+						<h:outputText value="Imágenes" />
+					</h1>
+
+					<p:fileUpload id="fileUploadPaletero" label="Examinar..."
+						styleClass="block" mode="simple" multiple="false"
+						skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+						fileLimit="1" cancelLabel="Cancelar" uploadLabel="Adjuntar"
+						dragDropSupport="true"
+						value="#{paleteroController.imagenPaleteroNuevo}">
+					</p:fileUpload>
+				</div>
+				<div class="col-sm">
+					<p:commandButton id="btnfileUploadPaletero" update=":ImagenesNuevoPaleteroForm"
+						actionListener="#{paleteroController.nuevaImagen()}"
+						value="Adjuntar" styleClass="btn btn-primary btn-block">
+					</p:commandButton>
 				</div>
 			</h:panelGroup>
 
 			<h:panelGroup id="tablaImagenesPaletero"
 				rendered="#{not empty paleteroController.imagenesPaleteroNuevo}"
 				layout="block" styleClass="container-fluid">
-				<div class="col-md-12">
-					<h1 class="title-informacion-sede">
+				<div class="col-sm-12">
+					<h1>
 						<h:outputText value="Imagenes adjuntadas" />
 					</h1>
 				</div>
 
 				<div class="row">
 
-					<div class="col-md-3"></div>
+					<div class="col-sm-3"></div>
 
-					<div class="col-md-6">
+					<div class="col-sm-6">
 						<p:dataTable var="elem"
 							value="#{paleteroController.imagenesPaleteroNuevo}"
 							class="table table-striped table-responsive table-bordered nowrap"
 							id="tablaDocumentos">
-							<p:column class="col-md-6" headerText="Imagen">
+							<p:column headerText="Imagen">
 								<h:graphicImage
 									value="data:image/jpg;base64,#{paleteroController.getBytesDeImagen(elem)}"
 									width="100%" height="100%" />
 							</p:column>
-							<p:column class="col-md-6" headerText="Nombre imagen">
+							<p:column headerText="Nombre imagen">
 								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
 							</p:column>
-							<p:column class="col-md-6" headerText="Acciones">
-								<h:commandButton styleClass="btn btn-primary"
+							<p:column headerText="Acciones">
+								<h:commandButton styleClass="btn btn-primary" process="@this"
+									update=":ImagenesNuevoPaleteroForm"
 									actionListener="#{paleteroController.eliminaImagen(elem)}"
 									value="Eliminar">
 								</h:commandButton>
@@ -114,7 +121,7 @@
 
 					</div>
 
-					<div class="col-md-3"></div>
+					<div class="col-sm-3"></div>
 
 				</div>
 			</h:panelGroup>

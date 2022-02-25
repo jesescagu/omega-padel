@@ -13,29 +13,37 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
 				<div class="row">
-					<div class="col-6">
-						<p:outputLabel for="nuevaTipoAccesorioNombre" value="Nombre Nuevo Tipo accesorio" />
-					</div>
-					<div class="col-6">
-						<p:inputText id="nuevaTipoAccesorioNombre" title="TipoAccesorio" required="true"
-							requiredMessage="Obligatorio"
+
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:outputLabel for="nuevaTipoAccesorioNombre" styleClass="col-sm-6"
+							value="Nombre Nuevo Tipo accesorio" />
+						<p:inputText id="nuevaTipoAccesorioNombre" title="TipoAccesorio" styleClass="col-sm-6"
+							required="true" requiredMessage="Obligatorio"
 							value="#{tipoAccesorioController.nuevaTipoAccesorio}" />
 					</div>
+
+					<div class="col-sm-3"></div>
 				</div>
 
 				<div class="row">
-					<div class="col-6">
-						<p:commandButton title="Guardar" type="submit" process="@form"
-							update="@all" action="#{tipoAccesorioController.guardarTipoAccesorio()}" />
-					</div>
 
-					<div class="col-6">
-						<p:commandButton title="Volver a Inicio" type="submit"
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:commandButton value="Guardar" type="submit" process="@form"
+							update="@all"
+							action="#{tipoAccesorioController.guardarTipoAccesorio()}" />
+
+						<p:commandButton value="Volver a Inicio" type="submit"
 							process="@this" action="#{inicioController.verPaginaInicio()}" />
 					</div>
+
+					<div class="col-sm-3"></div>
 				</div>
 
 
@@ -54,18 +62,19 @@
 				<div class="col-sm-3"></div>
 
 				<div class="col-sm-6">
-					<p:dataTable value="#{tipoAccesorioController.listaTipoAccesorios}" var="tipoAccesorio">
+					<p:dataTable value="#{tipoAccesorioController.listaTipoAccesorios}"
+						var="tipoAccesorio">
 
 						<p:column style="text-align:center" headerText="Nombre">
 							<h:outputText value="#{tipoAccesorio.nombre}" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary"
+							<p:commandButton styleClass="btn btn-primary"
+								update=":listaTipoAccesorios" process="@this"
 								actionListener="#{tipoAccesorioController.eliminarTipoAccesorio(tipoAccesorio)}"
 								value="Eliminar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>

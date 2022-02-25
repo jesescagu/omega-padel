@@ -170,7 +170,7 @@ public class EmpleadoController implements Serializable {
 
 		Boolean validacionErronea = false;
 
-		if (this.nickEscogido == null || this.nickEscogido.isEmpty() ) {
+		if (this.nickEscogido == null || this.nickEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe escoger un nombre de usuario.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -185,26 +185,25 @@ public class EmpleadoController implements Serializable {
 			}
 
 		}
-		if (this.contrasenyaEscogida == null || this.contrasenyaEscogida.isEmpty()
-				) {
+		if (this.contrasenyaEscogida == null || this.contrasenyaEscogida.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir una contraseña valida.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty() ) {
+		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe introducir su nombre.",
 					null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty() ) {
+		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir sus apellidos.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.emailEscogido == null || this.emailEscogido.isEmpty() ) {
+		if (this.emailEscogido == null || this.emailEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un email válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -219,7 +218,7 @@ public class EmpleadoController implements Serializable {
 			}
 		}
 
-		if (this.dniEscogido == null || this.dniEscogido.isEmpty() ) {
+		if (this.dniEscogido == null || this.dniEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un DNI válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -233,7 +232,7 @@ public class EmpleadoController implements Serializable {
 				validacionErronea = true;
 			}
 		}
-		if (this.telefonoEscogido == null || this.telefonoEscogido.isEmpty() ) {
+		if (this.telefonoEscogido == null || this.telefonoEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un teléfono válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -280,7 +279,7 @@ public class EmpleadoController implements Serializable {
 		Boolean validacionErronea = false;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-		if (this.nickEscogido == null || this.nickEscogido.isEmpty() ) {
+		if (this.nickEscogido == null || this.nickEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe escoger un nombre de usuario.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -289,8 +288,7 @@ public class EmpleadoController implements Serializable {
 
 		if (auth != null && !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
 
-			if (this.contrasenyaActual == null || this.contrasenyaActual.isEmpty()
-					) {
+			if (this.contrasenyaActual == null || this.contrasenyaActual.isEmpty()) {
 				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"Debe introducir una contraseña valida.", null);
 				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -306,19 +304,19 @@ public class EmpleadoController implements Serializable {
 				}
 			}
 		}
-		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty() ) {
+		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe introducir su nombre.",
 					null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty() ) {
+		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir sus apellidos.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.emailEscogido == null || this.emailEscogido.isEmpty() ) {
+		if (this.emailEscogido == null || this.emailEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un email válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -332,7 +330,8 @@ public class EmpleadoController implements Serializable {
 				validacionErronea = true;
 			}
 		}
-		if (this.dniEscogido == null || this.dniEscogido.isEmpty() ) {
+
+		if (this.dniEscogido == null || this.dniEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un DNI válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -346,7 +345,7 @@ public class EmpleadoController implements Serializable {
 				validacionErronea = true;
 			}
 		}
-		if (this.telefonoEscogido == null || this.telefonoEscogido.isEmpty() ) {
+		if (this.telefonoEscogido == null || this.telefonoEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un teléfono válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -445,6 +444,9 @@ public class EmpleadoController implements Serializable {
 				r = rolService.buscaRolPorNombreUsuario(this.nickEscogido).get();
 				Empleado emp = empleadoService.buscaEmpleadoPorNombreUsuario(this.nickEscogido);
 
+				PuestoTrabajo pt = puestoTrabajoService.findById(this.puestoTrabajoEscogido).get();
+
+				emp.setPuesto(pt);
 				emp.setNombre(this.nombreEscogido);
 				emp.setApellidos(this.apellidosEscogido);
 				emp.setEmail(this.emailEscogido);
@@ -457,7 +459,12 @@ public class EmpleadoController implements Serializable {
 		}
 
 		// TODO Mensaje de confirmacion y directo al login? Confirmar correo quiza?
-		return "index.xhtml";
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
+			return "listaEmpleados.xhtml";
+		} else {
+			return "index.xhtml";
+		}
+
 	}
 
 	public boolean validacionEmail() {

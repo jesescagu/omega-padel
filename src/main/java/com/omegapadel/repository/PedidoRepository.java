@@ -16,4 +16,7 @@ public interface PedidoRepository  extends CrudRepository<Pedido, Integer>{
 	@Query("select p from Pedido p where p.referenciaPedido = ?1")
 	public Optional<Pedido> getPedidoPorReferencia(String referencia);
 	
+	@Query("select p from Pedido p where p.ultimoEstado = ?1")
+	public List<Pedido> getPedidoPorUltimoEstado(String ultimoEstado);
+	
 }

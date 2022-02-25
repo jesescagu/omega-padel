@@ -12,9 +12,9 @@
 
 			<h:panelGroup layout="block" styleClass="row">
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
-				<div class="col-10">
+				<div class="col-sm-10">
 					<p:dataTable value="#{anuncioController.listaAnunciosDesactivados}"
 						var="anuncio">
 
@@ -39,23 +39,24 @@
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary" process="@this"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
 								action="#{anuncioController.mostrarAnuncio(anuncio)}"
 								value="Ver anuncio">
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>
 				</div>
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
 			</h:panelGroup>
 
+			<br />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 

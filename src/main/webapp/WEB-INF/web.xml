@@ -44,7 +44,7 @@
 
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<param-value>cupertino</param-value>
+		<param-value>south-street</param-value>
 	</context-param>
 
 	<error-page>
@@ -52,4 +52,10 @@
 		</exception-type>
 		<location>/index.xhtml</location>
 	</error-page>
+
+	<context-param>
+		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE
+		</param-name>
+		<param-value>true</param-value>
+	</context-param>
 </web-app>

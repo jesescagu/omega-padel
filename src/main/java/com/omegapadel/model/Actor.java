@@ -1,5 +1,7 @@
 package com.omegapadel.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -28,7 +30,8 @@ public class Actor extends EntidadBase{
 	private List<DireccionPostal> direccionesPostales;
 
 	public List<DireccionPostal> getDireccionesPostales() {
-		return direccionesPostales;
+		
+		return new ArrayList<DireccionPostal>(this.direccionesPostales);
 	}
 
 	public void setDireccionesPostales(List<DireccionPostal> direccionesPostales) {

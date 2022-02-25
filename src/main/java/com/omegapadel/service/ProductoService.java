@@ -12,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.omegapadel.model.Accesorio;
 import com.omegapadel.model.Pala;
+import com.omegapadel.model.Paletero;
 import com.omegapadel.model.Pelota;
 import com.omegapadel.model.Producto;
+import com.omegapadel.model.Ropa;
+import com.omegapadel.model.Zapatilla;
 import com.omegapadel.repository.ProductoRepository;
 
 @Service
@@ -61,33 +64,41 @@ public class ProductoService {
 		productoRepository.deleteAll();
 	}
 
-	
-	public List<Producto> tratamientoListaProductos(String tipoProductoEscogido,
-			List<Producto> productosEscogidos){
-		
+	public List<Producto> tratamientoListaProductos(String tipoProductoEscogido, List<Producto> productosEscogidos) {
+
 		List<Producto> prods = new ArrayList<Producto>();
-		for(Producto p : productosEscogidos) {
-			if(tipoProductoEscogido.equals("Pala") && p instanceof Pala) {
+		for (Producto p : productosEscogidos) {
+			if (tipoProductoEscogido.equals("Pala") && p instanceof Pala) {
 				prods.add(p);
 			}
-			if(tipoProductoEscogido.equals("Pelota") && p instanceof Pelota) {
+			if (tipoProductoEscogido.equals("Pelota") && p instanceof Pelota) {
 				prods.add(p);
 			}
-			if(tipoProductoEscogido.equals("Accesorio") && p instanceof Accesorio) {
+			if (tipoProductoEscogido.equals("Accesorio") && p instanceof Accesorio) {
 				prods.add(p);
 			}
+
+			// ------
+
+			if (tipoProductoEscogido.equals("Paletero") && p instanceof Paletero) {
+				prods.add(p);
+			}
+			if (tipoProductoEscogido.equals("Zapatilla") && p instanceof Zapatilla) {
+				prods.add(p);
+			}
+			if (tipoProductoEscogido.equals("Ropa") && p instanceof Ropa) {
+				prods.add(p);
+			}
+
 		}
 		return prods;
 	}
-	
-	
-	
-	
+
 	public List<? extends Producto> getProductosDeUnTipo(String tipoProductoEscogido,
 			List<Producto> productosEscogidos) {
 
 		List<Producto> prods = tratamientoListaProductos(tipoProductoEscogido, productosEscogidos);
-		
+
 		switch (tipoProductoEscogido) {
 		case "Pala":
 			if (CollectionUtils.isEmpty(prods)) {
@@ -106,6 +117,26 @@ public class ProductoService {
 				return productoRepository.getProductosDeTipoAccesorio();
 			} else {
 				return productoRepository.getProductosDeTipoAccesorio(prods);
+			}
+
+			// ----------
+		case "Paletero":
+			if (CollectionUtils.isEmpty(prods)) {
+				return productoRepository.getProductosDeTipoPaletero();
+			} else {
+				return productoRepository.getProductosDeTipoPaletero(prods);
+			}
+		case "Zapatilla":
+			if (CollectionUtils.isEmpty(prods)) {
+				return productoRepository.getProductosDeTipoZapatilla();
+			} else {
+				return productoRepository.getProductosDeTipoZapatilla(prods);
+			}
+		case "Ropa":
+			if (CollectionUtils.isEmpty(prods)) {
+				return productoRepository.getProductosDeTipoRopa();
+			} else {
+				return productoRepository.getProductosDeTipoRopa(prods);
 			}
 		default:
 			return new ArrayList<Producto>();

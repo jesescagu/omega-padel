@@ -1,14 +1,24 @@
 package com.omegapadel.web;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -24,16 +34,21 @@ import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Configuracion;
 import com.omegapadel.model.DireccionPostal;
+import com.omegapadel.model.Pedido;
 import com.omegapadel.service.AnuncioService;
 import com.omegapadel.service.CestaService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.ConfiguracionService;
 import com.omegapadel.service.DireccionPostalService;
+import com.omegapadel.service.PedidoService;
+
+import sis.redsys.api.ApiMacSha256;
 
 @Named("cestaController")
 @ViewScoped
 public class CestaController implements Serializable {
 
+	Logger logger = Logger.getLogger("CestaController");
 	private static final long serialVersionUID = 982685617877081241L;
 
 	@Inject
@@ -46,6 +61,8 @@ public class CestaController implements Serializable {
 	private DireccionPostalService direccionPostalService;
 	@Inject
 	private ConfiguracionService configuracionService;
+	@Inject
+	private PedidoService pedidoService;
 
 	private Cliente clienteLogado;
 
@@ -56,16 +73,32 @@ public class CestaController implements Serializable {
 	private Integer anuncioIdParaEditar;
 	private Integer valorCantidadEnEdicion;
 
+	private String ds_SignatureVersion;
+	private String ds_MerchantParameters;
+	private String ds_Signature;
+
 	@PostConstruct
-	public void init() {
+	public void init() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
+			FileNotFoundException, IOException {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		this.anuncioIdParaEditar = null;
 		this.valorCantidadEnEdicion = null;
 
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-			User user = (User) auth.getPrincipal();
-			String nombreUsuario = user.getUsername();
+//			User user = (User) auth.getPrincipal();
+//			String nombreUsuario = user.getUsername();
+			
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
+			
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -86,6 +119,10 @@ public class CestaController implements Serializable {
 			if (c != null) {
 				Set<Integer> setCesta = c.getMapaAnunciosCantidad().keySet();
 				setCesta.stream().forEach(ci -> this.listaProductosCesta.add(anuncioService.findById(ci).get()));
+			} else {
+				Cesta cesta = cestaService.create(new HashMap<Integer, Integer>());
+				this.clienteLogado.setCesta(cestaService.save(cesta));
+				clienteService.save(this.clienteLogado);
 			}
 
 			this.listaDireccionesUsuario = this.clienteLogado.getDireccionesPostales();
@@ -95,9 +132,9 @@ public class CestaController implements Serializable {
 				if (this.listaDireccionesUsuario.size() == 1) {
 
 					this.direccionPostalSeleccionada = this.listaDireccionesUsuario.get(0);
-					
+
 				} else {
-					
+
 					Object direccionPostalSeleccionadaObject = context.getExternalContext().getSessionMap()
 							.get("direccionPostalSeleccionada");
 
@@ -107,8 +144,12 @@ public class CestaController implements Serializable {
 					}
 				}
 			}
-		}
 
+			if (this.ds_SignatureVersion == null) {
+				inicializaVariablesRedsys();
+			}
+
+		}
 	}
 
 	public Integer getCantidadProductoEnCesta(Anuncio anuncio) {
@@ -222,15 +263,15 @@ public class CestaController implements Serializable {
 	}
 
 	public Double getImporteEnvio() {
-		
+
 		Configuracion config = configuracionService.findConfiguracion();
-		
-		if(config.getHayEnvioGratis() && this.getTotalProductos() >= config.getPrecioaPartirEnvioGratis()) {
+
+		if (config.getHayEnvioGratis() && this.getTotalProductos() >= config.getPrecioaPartirEnvioGratis()) {
 			return 0.0;
-		}else {
+		} else {
 			return config.getPrecioEnvio();
 		}
-		
+
 	}
 
 	public Double getTotalPrecio() {
@@ -249,7 +290,7 @@ public class CestaController implements Serializable {
 
 	}
 
-	public void cancelarCarrito() {
+	public void cancelarCarrito() throws IOException {
 
 		Cesta cesta = this.clienteLogado.getCesta();
 
@@ -258,12 +299,83 @@ public class CestaController implements Serializable {
 
 		cestaService.delete(cesta);
 
+		FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
 	}
 
-	public void pagarCarrito() {
+	public void inicializaVariablesRedsys() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
+			FileNotFoundException, IOException {
 
-		// TODO
+		Properties propiedades = new Properties();
+		propiedades.load(this.getClass().getResourceAsStream("/redsys.properties"));
 
+		String dsMerchantcode = propiedades.getProperty("DS_MERCHANT_MERCHANTCODE");
+		logger.info("dsMerchantcode: " + dsMerchantcode);
+
+		String dsMerchantcurrency = propiedades.getProperty("DS_MERCHANT_CURRENCY");
+		logger.info("dsMerchantcurrency: " + dsMerchantcurrency);
+
+		String dsMerchantTerminal = propiedades.getProperty("DS_MERCHANT_TERMINAL");
+		logger.info("dsMerchantTerminal: " + dsMerchantTerminal);
+
+		String dsMerchantUrl = propiedades.getProperty("DS_MERCHANT_MERCHANTURL");
+		logger.info("dsMerchantUrl: " + dsMerchantUrl);
+
+		String dsMerchantUrlOk = propiedades.getProperty("DS_MERCHANT_URLOK");
+		logger.info("dsMerchantUrlOk: " + dsMerchantUrlOk);
+
+		String dsMerchantUrlKo = propiedades.getProperty("DS_MERCHANT_URLKO");
+		logger.info("dsMerchantUrlKo: " + dsMerchantUrlKo);
+
+		ApiMacSha256 apiMacSha256 = new ApiMacSha256();
+
+		Integer precio = (int) (getTotalPrecio() * 100);
+		String amount = precio.toString();
+
+		String numeroPedido = this.clienteLogado.getCesta().getReferenciaProvisional();
+		logger.info("numero Pedido: " + numeroPedido);
+
+		apiMacSha256.setParameter("DS_MERCHANT_AMOUNT", amount);
+		apiMacSha256.setParameter("DS_MERCHANT_ORDER", numeroPedido);
+		apiMacSha256.setParameter("DS_MERCHANT_MERCHANTCODE", dsMerchantcode);
+		apiMacSha256.setParameter("DS_MERCHANT_CURRENCY", dsMerchantcurrency);
+		apiMacSha256.setParameter("DS_MERCHANT_TRANSACTIONTYPE", "0"); // Autorizacion
+		apiMacSha256.setParameter("DS_MERCHANT_TERMINAL", dsMerchantTerminal);
+		apiMacSha256.setParameter("DS_MERCHANT_MERCHANTURL", dsMerchantUrl);
+		apiMacSha256.setParameter("DS_MERCHANT_URLOK", dsMerchantUrlOk);
+		apiMacSha256.setParameter("DS_MERCHANT_URLKO", dsMerchantUrlKo);
+
+		String params = apiMacSha256.createMerchantParameters();
+
+		String claveSHA256 = propiedades.getProperty("claveSHA256");
+		String firma = apiMacSha256.createMerchantSignature(claveSHA256);
+
+		this.ds_SignatureVersion = propiedades.getProperty("ds_SignatureVersion");
+		this.ds_MerchantParameters = params;
+		this.ds_Signature = firma;
+
+	}
+
+	public Boolean pagarCarrito() {
+
+		if (this.clienteLogado != null) {
+
+			Cesta cesta = this.clienteLogado.getCesta();
+			this.clienteLogado.setCesta(null);
+			clienteService.save(this.clienteLogado);
+
+			if (cesta != null) {
+
+				Pedido pedido = pedidoService.create(this.clienteLogado, this.direccionPostalSeleccionada,
+						cesta.getMapaAnunciosCantidad(), cesta.getReferenciaProvisional());
+				pedidoService.save(pedido);
+
+				cestaService.delete(cesta);
+
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void addAnuncioAlCarrito(Anuncio anuncio) {
@@ -274,13 +386,31 @@ public class CestaController implements Serializable {
 			cestaService.addAnuncioAlCarrito(anuncio, this.clienteLogado);
 		}
 	}
+	
+	public Boolean desactivarBotonCesta() {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		return (auth == null || !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente")));
+		
+	}
 
 	public Integer numeroProductosCarritoCliente() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-			User user = (User) auth.getPrincipal();
-			String nombreUsuario = user.getUsername();
+//			User user = (User) auth.getPrincipal();
+//			String nombreUsuario = user.getUsername();
+			
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
+			
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 			Cesta cesta = this.clienteLogado.getCesta();
 			if (cesta == null) {
@@ -300,7 +430,7 @@ public class CestaController implements Serializable {
 	public boolean renderModificarCantidadManualmente(Anuncio anuncio) {
 		return anuncio.getId() == this.anuncioIdParaEditar;
 	}
-	
+
 	public boolean renderDireccionSeleccionada(DireccionPostal dp) {
 		return dp == this.direccionPostalSeleccionada;
 	}
@@ -311,8 +441,18 @@ public class CestaController implements Serializable {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-			User user = (User) auth.getPrincipal();
-			String nombreUsuario = user.getUsername();
+//			User user = (User) auth.getPrincipal();
+//			String nombreUsuario = user.getUsername();
+			
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
+			
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
 			context.getExternalContext().getSessionMap().put("cestaClienteLogado", this.clienteLogado.getCesta());
@@ -369,6 +509,30 @@ public class CestaController implements Serializable {
 
 	public void setValorCantidadEnEdicion(Integer valorCantidadEnEdicion) {
 		this.valorCantidadEnEdicion = valorCantidadEnEdicion;
+	}
+
+	public String getDs_SignatureVersion() {
+		return ds_SignatureVersion;
+	}
+
+	public void setDs_SignatureVersion(String ds_SignatureVersion) {
+		this.ds_SignatureVersion = ds_SignatureVersion;
+	}
+
+	public String getDs_MerchantParameters() {
+		return ds_MerchantParameters;
+	}
+
+	public void setDs_MerchantParameters(String ds_MerchantParameters) {
+		this.ds_MerchantParameters = ds_MerchantParameters;
+	}
+
+	public String getDs_Signature() {
+		return ds_Signature;
+	}
+
+	public void setDs_Signature(String ds_Signature) {
+		this.ds_Signature = ds_Signature;
 	}
 
 }

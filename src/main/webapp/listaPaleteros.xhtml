@@ -15,14 +15,16 @@
 				<p:messages errorStyle="color: red" globalOnly="true" />
 				<br />
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
-				<div class="col-10">
-					<p:dataTable value="#{paleteroController.listaPaleteros}" var="paletero">
+				<div class="col-sm-10">
+					<p:dataTable value="#{paleteroController.listaPaleteros}"
+						var="paletero">
 
 						<p:column headerText="Imagen">
 							<div class="row">
-								<ui:repeat value="#{paleteroController.getImagenesDePaletero(paletero.id)}"
+								<ui:repeat
+									value="#{paleteroController.getImagenesDePaletero(paletero.id)}"
 									var="elem">
 									<h:graphicImage
 										value="data:image/jpg;base64,#{paleteroController.getBytesDeImagen(elem)}"
@@ -44,32 +46,34 @@
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary" process="@this"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{paleteroController.verEditarPaletero(paletero)}" value="Editar">
-							</h:commandButton>
-							<h:commandButton styleClass="btn btn-primary"
+								action="#{paleteroController.verEditarPaletero(paletero)}"
+								value="Editar">
+							</p:commandButton>
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":listaPaleteros"
 								actionListener="#{paleteroController.eliminarPaletero(paletero)}"
 								value="Eliminar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>
 				</div>
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
 			</h:panelGroup>
 
+			<br />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Nuevo Paletero" process="@this"
-					resetValues="true" action="#{paleteroController.verNuevoPaletero()}" />
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Nuevo Paletero" process="@this"
+					resetValues="true"
+					action="#{paleteroController.verNuevoPaletero()}" />
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
-
 
 		</h:form>
 

@@ -1,0 +1,154 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="listaPedidosParaTramitar">
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<p:selectOneButton unselectable="false"
+					value="#{pedidoController.estadoSeleccionado}">
+					<f:selectItem itemValue="PENDIENTE_ENVIO"
+						itemLabel="Pendiente de envío" />
+					<f:selectItem itemValue="PENDIENTE_REEMBOlSO"
+						itemLabel="Pendiente de reembolso" />
+					<f:selectItem itemValue="CON_DISPUTA" itemLabel="Disputa abierta" />
+					<p:ajax update=":listaPedidosParaTramitar" process="@this"
+						listener="#{pedidoController.getListaPedidosParaTramitarPorEstado()}" />
+				</p:selectOneButton>
+			</h:panelGroup>
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-sm-1"></div>
+
+				<div class="col-sm-10">
+
+					<p:dataTable id="datatablePedidosATramitar"
+						value="#{pedidoController.listaPedidosParaTramitar}" var="pedido">
+
+						<p:column style="text-align:center" headerText="Referencia">
+							<h:outputText value="#{pedido.referenciaPedido}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Fecha">
+							<h:outputText value="#{pedido.fechaCreacion}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Estado">
+							<h:outputText
+								value="#{pedido.getUltimoEstadoPedido().descripcion}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Productos">
+							<ui:repeat value="#{pedido.mapaAnunciosCantidad.keySet()}"
+								var="elem">
+								<h:outputText
+									value="#{pedidoController.getAnuncioPorId(elem).titulo} - #{pedido.mapaAnunciosCantidad.get(elem)}" />
+								<br />
+							</ui:repeat>
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Precio">
+							<h:outputText
+								value="#{pedido.precioTotalProductos + pedido.precioEnvio} €" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								resetValues="true"
+								action="#{pedidoController.abrirDetallesPedido(pedido)}"
+								value="Detalles">
+							</p:commandButton>
+
+							<!-- PENDIENTE ENVIO -->
+
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":listaPedidosParaTramitar:datatablePedidosATramitar"
+								rendered="#{pedidoController.renderBotonRealizarEnvio(pedido)}"
+								actionListener="#{pedidoController.realizarEnvio(pedido)}"
+								value="Pasar a envio realizado">
+							</p:commandButton>
+							<!-- avisar de que no hay stock del producto?? -->
+
+							<!-- PENDIENTE REEMBOLSO -->
+
+							<p:commandButton type="button" styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonRealizarReembolso(pedido)}"
+								value="Realizar reembolso"
+								onclick="somejavascript(#{pedido.id});">
+							</p:commandButton>
+
+
+							<!-- DISPUTA ABIERTA -->
+
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":listaPedidosParaTramitar:datatablePedidosATramitar"
+								rendered="#{pedidoController.renderBotonResolucionDisputa(pedido)}"
+								actionListener="#{pedidoController.aceptarDisputaPedido(pedido)}"
+								value="Aceptar disputa">
+							</p:commandButton>
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":listaPedidosParaTramitar:datatablePedidosATramitar"
+								rendered="#{pedidoController.renderBotonResolucionDisputa(pedido)}"
+								actionListener="#{pedidoController.denegarDisputaPedido(pedido)}"
+								value="Denegar disputa">
+							</p:commandButton>
+
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-sm-1"></div>
+
+			</h:panelGroup>
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+		<h:panelGroup id="panelPagarPagoPendiente" layout="block"
+			styleClass="container-fluid">
+			<form id="formPagarPagoPendienteId" method="post"
+				style="display: inline-block;"
+				action="https://sis-t.redsys.es:25443/sis/realizarPago">
+
+				<p:inputText value="#{pedidoController.ds_SignatureVersion}"
+					id="Ds_SignatureVersion" type="hidden" />
+				<p:inputText value="#{pedidoController.ds_MerchantParameters}"
+					id="Ds_MerchantParameters" type="hidden" />
+				<p:inputText value="#{pedidoController.ds_Signature}"
+					id="Ds_Signature" type="hidden" />
+
+			</form>
+		</h:panelGroup>
+
+		<p:remoteCommand name="inicializaVariablesDevolucion"
+			actionListener="#{pedidoController.realizarDevolucionRedsys()}" />
+
+		<SCRIPT type="text/javascript">
+			function somejavascript(pedido) {
+				console.log(pedido);
+				inicializaVariablesDevolucion([{name:'pedidoId', value:pedido}]).then(()=>{document.getElementById("formPagarPagoPendienteId").submit();})
+			}
+		</SCRIPT>
+
+	</ui:define>
+</ui:composition>

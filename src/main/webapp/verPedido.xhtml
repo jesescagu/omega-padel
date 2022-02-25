@@ -1,0 +1,101 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="detalleAnuncio">
+
+			<h3>
+				<h:outputText
+					value="Referencia del pedido: #{pedidoController.pedidoParaMostrar.referenciaPedido}" />
+			</h3>
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<h1>Estado del pedido</h1>
+
+				<p:dataTable
+					value="#{pedidoController.pedidoParaMostrar.listaEstados}"
+					var="estado">
+
+					<p:column style="text-align:center" headerText="Estado">
+						<h:outputText value="#{estado.descripcion}" />
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Fecha">
+						<h:outputText value="#{estado.fecha}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="text-align:center" headerText="PARA PRUEBAS">
+						<h:outputText value="#{estado.orden}" />
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<h1>Dirección de entrega</h1>
+
+				<h:outputText
+					value="#{pedidoController.pedidoParaMostrar.cliente.nombre} #{pedidoController.pedidoParaMostrar.cliente.apellidos}" />
+				<h:outputText
+					value="#{pedidoController.pedidoParaMostrar.cliente.email}" />
+				<h:outputText
+					value="#{pedidoController.pedidoParaMostrar.direccionPostal.direccion}" />
+				<h:outputText
+					value="#{pedidoController.pedidoParaMostrar.direccionPostal.codigoPostal} #{pedidoController.pedidoParaMostrar.direccionPostal.municipio.descripcion}" />
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<p:dataTable
+					value="#{pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.keySet()}"
+					var="elem">
+
+					<p:column style="text-align:center" headerText="Producto">
+						<h:outputText
+							value="#{pedidoController.getAnuncioPorId(elem).titulo}" />
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Cantidad">
+						<h:outputText
+							value="#{pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.get(elem)}" />
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Precio Unitario">
+						<h:outputText
+							value="#{pedidoController.getAnuncioPorId(elem).precio} €" />
+					</p:column>
+
+					<p:column style="text-align:center" headerText="Precio Total">
+						<h:outputText
+							value="#{pedidoController.getAnuncioPorId(elem).precio * pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.get(elem)} €" />
+					</p:column>
+
+				</p:dataTable>
+
+				<h:outputText
+					value="Pecio articulos: #{pedidoController.pedidoParaMostrar.precioTotalProductos}" />
+				<h:outputText
+					value="Pecio envio: #{pedidoController.pedidoParaMostrar.precioEnvio}" />
+				<h:outputText
+					value="Pecio Total: #{pedidoController.pedidoParaMostrar.precioTotalProductos + pedidoController.pedidoParaMostrar.precioEnvio}" />
+
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="container">
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" /> CAMBIAR POR IR ATRAS
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

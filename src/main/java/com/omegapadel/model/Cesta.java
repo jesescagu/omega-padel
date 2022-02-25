@@ -12,18 +12,11 @@ public class Cesta extends EntidadBase {
 
 	private static final long serialVersionUID = 301045156780864291L;
 
-	private Double costo;
+	private String referenciaProvisional; // Se crea y se mantiene hasta que se cree el pedido con esta referencia,
+											// despues se crea otra.
 
 	@ElementCollection
 	private Map<Integer, Integer> mapaAnunciosCantidad;
-
-	public Double getCosto() {
-		return costo;
-	}
-
-	public void setCosto(Double costo) {
-		this.costo = costo;
-	}
 
 	public Map<Integer, Integer> getMapaAnunciosCantidad() {
 		return mapaAnunciosCantidad;
@@ -31,6 +24,14 @@ public class Cesta extends EntidadBase {
 
 	public void setMapaAnunciosCantidad(Map<Integer, Integer> mapaAnunciosCantidad) {
 		this.mapaAnunciosCantidad = mapaAnunciosCantidad;
+	}
+
+	public String getReferenciaProvisional() {
+		return referenciaProvisional;
+	}
+
+	public void setReferenciaProvisional(String referenciaProvisional) {
+		this.referenciaProvisional = referenciaProvisional;
 	}
 
 }

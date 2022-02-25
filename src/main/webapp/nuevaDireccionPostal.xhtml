@@ -14,44 +14,50 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
 
-				<p:outputLabel styleClass="col-2" for="direccionDireccionPostal"
-					value="Dirección" />
-				<p:inputText id="direccionDireccionPostal" styleClass="col-2"
-					value="#{direccionPostalController.direccionSeleccionada}" />
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="direccionDireccionPostal"
+						value="Dirección" />
+					<p:inputText id="direccionDireccionPostal" styleClass="col-sm-6"
+						value="#{direccionPostalController.direccionSeleccionada}" />
 
-				<br />
+				</div>
 
-				<p:outputLabel  for="codigoPostalDireccionPostal" styleClass="col-2"
-					value="Código postal" />
-				<p:inputText id="codigoPostalDireccionPostal" styleClass="col-2"
-					value="#{direccionPostalController.codigoPostalSeleccionado}" />
 
-				<br />
+				<div class="row">
+					<p:outputLabel for="codigoPostalDireccionPostal" styleClass="col-sm-6"
+						value="Código postal" />
+					<p:inputText id="codigoPostalDireccionPostal" styleClass="col-sm-6"
+						value="#{direccionPostalController.codigoPostalSeleccionado}" />
 
-				<p:outputLabel styleClass="col-2" for="municipioDireccionPostal" value="Municipio" />
-				<p:selectOneMenu styleClass="col-2" id="municipioDireccionPostal"
-					value="#{direccionPostalController.codigoMunicipioSeleccionado}">
-					
-					<f:selectItem itemLabel="Selecciona municipio" />
-					<f:selectItems var="temp" itemLabel="#{temp.descripcion}" itemValue="#{temp.codigo}"
-						value="#{direccionPostalController.listaMunicipios}" />
+				</div>
 
-				</p:selectOneMenu>
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="municipioDireccionPostal"
+						value="Municipio" />
+					<p:selectOneMenu styleClass="col-sm-6" id="municipioDireccionPostal"
+						value="#{direccionPostalController.codigoMunicipioSeleccionado}">
 
-				<br />
-				
+						<f:selectItem itemLabel="Selecciona municipio" />
+						<f:selectItems var="temp" itemLabel="#{temp.descripcion}"
+							itemValue="#{temp.codigo}"
+							value="#{direccionPostalController.listaMunicipios}" />
+
+					</p:selectOneMenu>
+
+				</div>
+
 			</h:panelGroup>
 
 			<hr />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Guardar" type="submit"
-					update="@all" resetValues="true"
+				<p:commandButton value="Guardar" type="submit" update="@all"
+					resetValues="true"
 					action="#{direccionPostalController.guardarDireccionPostal()}" />
-				<p:commandButton title="Cancelar" resetValues="true"
+				<p:commandButton value="Cancelar" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 

@@ -14,51 +14,52 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="nickCliente"
+						value="Nombre de usuario" />
+					<p:inputText id="nickCliente" styleClass="col-sm-6"
+						value="#{clienteController.nickEscogido}" />
+				</div>
 
-				<p:outputLabel styleClass="col-2" for="nickCliente"
-					value="Nombre de usuario" />
-				<p:inputText id="nickCliente" styleClass="col-2"
-					value="#{clienteController.nickEscogido}" />
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="contrasenyaCliente"
+						value="Contraseña" />
+					<p:password toggleMask="true" redisplay="true"
+						id="contrasenyaCliente" styleClass="col-sm-6"
+						value="#{clienteController.contrasenyaEscogida}" />
+				</div>
 
-				<br />
+				<div class="row">
+					<p:outputLabel for="nombreCliente" styleClass="col-sm-6"
+						value="Nombre" />
+					<p:inputText id="nombreCliente" styleClass="col-sm-6"
+						value="#{clienteController.nombreEscogido}" />
+				</div>
 
-				<p:outputLabel styleClass="col-2" for="contrasenyaCliente"
-					value="Contraseña" />
-				<p:inputText type="password" id="contrasenyaCliente"
-					styleClass="col-2" value="#{clienteController.contrasenyaEscogida}" />
+				<div class="row">
+					<p:outputLabel for="apellidosCliente" styleClass="col-sm-6"
+						value="Apellidos" />
+					<p:inputText id="apellidosCliente" styleClass="col-sm-6"
+						value="#{clienteController.apellidosEscogido}" />
+				</div>
 
-				<br />
-
-				<p:outputLabel for="nombreCliente" styleClass="col-2" value="Nombre" />
-				<p:inputText id="nombreCliente" styleClass="col-2"
-					value="#{clienteController.nombreEscogido}" />
-
-				<br />
-
-				<p:outputLabel for="apellidosCliente" styleClass="col-2"
-					value="Apellidos" />
-				<p:inputText id="apellidosCliente" styleClass="col-2"
-					value="#{clienteController.apellidosEscogido}" />
-
-				<br />
-
-				<p:outputLabel for="emailCliente" styleClass="col-2" value="Email" />
-				<p:inputText id="emailCliente" styleClass="col-2"
-					value="#{clienteController.emailEscogido}" />
-
-				<br />
+				<div class="row">
+					<p:outputLabel for="emailCliente" styleClass="col-sm-6"
+						value="Email" />
+					<p:inputText id="emailCliente" styleClass="col-sm-6"
+						value="#{clienteController.emailEscogido}" />
+				</div>
 
 			</h:panelGroup>
 
-			<hr />
+			<br />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Guardar" type="submit"
-					update="@all" resetValues="true"
-					action="#{clienteController.guardarCliente()}" />
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Guardar" type="submit" update="@all"
+					resetValues="true" action="#{clienteController.guardarCliente()}" />
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 

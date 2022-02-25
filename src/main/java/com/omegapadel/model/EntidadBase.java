@@ -1,6 +1,7 @@
 package com.omegapadel.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.GeneratedValue;
@@ -15,8 +16,7 @@ import javax.persistence.PreUpdate;
 public class EntidadBase implements Serializable {
 
 	private static final long serialVersionUID = -3019687232984868307L;
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Integer id;
@@ -63,22 +63,22 @@ public class EntidadBase implements Serializable {
 	@PrePersist
 	protected void prePersist() {
 		if (this.fechaCreacion == null)
-			fechaCreacion = new Date();
+			fechaCreacion = Calendar.getInstance().getTime();
 		if (this.fechaActualizacion == null)
-			fechaActualizacion = new Date();
+			fechaActualizacion = Calendar.getInstance().getTime();
 		if (this.version == null)
 			this.version = 1;
 	}
 
 	@PreUpdate
 	protected void preUpdate() {
-		this.fechaActualizacion = new Date();
+		this.fechaActualizacion = Calendar.getInstance().getTime();
 		this.version++;
 	}
 
 	@PreRemove
 	protected void preRemove() {
-		this.fechaActualizacion = new Date();
+		this.fechaActualizacion = Calendar.getInstance().getTime();
 		this.version++;
 	}
 

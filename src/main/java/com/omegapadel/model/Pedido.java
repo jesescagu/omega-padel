@@ -1,11 +1,18 @@
 package com.omegapadel.model;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
+import java.util.SortedSet;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "pedido")
@@ -13,8 +20,8 @@ public class Pedido extends EntidadBase {
 
 	private static final long serialVersionUID = 4261985202231520506L;
 
-	@ManyToMany
-	private List<Anuncio> anuncios;
+	@ElementCollection
+	private Map<Integer, Integer> mapaAnunciosCantidad;
 
 	@ManyToOne(optional = false)
 	private DireccionPostal direccionPostal;
@@ -23,16 +30,28 @@ public class Pedido extends EntidadBase {
 	private Cliente cliente;
 
 	@ManyToMany
-	private List<EstadoPedido> listaEstados;
+	@OrderBy("orden ASC")
+	private SortedSet<EstadoPedido> listaEstados;
 
+	@Column(unique = true)
+	@NotBlank
 	private String referenciaPedido;
 
-	public List<Anuncio> getAnuncios() {
-		return anuncios;
+	@NotNull
+	private Double precioTotalProductos;
+
+	@NotNull
+	private Double precioEnvio;
+
+	@NotNull
+	private String ultimoEstado;
+
+	public Map<Integer, Integer> getMapaAnunciosCantidad() {
+		return mapaAnunciosCantidad;
 	}
 
-	public void setAnuncios(List<Anuncio> anuncio) {
-		this.anuncios = anuncio;
+	public void setMapaAnunciosCantidad(Map<Integer, Integer> mapaAnunciosCantidad) {
+		this.mapaAnunciosCantidad = mapaAnunciosCantidad;
 	}
 
 	public DireccionPostal getDireccionPostal() {
@@ -51,12 +70,22 @@ public class Pedido extends EntidadBase {
 		this.cliente = cliente;
 	}
 
-	public List<EstadoPedido> getListaEstados() {
-		return listaEstados;
+	public SortedSet<EstadoPedido> getListaEstados() {
+		return Collections.unmodifiableSortedSet(listaEstados);
 	}
 
-	public void setListaEstados(List<EstadoPedido> listaEstados) {
+	public void setListaEstados(SortedSet<EstadoPedido> listaEstados) {
 		this.listaEstados = listaEstados;
+		this.ultimoEstado = listaEstados.last().getEstado();
+	}
+	
+	public void addEstadoPedidoNuevo(EstadoPedido estado) {
+		this.listaEstados.add(estado);
+		this.ultimoEstado = estado.getEstado();
+	}
+	
+	public EstadoPedido getUltimoEstadoPedido() {
+		return listaEstados.last();
 	}
 
 	public String getReferenciaPedido() {
@@ -65,6 +94,26 @@ public class Pedido extends EntidadBase {
 
 	public void setReferenciaPedido(String referenciaPedido) {
 		this.referenciaPedido = referenciaPedido;
+	}
+
+	public Double getPrecioTotalProductos() {
+		return precioTotalProductos;
+	}
+
+	public void setPrecioTotalProductos(Double precioTotal) {
+		this.precioTotalProductos = precioTotal;
+	}
+
+	public Double getPrecioEnvio() {
+		return precioEnvio;
+	}
+
+	public void setPrecioEnvio(Double precioEnvio) {
+		this.precioEnvio = precioEnvio;
+	}
+
+	public String getUltimoEstado() {
+		return ultimoEstado;
 	}
 
 }

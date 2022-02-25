@@ -10,6 +10,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -93,7 +94,7 @@ public class ClienteController implements Serializable {
 
 		Boolean validacionErronea = false;
 
-		if (this.nickEscogido == null || this.nickEscogido.isEmpty() ) {
+		if (this.nickEscogido == null || this.nickEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe escoger un nombre de usuario.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -108,26 +109,25 @@ public class ClienteController implements Serializable {
 			}
 
 		}
-		if (this.contrasenyaEscogida == null || this.contrasenyaEscogida.isEmpty()
-				) {
+		if (this.contrasenyaEscogida == null || this.contrasenyaEscogida.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir una contraseña valida.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty() ) {
+		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe introducir su nombre.",
 					null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty() ) {
+		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir sus apellidos.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.emailEscogido == null || this.emailEscogido.isEmpty() ) {
+		if (this.emailEscogido == null || this.emailEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un email válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -157,7 +157,7 @@ public class ClienteController implements Serializable {
 			rolService.saveRol(r);
 
 			Cliente c = clienteService.create(this.nombreEscogido, this.apellidosEscogido, this.emailEscogido, null, u,
-					null, null);
+					null);
 			clienteService.save(c);
 		}
 
@@ -170,7 +170,7 @@ public class ClienteController implements Serializable {
 
 		Boolean validacionErronea = false;
 
-		if (this.nickEscogido == null || this.nickEscogido.isEmpty() ) {
+		if (this.nickEscogido == null || this.nickEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe escoger un nombre de usuario.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -180,8 +180,7 @@ public class ClienteController implements Serializable {
 		if (this.auth != null
 				&& this.auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
 
-			if (this.contrasenyaActual == null || this.contrasenyaActual.isEmpty()
-					) {
+			if (this.contrasenyaActual == null || this.contrasenyaActual.isEmpty()) {
 				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"Debe introducir una contraseña valida.", null);
 				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -197,19 +196,19 @@ public class ClienteController implements Serializable {
 				}
 			}
 		}
-		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty() ) {
+		if (this.nombreEscogido == null || this.nombreEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe introducir su nombre.",
 					null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty() ) {
+		if (this.apellidosEscogido == null || this.apellidosEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir sus apellidos.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.emailEscogido == null || this.emailEscogido.isEmpty() ) {
+		if (this.emailEscogido == null || this.emailEscogido.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un email válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -280,8 +279,13 @@ public class ClienteController implements Serializable {
 						return "";
 					}
 
+					Usuario usuarioAnterior = this.clienteLogado.getUsuario();
 					usuario.setUsuario(this.nickEscogido);
 					usuarioSaved = usuarioService.save(usuario);
+					usuarioService.delete(usuarioAnterior);
+					
+					Authentication authentication = new UsernamePasswordAuthenticationToken(this.nickEscogido, usuarioSaved.getContrasenya(), this.auth.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
 
 					Rol rolNuevo = rolService.create(this.nickEscogido, rol);
 					rolService.saveRol(rolNuevo);

@@ -14,65 +14,80 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
-				<p:outputLabel styleClass="col-2" for="nickCliente"
-					value="Nombre de usuario" />
-				<p:inputText id="nickCliente" styleClass="col-2"
-					value="#{clienteController.nickEscogido}" />
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="nickCliente"
+						value="Nombre de usuario" />
+					<p:inputText id="nickCliente" styleClass="col-sm-6"
+						value="#{clienteController.nickEscogido}" />
 
-				<br />
+				</div>
 
-				<p:outputLabel styleClass="col-2" for="contrasenyaActualCliente"
-					value="Contraseña Actual" />
-				<p:inputText type="password" id="contrasenyaActualCliente"
-					styleClass="col-2" value="#{clienteController.contrasenyaActual}" />
+				<div class="row">
 
-				<br />
+					<p:outputLabel styleClass="col-sm-6" for="contrasenyaActualCliente"
+						value="Contraseña Actual" />
+					<p:password toggleMask="true" redisplay="true" id="contrasenyaActualCliente"
+						styleClass="col-sm-6" value="#{clienteController.contrasenyaActual}" />
 
-				<p:outputLabel styleClass="col-2" for="contrasenyaCliente"
-					value="Contraseña" />
-				<p:inputText type="password" id="contrasenyaCliente"
-					styleClass="col-2" value="#{clienteController.contrasenyaEscogida}" />
+				</div>
 
-				<br />
+				<div class="row">
 
-				<p:outputLabel styleClass="col-2"
-					for="contrasenyaConfirmacionCliente" value="Confirmar Contraseña" />
-				<p:inputText type="password" id="contrasenyaConfirmacionCliente"
-					styleClass="col-2"
-					value="#{clienteController.contrasenyaConfirmacion}" />
+					<p:outputLabel styleClass="col-sm-6" for="contrasenyaCliente"
+						value="Contraseña" />
+					<p:password toggleMask="true" redisplay="true" id="contrasenyaCliente"
+						styleClass="col-sm-6"
+						value="#{clienteController.contrasenyaEscogida}" />
 
-				<br />
+				</div>
 
-				<p:outputLabel for="nombreCliente" styleClass="col-2" value="Nombre" />
-				<p:inputText id="nombreCliente" styleClass="col-2"
-					value="#{clienteController.nombreEscogido}" />
+				<div class="row">
 
-				<br />
+					<p:outputLabel styleClass="col-sm-6"
+						for="contrasenyaConfirmacionCliente" value="Confirmar Contraseña" />
+					<p:password toggleMask="true" redisplay="true" id="contrasenyaConfirmacionCliente"
+						styleClass="col-sm-6"
+						value="#{clienteController.contrasenyaConfirmacion}" />
 
-				<p:outputLabel for="apellidosCliente" styleClass="col-2"
-					value="Apellidos" />
-				<p:inputText id="apellidosCliente" styleClass="col-2"
-					value="#{clienteController.apellidosEscogido}" />
+				</div>
 
-				<br />
+				<div class="row">
 
-				<p:outputLabel for="emailCliente" styleClass="col-2" value="Email" />
-				<p:inputText id="emailCliente" styleClass="col-2"
-					value="#{clienteController.emailEscogido}" />
+					<p:outputLabel for="nombreCliente" styleClass="col-sm-6"
+						value="Nombre" />
+					<p:inputText id="nombreCliente" styleClass="col-sm-6"
+						value="#{clienteController.nombreEscogido}" />
 
-				<br />
+				</div>
+
+				<div class="row">
+
+					<p:outputLabel for="apellidosCliente" styleClass="col-sm-6"
+						value="Apellidos" />
+					<p:inputText id="apellidosCliente" styleClass="col-sm-6"
+						value="#{clienteController.apellidosEscogido}" />
+
+				</div>
+
+				<div class="row">
+
+					<p:outputLabel for="emailCliente" styleClass="col-sm-6" value="Email" />
+					<p:inputText id="emailCliente" styleClass="col-sm-6"
+						value="#{clienteController.emailEscogido}" />
+
+				</div>
 
 			</h:panelGroup>
 
 			<hr />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Guardar" type="submit"
-					update="@all" resetValues="true"
+				<p:commandButton value="Guardar" type="submit" update="@all"
+					resetValues="true"
 					action="#{clienteController.guardarEdicionCliente()}" />
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 

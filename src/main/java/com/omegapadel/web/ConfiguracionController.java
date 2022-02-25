@@ -122,10 +122,12 @@ public class ConfiguracionController implements Serializable {
 		}
 	}
 
-	public void eliminaImagen(Imagen elem) {
+	public void eliminaImagen(String elem) {
 
-		imagenService.delete(elem);
-		this.mapaBannersConRedireccion.remove(elem.getNombre());
+		Imagen imagen = imagenService.getImagenPorNombre(elem).get();
+		
+		imagenService.delete(imagen);
+		this.mapaBannersConRedireccion.remove(elem);
 
 		populaListaImagenesBanners();
 

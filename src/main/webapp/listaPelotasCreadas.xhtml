@@ -10,9 +10,6 @@
 
 		<h:form id="listaPelotas">
 
-			<p:messages errorStyle="color: red" globalOnly="true" />
-			<br />
-
 			<h:panelGroup layout="block" styleClass="row">
 
 				<div class="col-sm-1"></div>
@@ -42,7 +39,7 @@
 						</p:column>
 
 						<p:column style="text-align:center"
-							headerText="Numero Pelotas en el pack">
+							headerText="Número de botes del pack">
 							<h:outputText value="#{pelota.numero}" />
 						</p:column>
 
@@ -51,16 +48,16 @@
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary" process="@this"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
 								action="#{pelotaController.verEditarPelota(pelota)}"
 								value="Editar">
-							</h:commandButton>
-							<h:commandButton styleClass="btn btn-primary"
+							</p:commandButton>
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":listaPelotas"
 								actionListener="#{pelotaController.eliminarPelota(pelota)}"
 								value="Eliminar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>
@@ -70,12 +67,13 @@
 
 			</h:panelGroup>
 
+			<br />
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Nueva Pelota" process="@this"
+				<p:commandButton value="Nueva Pelota" process="@this"
 					resetValues="true"
 					action="#{pelotaController.verNuevoPackPelota()}" />
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 

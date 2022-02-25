@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.omegapadel.model.Empleado;
 import com.omegapadel.model.PuestoTrabajo;
 import com.omegapadel.repository.PuestoTrabajoRepository;
 
@@ -34,6 +35,10 @@ public class PuestoTrabajoService {
 		return (List<PuestoTrabajo>) puestoTrabajoRepository.findAll();
 	}
 
+	public List<PuestoTrabajo> findAllActivos() {
+		return puestoTrabajoRepository.findAllActivos();
+	}
+
 	public long count() {
 		return puestoTrabajoRepository.count();
 	}
@@ -47,13 +52,27 @@ public class PuestoTrabajoService {
 	}
 
 	public PuestoTrabajo create(String nombre) {
+
+		String primeraLetra = nombre.substring(0, 1).toUpperCase();
+		String restoLetras = nombre.substring(1, nombre.length()).toLowerCase();
+		String nombreReal = primeraLetra.concat(restoLetras);
+
 		PuestoTrabajo pt = new PuestoTrabajo();
-		pt.setNombre(nombre);
+		pt.setNombre(nombreReal);
+		pt.setActivo(true);
 		return pt;
 	}
 
 	public PuestoTrabajo getPuestoTrabajoPorNombre(String nombre) {
 		return puestoTrabajoRepository.getPuestoTrabajoPorNombre(nombre);
+	}
+
+	public List<Empleado> getEmpleadosDeUnPuestoTrabajo(String nombrePuestoTrabajo) {
+		return puestoTrabajoRepository.getEmpleadosDeUnPuestoTrabajo(nombrePuestoTrabajo);
+	}
+
+	public List<Empleado> getEmpleadosActivosDeUnPuestoTrabajo(String nombrePuestoTrabajo) {
+		return puestoTrabajoRepository.getEmpleadosActivosDeUnPuestoTrabajo(nombrePuestoTrabajo);
 	}
 
 }

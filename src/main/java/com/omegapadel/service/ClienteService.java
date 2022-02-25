@@ -56,11 +56,10 @@ public class ClienteService {
 	}
 
 	public Cliente create(String nombre, String apellidos, String email, List<DireccionPostal> direccionesPostales,
-			Usuario usuario, List<Anuncio> anunciosFavoritos, Cesta cesta) {
+			Usuario usuario, List<Anuncio> anunciosFavoritos) {
 		Cliente c = new Cliente();
 		c.setAnunciosFavoritos(anunciosFavoritos);
 		c.setApellidos(apellidos);
-		c.setCesta(cesta);
 		c.setDireccionesPostales(direccionesPostales);
 		c.setEmail(email);
 		c.setNombre(nombre);

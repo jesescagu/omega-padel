@@ -13,29 +13,39 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
 				<div class="row">
-					<div class="col-6">
-						<p:outputLabel for="nuevaMarcaNombre" value="Nombre Nueva Marca" />
-					</div>
-					<div class="col-6">
-						<p:inputText id="nuevaMarcaNombre" title="Marca" required="true"
-							requiredMessage="Obligatorio"
+
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:outputLabel styleClass="col-sm-6" for="nuevaMarcaNombre"
+							value="Nombre Nueva Marca" />
+						<p:inputText styleClass="col-sm-6" id="nuevaMarcaNombre"
+							title="Marca" required="true" requiredMessage="Obligatorio"
 							value="#{marcaController.nuevaMarca}" />
 					</div>
+
+					<div class="col-sm-3"></div>
+
 				</div>
 
 				<div class="row">
-					<div class="col-6">
-						<p:commandButton title="Guardar" type="submit" process="@form"
-							update="@all" action="#{marcaController.guardarMarca()}" />
-					</div>
 
-					<div class="col-6">
-						<p:commandButton title="Volver a Inicio" type="submit"
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:commandButton value="Guardar" type="submit" process="@form"
+							update="@all" action="#{marcaController.guardarMarca()}">
+						</p:commandButton>
+
+						<p:commandButton value="Volver a Inicio" type="submit"
 							process="@this" action="#{inicioController.verPaginaInicio()}" />
 					</div>
+
+					<div class="col-sm-3"></div>
+
 				</div>
 
 
@@ -51,9 +61,9 @@
 
 			<h:panelGroup layout="block" styleClass="row">
 
-				<div class="col-3"></div>
+				<div class="col-sm-3"></div>
 
-				<div class="col-6">
+				<div class="col-sm-6">
 					<p:dataTable value="#{marcaController.listaMarcas}" var="marca">
 
 						<p:column style="text-align:center" headerText="Nombre">
@@ -61,17 +71,16 @@
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary"
+							<p:commandButton process="@this" update=":listaMarcas"
 								actionListener="#{marcaController.eliminarMarca(marca)}"
 								value="Eliminar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>
 				</div>
 
-				<div class="col-3"></div>
+				<div class="col-sm-3"></div>
 
 			</h:panelGroup>
 

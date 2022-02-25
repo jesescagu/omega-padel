@@ -1,5 +1,7 @@
 package com.omegapadel.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -39,7 +41,7 @@ public class DireccionPostal extends EntidadBase {
 	}
 
 	public List<Pedido> getPedidos() {
-		return pedidos;
+		return new ArrayList<Pedido>(pedidos);
 	}
 
 	public void setPedidos(List<Pedido> pedidos) {

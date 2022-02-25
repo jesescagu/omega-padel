@@ -13,25 +13,32 @@
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
 				<div class="row">
-					<div class="col-6">
-						<p:outputLabel for="nuevaTipoRopaNombre"
+
+					<div class="col-sm-2"></div>
+
+					<div class="col-sm-8">
+						<p:outputLabel for="nuevaTipoRopaNombre" styleClass="col-sm-6"
 							value="Nombre Nuevo Tipo ropa" />
-					</div>
-					<div class="col-6">
 						<p:inputText id="nuevaTipoRopaNombre" title="TipoRopa"
-							required="true" requiredMessage="Obligatorio"
+							styleClass="col-sm-6" required="true"
+							requiredMessage="Obligatorio"
 							value="#{tipoRopaController.nuevaTipoRopa}" />
 					</div>
+
+					<div class="col-sm-2"></div>
+
 				</div>
 				<div class="row">
-					<div class="col-6">
-						<p:outputLabel for="nuevaTipoTalla" value="Tipo de talla" />
-					</div>
-					<div class="col-6">
-						<p:selectOneButton id="nuevaTipoTalla"
+
+					<div class="col-sm-2"></div>
+
+					<div class="col-sm-8">
+						<p:outputLabel for="nuevaTipoTalla" value="Tipo de talla"
+							styleClass="col-sm-6" />
+						<p:selectOneButton id="nuevaTipoTalla" styleClass="col-sm-6"
 							requiredMessage="Obligatorio" required="true"
 							value="#{tipoRopaController.nuevaTipoTalla}">
 							<f:selectItem itemLabel="Numérico" itemValue="NUMERICO" />
@@ -39,18 +46,22 @@
 							<f:selectItem itemLabel="Única" itemValue="UNICA" />
 						</p:selectOneButton>
 					</div>
+
+					<div class="col-sm-2"></div>
 				</div>
 
 				<div class="row">
-					<div class="col-6">
-						<p:commandButton title="Guardar" type="submit" process="@form"
-							update="@all" action="#{tipoRopaController.guardarTipoRopa()}" />
-					</div>
 
-					<div class="col-6">
-						<p:commandButton title="Volver a Inicio" type="submit"
+					<div class="col-sm-2"></div>
+
+					<div class="col-sm-8">
+						<p:commandButton value="Guardar" type="submit" process="@form"
+							update="@all" action="#{tipoRopaController.guardarTipoRopa()}" />
+						<p:commandButton value="Volver a Inicio" type="submit"
 							process="@this" action="#{inicioController.verPaginaInicio()}" />
 					</div>
+
+					<div class="col-sm-2"></div>
 				</div>
 
 
@@ -77,17 +88,15 @@
 							<h:outputText value="#{tipoRopa.tipoRopa}" />
 						</p:column>
 
-						<p:column style="text-align:center"
-							headerText="tipo de talla">
+						<p:column style="text-align:center" headerText="tipo de talla">
 							<h:outputText value="#{tipoRopa.tipoTalla}" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary"
+							<p:commandButton styleClass="btn btn-primary" process="@this" update=":listaTipoRopas"
 								actionListener="#{tipoRopaController.eliminarTipoRopa(tipoRopa)}"
 								value="Eliminar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>

@@ -9,32 +9,34 @@
 
 		<h:form id="detalleCesta">
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup id="grupoProductosCesta" layout="block"
+				styleClass="container-fluid">
 
 
-				<p:dataTable value="#{cestaController.listaProductosCesta}"
+				<p:dataTable id="datatableDestalleCestaId"
+					value="#{cestaController.listaProductosCesta}"
 					emptyMessage="El carrito de compra está vacio." var="prod">
 
 					<p:column style="text-align:center" headerText="Descripción">
 
-						<h:commandLink
+						<p:commandLink
 							actionListener="#{anuncioController.mostrarAnuncio(prod)}">
 							<h:panelGroup styleClass="row">
-								<h:panelGroup styleClass="col-6">
-						<!--			<h:graphicImage
+								<h:panelGroup styleClass="col-sm-6">
+									<!--			<h:graphicImage
 										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(prod.id))}"
 										width="200" height="200" />
 						-->
 								</h:panelGroup>
 
-								<h:panelGroup styleClass="col-6">
+								<h:panelGroup styleClass="col-sm-6">
 									<h:outputText value="#{prod.titulo}" />
 									<br />
 									<h:outputText value="prod.referencia" />
 								</h:panelGroup>
 
 							</h:panelGroup>
-						</h:commandLink>
+						</p:commandLink>
 					</p:column>
 
 					<p:column style="text-align:center" headerText="Cantidad">
@@ -42,34 +44,34 @@
 						<h:panelGroup id="panelGroupCantidad" style="text-align:center"
 							styleClass="row">
 
-							<div class="col-4"></div>
+							<div class="col-sm-4"></div>
 
-							<h:commandButton styleClass="col-1"
+							<p:commandButton styleClass="col-sm-1" process="@this"
+								update=":detalleCesta:grupoProductosCesta"
 								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
 								actionListener="#{cestaController.quitarUnProductoDelCarrito(prod)}"
 								value="-">
 								<p:ajax update="@this" />
-							</h:commandButton>
+							</p:commandButton>
 
-							<h:inputText styleClass="col-2" style="text-align:center"
+							<h:inputText styleClass="col-sm-2" style="text-align:center"
 								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
 								readonly="true"
 								value="#{cestaController.getCantidadProductoEnCesta(prod)}" />
 
-							<h:inputText styleClass="col-4" style="text-align:center"
+							<h:inputText styleClass="col-sm-4" style="text-align:center"
 								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
 								value="#{cestaController.valorCantidadEnEdicion}">
-								<p:ajax update="@all" />
 							</h:inputText>
 
-							<h:commandButton styleClass="col-1"
+							<p:commandButton styleClass="col-sm-1" process="@this"
+								update=":detalleCesta:grupoProductosCesta"
 								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
 								actionListener="#{cestaController.addUnProductoDelCarrito(prod)}"
 								value="+">
-								<p:ajax update="@this" />
-							</h:commandButton>
+							</p:commandButton>
 
-							<div class="col-4"></div>
+							<div class="col-sm-4"></div>
 
 						</h:panelGroup>
 
@@ -81,25 +83,25 @@
 
 					<p:column style="text-align:center" headerText="Acciones">
 
-						<h:commandButton styleClass="btn btn-primary"
+						<p:commandButton styleClass="btn btn-primary" process="@this"
+							update=":detalleCesta:datatableDestalleCestaId"
 							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
 							actionListener="#{cestaController.cambiarCantidadManualmenteProductoDelCarrito(prod)}"
 							value="Cambiar cantidad manualmente">
-							<p:ajax update="@all" />
-						</h:commandButton>
+						</p:commandButton>
 
-						<h:commandButton styleClass="btn btn-primary"
+						<p:commandButton styleClass="btn btn-primary"
+							update=":detalleCesta:grupoProductosCesta"
 							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
 							actionListener="#{cestaController.cambioCantidadProducto(prod)}"
 							value="Guardar cantidad">
-							<p:ajax update="@all" />
-						</h:commandButton>
+						</p:commandButton>
 
-						<h:commandButton styleClass="btn btn-primary"
+						<p:commandButton styleClass="btn btn-primary" process="@this"
+							update=":detalleCesta:datatableDestalleCestaId"
 							actionListener="#{cestaController.eliminarProductoDelCarrito(prod)}"
 							value="Eliminar">
-							<p:ajax update="@all" />
-						</h:commandButton>
+						</p:commandButton>
 					</p:column>
 
 				</p:dataTable>
@@ -110,7 +112,7 @@
 				<br />
 				<h:outputText rendered="#{cestaController.getImporteEnvio() eq 0.0}"
 					value="Total envío: GRATIS!" />
-					<h:outputText rendered="#{cestaController.getImporteEnvio() ne 0.0}"
+				<h:outputText rendered="#{cestaController.getImporteEnvio() ne 0.0}"
 					value="Total envío: #{cestaController.getImporteEnvio()}€" />
 				<br />
 				<h:outputText
@@ -124,11 +126,11 @@
 
 			<h:panelGroup layout="block" styleClass="row">
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
-				<div class="col-10">
+				<div class="col-sm-10">
 					<p:dataTable value="#{cestaController.listaDireccionesUsuario}"
-						emptyMessage="No hay productos en la cesta." var="dp">
+						emptyMessage="No tiene direcciones postales válidas." var="dp">
 
 						<p:column style="text-align:center" headerText="Dirección">
 							<h:outputText value="#{dp.direccion}" />
@@ -143,33 +145,67 @@
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary" process="@this"
-								resetValues="true" rendered="#{cestaController.renderDireccionSeleccionada(dp) eq false}"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								resetValues="true"
+								rendered="#{cestaController.renderDireccionSeleccionada(dp) eq false}"
 								action="#{cestaController.seleccionarDireccion(dp)}"
 								value="Seleccionar">
-							</h:commandButton>
-							<h:outputText rendered="#{cestaController.renderDireccionSeleccionada(dp) eq true}" value="Seleccionada" />
+							</p:commandButton>
+							<h:outputText
+								rendered="#{cestaController.renderDireccionSeleccionada(dp) eq true}"
+								value="Seleccionada" />
 						</p:column>
 
 					</p:dataTable>
 				</div>
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
 			</h:panelGroup>
 
+			<p:commandButton value="Nueva direccion postal" process="@this"
+				resetValues="true"
+				action="#{direccionPostalController.abrirNuevaDireccionPostal()}" />
 
-			<h:commandButton styleClass="btn btn-primary"
+			<br />
+			<br />
+
+			<p:commandButton styleClass="btn btn-primary" process="@this"
 				actionListener="#{cestaController.cancelarCarrito()}"
 				value="Cancelar compra">
-				<p:ajax update="@all" />
-			</h:commandButton>
-			<h:commandButton styleClass="btn btn-primary"
-				rendered="#{not empty cestaController.listaProductosCesta}"
-				actionListener="#{cestaController.pagarCarrito()}" value="Comprar">
-				<p:ajax update="@all" />
-			</h:commandButton>
+			</p:commandButton>
 
 		</h:form>
+
+		<form id="formPagarCarritoId" method="post"
+			style="display: inline-block;"
+			action="https://sis-t.redsys.es:25443/sis/realizarPago">
+
+			<p:inputText value="#{cestaController.ds_SignatureVersion}"
+				id="Ds_SignatureVersion" type="hidden" />
+			<p:inputText value="#{cestaController.ds_MerchantParameters}"
+				id="Ds_MerchantParameters" type="hidden" />
+			<p:inputText value="#{cestaController.ds_Signature}"
+				id="Ds_Signature" type="hidden" />
+
+			<p:commandButton type="button" styleClass="btn btn-primary"
+				rendered="#{not empty cestaController.listaProductosCesta}"
+				value="Realizar Pago" onclick="somejavascript();" />
+
+		</form>
+
+		<p:remoteCommand name="inicializaVariables"
+			actionListener="#{cestaController.inicializaVariablesRedsys()}" />
+		<p:remoteCommand name="pagarCarrito"
+			actionListener="#{cestaController.pagarCarrito()}" />
+
+		<SCRIPT type="text/javascript">
+			function somejavascript() {
+				inicializaVariables();
+				document.getElementById("formPagarCarritoId").submit();
+				pagarCarrito();
+			}
+		</SCRIPT>
+
 	</ui:define>
 </ui:composition>

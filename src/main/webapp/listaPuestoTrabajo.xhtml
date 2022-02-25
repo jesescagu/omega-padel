@@ -9,35 +9,50 @@
 
 		<h:form id="nuevoPuestoTrabajoForm">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<p:messages for="erroresGuardarPuestoTrabajo" id="messages"
+				showDetail="true" closable="true">
+				<p:autoUpdate />
+			</p:messages>
 
 			<br />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
+			<h:panelGroup layout="block" styleClass="container">
 
 				<div class="row">
-					<div class="col-6">
-						<p:outputLabel for="nuevoPuestoTrabajoNombre" value="Nombre nuevo puesto de trabajo" />
-					</div>
-					<div class="col-6">
-						<p:inputText id="nuevoPuestoTrabajoNombre" title="Puesto de Trabajo" required="true"
+
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:outputLabel styleClass="col-sm-6"
+							for="nuevoPuestoTrabajoNombre"
+							value="Nombre nuevo puesto de trabajo" />
+						<p:inputText styleClass="col-sm-6" id="nuevoPuestoTrabajoNombre"
+							title="Puesto de Trabajo" required="true"
 							requiredMessage="Obligatorio"
 							value="#{puestoTrabajoController.nuevoPuestoTrabajo}" />
 					</div>
+
+					<div class="col-sm-3"></div>
 				</div>
+
+				<br />
 
 				<div class="row">
-					<div class="col-6">
-						<p:commandButton title="Guardar" type="submit" process="@form"
-							update="@all" action="#{puestoTrabajoController.guardarPuestoTrabajo()}" />
-					</div>
 
-					<div class="col-6">
-						<p:commandButton title="Volver a Inicio" type="submit"
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:commandButton value="Guardar" type="submit" process="@form"
+							update="@all"
+							action="#{puestoTrabajoController.guardarPuestoTrabajo()}" />
+
+						<p:commandButton value="Volver a Inicio" type="submit"
 							process="@this" action="#{inicioController.verPaginaInicio()}" />
 					</div>
-				</div>
 
+					<div class="col-sm-3"></div>
+
+				</div>
 
 			</h:panelGroup>
 
@@ -54,18 +69,20 @@
 				<div class="col-sm-3"></div>
 
 				<div class="col-sm-6">
-					<p:dataTable value="#{puestoTrabajoController.listaPuestoTrabajos}" var="puestoTrabajo">
+					<p:dataTable value="#{puestoTrabajoController.listaPuestoTrabajos}"
+						var="puestoTrabajo">
 
 						<p:column style="text-align:center" headerText="Nombre">
 							<h:outputText value="#{puestoTrabajo.nombre}" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary"
+
+							<p:commandButton styleClass="btn btn-primary" type="submit"
+								process="@form" update="@all"
 								actionListener="#{puestoTrabajoController.eliminarPuestoTrabajo(puestoTrabajo)}"
 								value="Eliminar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							</p:commandButton>
 						</p:column>
 
 					</p:dataTable>

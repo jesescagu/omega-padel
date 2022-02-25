@@ -1,5 +1,6 @@
 package com.omegapadel.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -72,7 +73,7 @@ public class Anuncio extends EntidadBase {
 	}
 
 	public List<Producto> getProductos() {
-		return productos;
+		return new ArrayList<Producto>(productos);
 	}
 
 	public void setProductos(List<Producto> productos) {

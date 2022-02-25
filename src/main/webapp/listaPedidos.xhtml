@@ -8,90 +8,171 @@
 
 	<ui:define name="content">
 
-		<h:form id="listaPedido">
+		<h:form id="listaPedidos">
 
 			<h:panelGroup layout="block" styleClass="row">
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
-				<div class="col-10">
-					<p:dataTable value="#{pedidoController.listaPedidos}"
-						var="pedido">
+				<div class="col-sm-10">
 
-						<p:column style="text-align:center" headerText="DNI">
-							<h:outputText value="#{pedido.dni}" />
+					<p:dataTable id="datatablePedidos"
+						value="#{pedidoController.listaPedidos}" var="pedido">
+
+						<p:column style="text-align:center" headerText="Referencia">
+							<h:outputText value="#{pedido.referenciaPedido}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Puesto Trabajo">
-							<h:outputText value="#{pedido.puesto.nombre}" />
+						<p:column style="text-align:center" headerText="Fecha">
+							<h:outputText value="#{pedido.fechaCreacion}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Nombre Usuario">
-							<h:outputText value="#{pedido.usuario.usuario}" />
+						<p:column style="text-align:center" headerText="Estado">
+							<h:outputText
+								value="#{pedido.getUltimoEstadoPedido().descripcion}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Nombre">
-							<h:outputText value="#{pedido.nombre}" />
+						<p:column style="text-align:center" headerText="Productos">
+							<ui:repeat value="#{pedido.mapaAnunciosCantidad.keySet()}"
+								var="elem">
+								<h:outputText
+									value="#{pedidoController.getAnuncioPorId(elem).titulo} - #{pedido.mapaAnunciosCantidad.get(elem)}" />
+								<br />
+							</ui:repeat>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Apellidos">
-							<h:outputText value="#{pedido.apellidos}" />
-						</p:column>
-
-						<p:column style="text-align:center" headerText="Email">
-							<h:outputText value="#{pedido.email}" />
-						</p:column>
-
-						<p:column style="text-align:center" headerText="Teléfono">
-							<h:outputText value="#{pedido.telefono}" />
-						</p:column>
-
-						<p:column style="text-align:center" headerText="Activo">
-							<h:outputText rendered="#{pedido.usuario.activo eq true}"
-								value="Sí" />
-							<h:outputText rendered="#{pedido.usuario.activo eq false}"
-								value="No" />
+						<p:column style="text-align:center" headerText="Precio">
+							<h:outputText
+								value="#{pedido.precioTotalProductos + pedido.precioEnvio} €" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<h:commandButton styleClass="btn btn-primary" process="@this"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{pedidoController.abrirEditarPedido(pedido)}"
-								value="Editar">
-							</h:commandButton>
+								action="#{pedidoController.abrirDetallesPedido(pedido)}"
+								value="Detalles">
+							</p:commandButton>
 
-							<h:commandButton styleClass="btn btn-primary" rendered="#{pedido.usuario.activo eq true}"
-								actionListener="#{pedidoController.desactivarPedido(pedido)}"
-								value="Desactivar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							<p:commandButton styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonCancelarPedido(pedido)}"
+								actionListener="#{pedidoController.cancelarPedido(pedido)}"
+								process="@this" update=":listaPedidos:datatablePedidos"
+								value="Cancelar pedido">
+								<p:confirm type="popup" header="Confirmar"
+									message="¿Está seguro de querer abrir cancelar el pedido?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
 
-							<h:commandButton styleClass="btn btn-primary" rendered="#{pedido.usuario.activo eq false}"
-								actionListener="#{pedidoController.activarPedido(pedido)}"
-								value="Activar">
-								<p:ajax update="@all" />
-							</h:commandButton>
+							<p:commandButton styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonAbrirDisputaPedido(pedido)}"
+								value="Abrir disputa"
+								onclick="PF('textoCancelarPedido').show();">
+								<!-- actionListener="#{pedidoController.abrirDisputaPedido(pedido)}"
+								process="@this" update=":listaPedidos:datatablePedidos"
+								value="Abrir disputa">
+								 -->
+							</p:commandButton>
+
+							<p:dialog header="¿Cual es el problema que tiene su pedido?"
+								widgetVar="textoCancelarPedido" minHeight="40" width="350"
+								showEffect="fade">
+
+								<p:inputTextarea maxlength="500" required="true"
+									requiredMessage="Este campo es oblig atorio"
+									value="#{pedidoController.textoMotivoAbrirDisputa}" />
+
+								<f:facet name="footer">
+									<p:commandButton value="Cancelar" type="button"
+										onclick="PF('textoCancelarPedido').hide();"
+										styleClass="ui-confirm-popup-no ui-button-flat" />
+
+									<p:commandButton styleClass="ui-confirm-popup-yes"
+										actionListener="#{pedidoController.abrirDisputaPedido(pedido)}"
+										update=":listaPedidos:datatablePedidos" value="Aceptar" />
+								</f:facet>
+							</p:dialog>
+
+							<!-- 
+							<p:commandButton styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido)}"
+								actionListener="#{pedidoController.pagarPedido(pedido)}"
+								process="@this" update=":listaPedidos:datatablePedidos"
+								value="Continuar con pago">
+								<p:confirm type="popup" header="Confirmar"
+									message="Se redireccionará a la pasarela de pagos. ¿Quiere continuar?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							 -->
+
+							<p:commandButton type="button" styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido)}"
+								value="Realizar Pago" onclick="somejavascript(#{pedido.id});">
+								<p:confirm type="popup" header="Confirmar"
+									message="Se redireccionará a la pasarela de pagos. ¿Quiere continuar?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+
+							<p:commandButton styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido)}"
+								process="@this" update=":listaPedidos:datatablePedidos"
+								actionListener="#{pedidoController.eliminarPedidoSinPago(pedido)}"
+								value="Eliminar">
+								<p:confirm type="popup" header="Confirmar"
+									message="Se cancelará el pedido pendiente. ¿Quiere continuar?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
 
 						</p:column>
 
 					</p:dataTable>
 				</div>
 
-				<div class="col-1"></div>
+				<div class="col-sm-1"></div>
 
 			</h:panelGroup>
 
-
 			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton title="Registar pedido" process="@this"
-					resetValues="true"
-					action="#{pedidoController.abrirNuevoPedido()}" />
-				<p:commandButton title="Cancelar" process="@this" resetValues="true"
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 
+			<p:confirmPopup global="true">
+				<p:commandButton value="Cancelar" type="button"
+					styleClass="ui-confirm-popup-no ui-button-flat" />
+				<p:commandButton value="Aceptar" type="button"
+					styleClass="ui-confirm-popup-yes" />
+			</p:confirmPopup>
 
 		</h:form>
+
+		<h:panelGroup id="panelPagarPagoPendiente" layout="block"
+			styleClass="container-fluid">
+			<form id="formPagarPagoPendienteId" method="post"
+				style="display: inline-block;"
+				action="https://sis-t.redsys.es:25443/sis/realizarPago">
+
+				<p:inputText value="#{pedidoController.ds_SignatureVersion}"
+					id="Ds_SignatureVersion" type="hidden" />
+				<p:inputText value="#{pedidoController.ds_MerchantParameters}"
+					id="Ds_MerchantParameters" type="hidden" />
+				<p:inputText value="#{pedidoController.ds_Signature}"
+					id="Ds_Signature" type="hidden" />
+
+			</form>
+		</h:panelGroup>
+
+		<p:remoteCommand name="inicializaVariables"
+			update=":panelPagarPagoPendiente"
+			actionListener="#{pedidoController.inicializaVariablesRedsys()}" />
+
+		<SCRIPT type="text/javascript">
+			function somejavascript(pedido) {
+				console.log(pedido);
+				inicializaVariables([{name:'pedidoId', value:pedido}]).then(()=>{document.getElementById("formPagarPagoPendienteId").submit();})
+			}
+		</SCRIPT>
 
 	</ui:define>
 </ui:composition>
