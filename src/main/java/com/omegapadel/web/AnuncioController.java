@@ -123,13 +123,11 @@ public class AnuncioController implements Serializable {
 
 		if (anuncioParaMostrar != null && anuncioParaMostrar instanceof Anuncio) {
 			this.anuncioSeleccionado = (Anuncio) anuncioParaMostrar;
-			context.getExternalContext().getSessionMap().remove("anuncioParaMostrar");
 			this.listaComentariosAnuncio = comentarioService.getComentariosDeAnuncio(this.anuncioSeleccionado.getId());
 		}
 
 		if (anuncioParaEditar != null && anuncioParaEditar instanceof Anuncio) {
 			this.nuevoAnuncio = (Anuncio) anuncioParaEditar;
-			context.getExternalContext().getSessionMap().remove("anuncioParaEditar");
 		}
 
 		if (this.nuevoAnuncio == null) {
@@ -160,7 +158,6 @@ public class AnuncioController implements Serializable {
 
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
 			this.listaAnunciosPacksPorMarca = anuncioService.getAnunciosPorMarcaPack(marcaDeAnuncios);
-			context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
 		}
 
 		popularListaProductos();
@@ -467,6 +464,9 @@ public class AnuncioController implements Serializable {
 
 	public void verNuevoAnuncio() throws IOException {
 
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("anuncioParaEditar");
+		
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevoAnuncio.xhtml");
 	}
 

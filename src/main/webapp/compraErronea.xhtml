@@ -9,10 +9,17 @@
 
 		<h:form id="compraErronea">
 
-			<h:outputText rendered="#{respuestaRedsysController.esCorrecto}"
-				value="Correcto" />
-			<h:outputText rendered="#{not respuestaRedsysController.esCorrecto}"
-				value="No es correcto" />
+			<h:outputText
+				value="Ha habido algún error y no se ha completado el proceso de compra" />
+
+<hr/>
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Ver pedidos realizados" process="@this"
+					resetValues="true" action="#{pedidoController.abrirHistorialPedidos()}" />
+				<p:commandButton value="Ir a inicio" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
 
 		</h:form>
 	</ui:define>

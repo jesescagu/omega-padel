@@ -17,22 +17,27 @@
 					value="#{cestaController.listaProductosCesta}"
 					emptyMessage="El carrito de compra está vacio." var="prod">
 
-					<p:column style="text-align:center" headerText="Descripción">
+					<p:column width="45%" headerText="Descripción">
 
 						<p:commandLink
 							actionListener="#{anuncioController.mostrarAnuncio(prod)}">
 							<h:panelGroup styleClass="row">
-								<h:panelGroup styleClass="col-sm-6">
-									<!--			<h:graphicImage
+								<h:panelGroup styleClass="col-sm-5">
+									<h:graphicImage style="border:solid;"
 										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(prod.id))}"
 										width="200" height="200" />
-						-->
+
 								</h:panelGroup>
 
 								<h:panelGroup styleClass="col-sm-6">
-									<h:outputText value="#{prod.titulo}" />
+									<h2>
+										<h:outputText value="#{prod.titulo}" />
+									</h2>
 									<br />
 									<h:outputText value="prod.referencia" />
+									<br />
+									<b><h:outputText value="Precio individual: " /></b>
+									<h:outputText value="#{prod.precio} €" />
 								</h:panelGroup>
 
 							</h:panelGroup>
@@ -41,44 +46,34 @@
 
 					<p:column style="text-align:center" headerText="Cantidad">
 
-						<h:panelGroup id="panelGroupCantidad" style="text-align:center"
-							styleClass="row">
+						<h:panelGroup id="panelGroupCantidad" style="text-align:center;"
+							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
+							styleClass="ui-inputgroup">
 
-							<div class="col-sm-4"></div>
-
-							<p:commandButton styleClass="col-sm-1" process="@this"
+							<p:commandButton process="@this" style="width:15%;"
 								update=":detalleCesta:grupoProductosCesta"
-								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
 								actionListener="#{cestaController.quitarUnProductoDelCarrito(prod)}"
-								value="-">
-								<p:ajax update="@this" />
-							</p:commandButton>
+								value="-" />
 
-							<h:inputText styleClass="col-sm-2" style="text-align:center"
-								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
-								readonly="true"
+							<h:inputText style="width:70%; text-align:center" readonly="true"
 								value="#{cestaController.getCantidadProductoEnCesta(prod)}" />
 
-							<h:inputText styleClass="col-sm-4" style="text-align:center"
-								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
-								value="#{cestaController.valorCantidadEnEdicion}">
-							</h:inputText>
-
-							<p:commandButton styleClass="col-sm-1" process="@this"
+							<p:commandButton process="@this" style="width:15%;"
 								update=":detalleCesta:grupoProductosCesta"
-								rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq false}"
 								actionListener="#{cestaController.addUnProductoDelCarrito(prod)}"
-								value="+">
-							</p:commandButton>
-
-							<div class="col-sm-4"></div>
-
+								value="+" />
 						</h:panelGroup>
+
+						<h:inputText style="text-align:center"
+							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
+							value="#{cestaController.valorCantidadEnEdicion}">
+						</h:inputText>
 
 					</p:column>
 
-					<p:column style="text-align:center" headerText="Total">
-						<h:outputText value="#{cestaController.totalPrecioProducto(prod)}" />
+					<p:column width="10%" style="text-align:center" headerText="Total">
+						<h:outputText
+							value="#{cestaController.totalPrecioProducto(prod)} €" />
 					</p:column>
 
 					<p:column style="text-align:center" headerText="Acciones">
@@ -189,7 +184,7 @@
 				id="Ds_Signature" type="hidden" />
 
 			<p:commandButton type="button" styleClass="btn btn-primary"
-				rendered="#{not empty cestaController.listaProductosCesta}"
+				disabled="#{empty cestaController.listaProductosCesta or cestaController.direccionPostalSeleccionada eq null}"
 				value="Realizar Pago" onclick="somejavascript();" />
 
 		</form>

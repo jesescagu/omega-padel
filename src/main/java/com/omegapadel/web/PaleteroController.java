@@ -74,13 +74,11 @@ public class PaleteroController implements Serializable {
 		if (marcaDeAnunciosObject != null) {
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
 			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPaletero(marcaDeAnuncios);
-			context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
 		}
 
 		Object paleteroParaEditar = context.getExternalContext().getSessionMap().get("paleteroParaEditar");
 		if (paleteroParaEditar != null && paleteroParaEditar instanceof Paletero) {
 			this.nuevoPaletero = (Paletero) paleteroParaEditar;
-			context.getExternalContext().getSessionMap().remove("paleteroParaEditar");
 		}
 
 		if (this.nuevoPaletero == null) {
@@ -260,6 +258,8 @@ public class PaleteroController implements Serializable {
 
 	public void verNuevoPaletero() throws IOException {
 
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("paleteroParaEditar");
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevoPaletero.xhtml");
 
 	}

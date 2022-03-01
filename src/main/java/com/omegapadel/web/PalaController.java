@@ -73,7 +73,6 @@ public class PalaController implements Serializable {
 
 		if (palaParaEditar != null && palaParaEditar instanceof Pala) {
 			this.nuevaPala = (Pala) palaParaEditar;
-			context.getExternalContext().getSessionMap().remove("palaParaEditar");
 		}
 
 		if (this.nuevaPala == null) {
@@ -99,7 +98,6 @@ public class PalaController implements Serializable {
 
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
 			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPala(marcaDeAnuncios);
-			context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
 		}
 	}
 
@@ -282,6 +280,9 @@ public class PalaController implements Serializable {
 
 	public void verNuevaPala() throws IOException {
 
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("palaParaEditar");
+		
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevaPala.xhtml");
 
 	}

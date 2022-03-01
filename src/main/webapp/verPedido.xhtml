@@ -14,7 +14,7 @@
 					value="Referencia del pedido: #{pedidoController.pedidoParaMostrar.referenciaPedido}" />
 			</h3>
 
-			<h:panelGroup layout="block" styleClass="container">
+			<h:panelGroup layout="block" styleClass="container-fluid">
 
 				<h1>Estado del pedido</h1>
 
@@ -39,21 +39,36 @@
 				</p:dataTable>
 			</h:panelGroup>
 
-			<h:panelGroup layout="block" styleClass="container">
+			<h:panelGroup layout="block" styleClass="container-fluid">
 
-				<h1>Dirección de entrega</h1>
+				<br />
+				<p:panelGrid columns="2"
+					style="border:solid; background-color:#fafaf4;">
 
-				<h:outputText
-					value="#{pedidoController.pedidoParaMostrar.cliente.nombre} #{pedidoController.pedidoParaMostrar.cliente.apellidos}" />
-				<h:outputText
-					value="#{pedidoController.pedidoParaMostrar.cliente.email}" />
-				<h:outputText
-					value="#{pedidoController.pedidoParaMostrar.direccionPostal.direccion}" />
-				<h:outputText
-					value="#{pedidoController.pedidoParaMostrar.direccionPostal.codigoPostal} #{pedidoController.pedidoParaMostrar.direccionPostal.municipio.descripcion}" />
+					<f:facet name="header">
+						Dirección de entrega
+					</f:facet>
+
+					<h:outputText value="Nombre: " />
+					<h:outputText
+						value="#{pedidoController.pedidoParaMostrar.cliente.nombre} #{pedidoController.pedidoParaMostrar.cliente.apellidos}" />
+
+					<h:outputText value="Email: " />
+					<h:outputText
+						value="#{pedidoController.pedidoParaMostrar.cliente.email}" />
+
+					<h:outputText value="Dirección del envío: " />
+					<h:outputText
+						value="#{pedidoController.pedidoParaMostrar.direccionPostal.direccion}, #{pedidoController.pedidoParaMostrar.direccionPostal.codigoPostal}, #{pedidoController.pedidoParaMostrar.direccionPostal.municipio.descripcion}" />
+				</p:panelGrid>
+
 			</h:panelGroup>
+			<br />
 
-			<h:panelGroup layout="block" styleClass="container">
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+
+				<h1>Productos del pedido</h1>
 
 				<p:dataTable
 					value="#{pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.keySet()}"
@@ -81,14 +96,27 @@
 
 				</p:dataTable>
 
-				<h:outputText
-					value="Pecio articulos: #{pedidoController.pedidoParaMostrar.precioTotalProductos}" />
-				<h:outputText
-					value="Pecio envio: #{pedidoController.pedidoParaMostrar.precioEnvio}" />
-				<h:outputText
-					value="Pecio Total: #{pedidoController.pedidoParaMostrar.precioTotalProductos + pedidoController.pedidoParaMostrar.precioEnvio}" />
+				<br />
+
+				<p:panelGrid columns="2"
+					style="border:solid; background-color:#fafaf4;">
+
+					<h:outputText value="Precio articulos: " />
+					<h:outputText
+						value="#{pedidoController.pedidoParaMostrar.precioTotalProductos} €" />
+
+					<h:outputText value="Precio envio: " />
+					<h:outputText
+						value="#{pedidoController.pedidoParaMostrar.precioEnvio} €" />
+
+					<h:outputText value="Precio Total: " />
+					<h:outputText
+						value="#{pedidoController.pedidoParaMostrar.precioTotalProductos + pedidoController.pedidoParaMostrar.precioEnvio} €" />
+				</p:panelGrid>
 
 			</h:panelGroup>
+
+			<hr />
 
 			<h:panelGroup layout="block" styleClass="container">
 				<p:commandButton value="Cancelar" process="@this" resetValues="true"

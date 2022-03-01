@@ -109,9 +109,6 @@ public class CestaController implements Serializable {
 			if (anuncioParaeditarObject != null && valorCantidadEnEdicionObject != null) {
 				this.anuncioIdParaEditar = (Integer) anuncioParaeditarObject;
 				this.valorCantidadEnEdicion = (Integer) valorCantidadEnEdicionObject;
-
-				context.getExternalContext().getSessionMap().remove("anuncioIdParaEditar");
-				context.getExternalContext().getSessionMap().remove("valorCantidadEnEdicion");
 			}
 
 			this.listaProductosCesta = new ArrayList<Anuncio>();
@@ -170,8 +167,6 @@ public class CestaController implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("anuncioIdParaEditar", this.anuncioIdParaEditar);
 		context.getExternalContext().getSessionMap().put("valorCantidadEnEdicion", this.valorCantidadEnEdicion);
-
-		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
 
 	}
 

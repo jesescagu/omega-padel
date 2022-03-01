@@ -31,19 +31,18 @@
 
 						<h:panelGroup styleClass="row">
 
-							<p:galleria widgetVar="galleriaWidget" panelWidth="500"
-								panelHeight="350" effectSpeed="1000" autoPlay="true"
-								transitionInterval="3000"
+							<p:carousel id="imagenesAnuncios"
+								rendered="#{anuncioController.imagenesAMostrarDelAnuncio.size() ne 1}"
 								value="#{anuncioController.imagenesAMostrarDelAnuncio}"
-								var="elem">
+								var="elem" numVisible="1" numScroll="1" circular="true"
+								effect="slide" style="max-width: 640px" autoplayInterval="5000">
+								<h:graphicImage width="100%" style="width: 100%"
+									value="data:image/jpg;base64,#{elem}" />
+							</p:carousel>
 
-								<h:graphicImage value="data:image/jpg;base64,#{elem}"
-									alt="Description" title="#{elem}" width="500" height="350" />
-
-								<f:facet name="thumbnail">
-									<h:graphicImage value="data:image/jpg;base64,#{elem}" />
-								</f:facet>
-							</p:galleria>
+							<h:graphicImage width="100%" style="max-width: 640px"
+								rendered="#{anuncioController.imagenesAMostrarDelAnuncio.size() eq 1}"
+								value="data:image/jpg;base64,#{anuncioController.imagenesAMostrarDelAnuncio.get(0)}" />
 
 						</h:panelGroup>
 
@@ -66,7 +65,8 @@
 								<div class="row">
 									<p:outputLabel styleClass="col-sm-2"
 										for="tituloNuevoComentario" value="Título" />
-									<p:inputText id="tituloNuevoComentario" styleClass="col-sm-9" maxlength="150"
+									<p:inputText id="tituloNuevoComentario" styleClass="col-sm-9"
+										maxlength="150"
 										value="#{anuncioController.nuevoTituloComentario}" />
 								</div>
 
@@ -108,21 +108,26 @@
 										emptyMessage="Actualmente no existen comentarios del producto"
 										var="coment">
 
-										<p:column width="25%" style="text-align:center" headerText="Título">
+										<p:column width="25%" style="text-align:center"
+											headerText="Título">
 											<h:outputText value="#{coment.titulo}" />
 										</p:column>
 
-										<p:column width="35%" style="text-align:center" headerText="Descripción">
+										<p:column width="35%" style="text-align:center"
+											headerText="Descripción">
 											<h:outputText value="#{coment.descripcion}" />
 										</p:column>
 
-										<p:column  width="20%" style="text-align:center" headerText="Calificación">
+										<p:column width="20%" style="text-align:center"
+											headerText="Calificación">
 											<p:rating readonly="true" value="#{coment.calificacion}" />
 										</p:column>
 
-										<p:column  width="20%" rendered="#{anuncioController.estaEmpleadoLogado}"
+										<p:column width="20%"
+											rendered="#{anuncioController.estaEmpleadoLogado}"
 											style="text-align:center" headerText="Acciones">
-											<p:commandButton styleClass="btn btn-primary" process="@this" update=":detalleAnuncio:grupoTablaComentarios"
+											<p:commandButton styleClass="btn btn-primary" process="@this"
+												update=":detalleAnuncio:grupoTablaComentarios"
 												actionListener="#{anuncioController.eliminarComentario(coment)}"
 												value="Eliminar">
 											</p:commandButton>
@@ -159,7 +164,8 @@
 							<h:outputText styleClass="col-sm-3"
 								style="font-size:2em;font-weight: bold;color:red;"
 								value="#{anuncioController.anuncioSeleccionado.precio} €" />
-							<p:commandButton styleClass="col-sm-7" process="@this" update="@all"
+							<p:commandButton styleClass="col-sm-7" process="@this"
+								update="@all"
 								disabled="#{anuncioController.estaClienteLogado eq false}"
 								actionListener="#{cestaController.addAnuncioAlCarrito(anuncioController.anuncioSeleccionado)}"
 								value="Añadir al carrito" />

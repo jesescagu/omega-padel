@@ -72,7 +72,6 @@ public class PelotaController implements Serializable {
 
 		if (pelotaParaEditar != null && pelotaParaEditar instanceof Pelota) {
 			this.nuevaPelota = (Pelota) pelotaParaEditar;
-			context.getExternalContext().getSessionMap().remove("pelotaParaEditar");
 		}
 
 		if (this.nuevaPelota == null) {
@@ -98,7 +97,6 @@ public class PelotaController implements Serializable {
 
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
 			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPelota(marcaDeAnuncios);
-			context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
 		}
 
 	}
@@ -262,6 +260,8 @@ public class PelotaController implements Serializable {
 
 	public void verNuevoPackPelota() throws IOException {
 
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("pelotaParaEditar");
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevasPackPelotas.xhtml");
 	}
 

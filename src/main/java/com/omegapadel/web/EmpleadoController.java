@@ -114,12 +114,13 @@ public class EmpleadoController implements Serializable {
 				this.telefonoEscogido = empleadoParaEditar.getTelefono();
 
 				this.edicionPorAdministrador = true;
-				context.getExternalContext().getSessionMap().remove("empleadoParaEditar");
 			}
 		}
 	}
 
 	public void abrirNuevoEmpleado() throws IOException {
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("empleadoParaEditar");
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevoEmpleado.xhtml");
 	}
 

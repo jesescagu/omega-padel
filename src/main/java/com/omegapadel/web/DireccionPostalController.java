@@ -63,8 +63,6 @@ public class DireccionPostalController implements Serializable {
 		if (DPSeleccionadaObject != null && DPSeleccionadaObject instanceof DireccionPostal) {
 
 			this.direccionPostalSeleccionada = (DireccionPostal) DPSeleccionadaObject;
-			context.getExternalContext().getSessionMap().remove("direccionSeleccionada");
-
 			this.listaMunicipios = municipioService.findAllOrdered();
 
 			this.codigoPostalSeleccionado = this.direccionPostalSeleccionada.getCodigoPostal();

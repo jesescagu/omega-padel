@@ -84,13 +84,11 @@ public class ZapatillaController implements Serializable {
 		if (marcaDeAnunciosObject != null) {
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
 			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaZapatilla(marcaDeAnuncios);
-			context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
 		}
 
 		Object zapatillaParaEditar = context.getExternalContext().getSessionMap().get("zapatillaParaEditar");
 		if (zapatillaParaEditar != null && zapatillaParaEditar instanceof Zapatilla) {
 			this.nuevaZapatilla = (Zapatilla) zapatillaParaEditar;
-			context.getExternalContext().getSessionMap().remove("zapatillaParaEditar");
 		}
 
 		if (this.nuevaZapatilla == null) {
@@ -347,6 +345,8 @@ public class ZapatillaController implements Serializable {
 
 	public void verNuevaZapatilla() throws IOException {
 
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("zapatillaParaEditar");
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevaZapatilla.xhtml");
 
 	}
