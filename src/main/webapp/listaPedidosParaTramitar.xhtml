@@ -32,25 +32,49 @@
 
 				<div class="col-sm-10">
 
-					<p:dataTable id="datatablePedidosATramitar"
+					<p:dataTable widgetVar="tablaPedidos" allowUnsorting="true" sortMode="single" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						id="datatablePedidosATramitar"
 						value="#{pedidoController.listaPedidosParaTramitar}" var="pedido">
 
-						<p:column style="text-align:center" headerText="Referencia">
+						<p:column sortBy="#{pedido.referenciaPedido}"
+							filterMatchMode="contains" filterBy="#{pedido.referenciaPedido}"
+							style="text-align:center" headerText="Referencia">
 							<h:outputText value="#{pedido.referenciaPedido}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Fecha">
+						<p:column sortBy="#{pedido.fechaCreacion}"
+							filterMatchMode="between" filterBy="#{pedido.fechaCreacion}"
+							filterFunction="#{pedidoController.filtrarFechaCreacion}"
+							style="text-align:center" headerText="Fecha">
+
+							<f:facet name="filter">
+								<p:datePicker widgetVar="widgetFiltroFecha"
+									selectionMode="range" locale="es" monthNavigator="true"
+									yearNavigator="true"
+									onchange="PF('tablaPedidos').filter(); PF('widgetFiltroFecha').hide()">
+								</p:datePicker>
+							</f:facet>
+
 							<h:outputText value="#{pedido.fechaCreacion}">
 								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
 							</h:outputText>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Estado">
+						<p:column sortBy="#{pedido.getUltimoEstadoPedido().descripcion}"
+							filterMatchMode="contains"
+							filterBy="#{pedido.getUltimoEstadoPedido().descripcion}"
+							style="text-align:center" headerText="Estado">
 							<h:outputText
 								value="#{pedido.getUltimoEstadoPedido().descripcion}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Productos">
+						<p:column filterBy="#{pedido.id}"
+							filterFunction="#{pedidoController.filtrarTablaPorProducto}"
+							style="text-align:center" headerText="Productos">
 							<ui:repeat value="#{pedido.mapaAnunciosCantidad.keySet()}"
 								var="elem">
 								<h:outputText
@@ -59,7 +83,11 @@
 							</ui:repeat>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Precio">
+						<p:column
+							sortBy="#{pedido.precioTotalProductos + pedido.precioEnvio}"
+							filterMatchMode="startsWith"
+							filterBy="#{pedido.precioTotalProductos + pedido.precioEnvio}"
+							style="text-align:center" headerText="Precio">
 							<h:outputText
 								value="#{pedido.precioTotalProductos + pedido.precioEnvio} €" />
 						</p:column>

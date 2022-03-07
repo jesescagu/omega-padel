@@ -15,7 +15,12 @@
 				<div class="col-sm-1"></div>
 
 				<div class="col-sm-10">
-					<p:dataTable value="#{palaController.listaPalasCreadas}" var="pala">
+					<p:dataTable value="#{palaController.listaPalasCreadas}"
+						allowUnsorting="true" sortMode="single" rows="5" paginator="true"
+						paginatorPosition="bottom" paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						var="pala">
 
 						<p:column headerText="Imagen">
 							<div class="row">
@@ -28,19 +33,26 @@
 							</div>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Marca">
+						<p:column sortBy="#{pala.marca.nombre}" filterMatchMode="contains"
+							filterBy="#{pala.marca.nombre}" style="text-align:center"
+							headerText="Marca">
 							<h:outputText value="#{pala.marca.nombre}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Modelo">
+						<p:column filterMatchMode="contains" sortBy="#{pala.modelo}"
+							filterBy="#{pala.modelo}" style="text-align:center"
+							headerText="Modelo">
 							<h:outputText value="#{pala.modelo}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Temporada">
+						<p:column sortBy="#{pala.temporada}" filterMatchMode="contains"
+							filterBy="#{pala.modelo}" style="text-align:center"
+							headerText="Temporada">
 							<h:outputText value="#{pala.temporada}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Stock">
+						<p:column sortBy="#{pala.stock}" style="text-align:center"
+							headerText="Stock">
 							<h:outputText value="#{pala.stock}" />
 						</p:column>
 

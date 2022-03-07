@@ -103,7 +103,11 @@
 								<h:panelGroup styleClass="col-12">
 
 
-									<p:dataTable
+									<p:dataTable widgetVar="tablaComentarios" allowUnsorting="true"
+										sortMode="single" rows="5" paginator="true"
+										paginatorPosition="bottom" paginatorAlwaysVisible="false"
+										rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+										paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 										value="#{anuncioController.listaComentariosAnuncio}"
 										emptyMessage="Actualmente no existen comentarios del producto"
 										var="coment">
@@ -118,8 +122,24 @@
 											<h:outputText value="#{coment.descripcion}" />
 										</p:column>
 
-										<p:column width="20%" style="text-align:center"
+										<p:column sortBy="#{coment.calificacion}"
+											filterMatchMode="exact" filterBy="#{coment.calificacion}"
+											width="20%" style="text-align:center"
 											headerText="Calificación">
+
+											<f:facet name="filter">
+												<p:selectOneMenu onchange="PF('tablaComentarios').filter()"
+													styleClass="custom-filter">
+													<f:selectItem itemLabel="Todo" itemValue="#{null}"
+														noSelectionOption="true" />
+													<f:selectItem itemLabel="1 estrella" itemValue="1" />
+													<f:selectItem itemLabel="2 estrella" itemValue="2" />
+													<f:selectItem itemLabel="3 estrella" itemValue="3" />
+													<f:selectItem itemLabel="4 estrella" itemValue="4" />
+													<f:selectItem itemLabel="5 estrella" itemValue="5" />
+												</p:selectOneMenu>
+											</f:facet>
+
 											<p:rating readonly="true" value="#{coment.calificacion}" />
 										</p:column>
 
@@ -158,6 +178,28 @@
 						</h:panelGroup>
 
 						<hr />
+
+						<h:panelGroup
+							rendered="#{anuncioController.renderSeleccionTallas()}"
+							styleClass="row">
+
+							<h:outputText styleClass="col-sm-3"
+								value="Escoger talla de la zapatilla" />
+								
+							<p:selectOneMenu styleClass="col-sm-6"
+								id="tallaZapatilla"
+								value="#{anuncioController.tallaZapatillaSeleccionada}">
+
+								<f:selectItem itemLabel="Selecciona municipio" />
+								<f:selectItems var="temp" itemLabel="#{temp.descripcion}"
+									itemValue="#{temp.codigo}"
+									value="#{direccionPostalController.listaMunicipios}" />
+
+							</p:selectOneMenu>
+
+
+
+						</h:panelGroup>
 
 						<h:panelGroup styleClass="row">
 

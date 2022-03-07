@@ -15,7 +15,12 @@
 				<div class="col-sm-1"></div>
 
 				<div class="col-sm-10">
-					<p:dataTable value="#{anuncioController.listaAnunciosDesactivados}"
+					<p:dataTable allowUnsorting="true" sortMode="single" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						value="#{anuncioController.listaAnunciosDesactivados}"
 						var="anuncio">
 
 						<p:column headerText="Imagen">
@@ -30,11 +35,11 @@
 							</div>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Titulo">
+						<p:column sortBy="#{anuncio.titulo}" filterMatchMode="contains" filterBy="#{anuncio.titulo}"  style="text-align:center" headerText="Titulo">
 							<h:outputText value="#{anuncio.titulo}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="precio">
+						<p:column sortBy="#{anuncio.precio}" filterMatchMode="contains" filterBy="#{anuncio.precio}"  style="text-align:center" headerText="precio">
 							<h:outputText value="#{anuncio.precio}" />
 						</p:column>
 

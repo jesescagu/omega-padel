@@ -24,7 +24,7 @@
 							<div class="product-list-detail">
 								<div class="product-name">#{product.titulo}</div>
 								<div class="product-description">#{product.descripcion}</div>
-								<p:rating readonly="true" value="#{product.notaMedia()}" />
+								<p:rating readonly="true" value="#{anuncioController.notaMedia(product)}" />
 							</div>
 							<div class="product-grid-item-bottom">
 								<h:outputText value="#{product.precio}"

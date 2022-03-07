@@ -15,38 +15,68 @@
 				<div class="col-sm-1"></div>
 
 				<div class="col-sm-10">
-					<p:dataTable value="#{empleadoController.listaEmpleados}"
-						var="empleado">
+					<p:dataTable allowUnsorting="true" sortMode="single" rows="5" widgetVar="tablaEmpleados"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						value="#{empleadoController.listaEmpleados}" var="empleado">
 
-						<p:column style="text-align:center" headerText="DNI">
+						<p:column sortBy="#{empleado.dni}" filterMatchMode="contains"
+							filterBy="#{empleado.dni}" style="text-align:center"
+							headerText="DNI">
 							<h:outputText value="#{empleado.dni}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Puesto Trabajo">
+						<p:column sortBy="#{empleado.puesto.nombre}"
+							filterMatchMode="contains" filterBy="#{empleado.puesto.nombre}"
+							style="text-align:center" headerText="Puesto Trabajo">
 							<h:outputText value="#{empleado.puesto.nombre}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Nombre Usuario">
+						<p:column sortBy="#{empleado.usuario.usuario}"
+							filterMatchMode="contains" filterBy="#{empleado.usuario.usuario}"
+							style="text-align:center" headerText="Nombre Usuario">
 							<h:outputText value="#{empleado.usuario.usuario}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Nombre">
+						<p:column sortBy="#{empleado.nombre}" filterMatchMode="contains"
+							filterBy="#{empleado.nombre}" style="text-align:center"
+							headerText="Nombre">
 							<h:outputText value="#{empleado.nombre}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Apellidos">
+						<p:column sortBy="#{empleado.apellidos}"
+							filterMatchMode="contains" filterBy="#{empleado.apellidos}"
+							style="text-align:center" headerText="Apellidos">
 							<h:outputText value="#{empleado.apellidos}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Email">
+						<p:column sortBy="#{empleado.email}" filterMatchMode="contains"
+							filterBy="#{empleado.email}" style="text-align:center"
+							headerText="Email">
 							<h:outputText value="#{empleado.email}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Teléfono">
+						<p:column sortBy="#{empleado.telefono}" filterMatchMode="contains"
+							filterBy="#{empleado.telefono}" style="text-align:center"
+							headerText="Teléfono">
 							<h:outputText value="#{empleado.telefono}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Activo">
+						<p:column sortBy="#{empleado.usuario.activo}"
+							filterMatchMode="exact" filterBy="#{empleado.usuario.activo}"
+							style="text-align:center" headerText="Activo">
+
+							<f:facet name="filter">
+								<p:selectOneMenu onchange="PF('tablaEmpleados').filter()"
+									styleClass="custom-filter">
+									<f:selectItem itemLabel="Todo" itemValue="#{null}" noSelectionOption="true"/>
+									<f:selectItem itemLabel="Sí" itemValue="true" />
+									<f:selectItem itemLabel="No" itemValue="false" />
+								</p:selectOneMenu>
+							</f:facet>
+
 							<h:outputText rendered="#{empleado.usuario.activo eq true}"
 								value="Sí" />
 							<h:outputText rendered="#{empleado.usuario.activo eq false}"

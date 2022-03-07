@@ -28,6 +28,7 @@ import com.omegapadel.model.Comentario;
 import com.omegapadel.model.Empleado;
 import com.omegapadel.model.Imagen;
 import com.omegapadel.model.Producto;
+import com.omegapadel.model.Zapatilla;
 import com.omegapadel.service.AnuncioService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.ComentarioService;
@@ -286,7 +287,7 @@ public class AnuncioController implements Serializable {
 			if (!hayError) {
 //				User user = (User) auth.getPrincipal();
 //				String nombreUsuario = user.getUsername();
-				
+
 				String nombreUsuario = null;
 				Object princ = auth.getPrincipal();
 				if (princ instanceof User) {
@@ -295,7 +296,7 @@ public class AnuncioController implements Serializable {
 				} else {
 					nombreUsuario = (String) auth.getPrincipal();
 				}
-				
+
 				Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
 				Comentario comentario = comentarioService.create(nuevoTituloComentario, nuevaDescripcionComentario,
@@ -466,7 +467,7 @@ public class AnuncioController implements Serializable {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().remove("anuncioParaEditar");
-		
+
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevoAnuncio.xhtml");
 	}
 
@@ -481,6 +482,19 @@ public class AnuncioController implements Serializable {
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("packs.xhtml");
 
+	}
+
+	public Boolean renderSeleccionTallas() {
+
+		if (this.estaClienteLogado) {
+			List<Producto> listaProductos = this.anuncioSeleccionado.getProductos();
+			for (Producto prod : listaProductos) {
+				if (prod instanceof Zapatilla) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public Anuncio getAnuncioSeleccionado() {

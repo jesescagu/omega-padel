@@ -18,8 +18,12 @@
 				<div class="col-sm-1"></div>
 
 				<div class="col-sm-10">
-					<p:dataTable value="#{zapatillaController.listaZapatillas}"
-						var="zapatilla">
+					<p:dataTable allowUnsorting="true" sortMode="single" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						value="#{zapatillaController.listaZapatillas}" var="zapatilla">
 
 						<p:column headerText="Imagen">
 							<div class="row">
@@ -33,11 +37,15 @@
 							</div>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Marca">
+						<p:column sortBy="#{zapatilla.marca.nombre}"
+							filterMatchMode="contains" filterBy="#{zapatilla.marca.nombre}"
+							style="text-align:center" headerText="Marca">
 							<h:outputText value="#{zapatilla.marca.nombre}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Modelo">
+						<p:column sortBy="#{zapatilla.modelo}" filterMatchMode="contains"
+							filterBy="#{zapatilla.modelo}" style="text-align:center"
+							headerText="Modelo">
 							<h:outputText value="#{zapatilla.modelo}" />
 						</p:column>
 
@@ -54,7 +62,11 @@
 							</ui:repeat>
 						</p:column>
 
-						<p:column style="text-align:center" headerText="Sexo">
+						<p:column
+							sortBy="#{zapatillaController.parseaTextoSexo(zapatilla)}"
+							filterMatchMode="contains"
+							filterBy="#{zapatillaController.parseaTextoSexo(zapatilla)}"
+							style="text-align:center" headerText="Sexo">
 							<h:outputText
 								value="#{zapatillaController.parseaTextoSexo(zapatilla)}" />
 						</p:column>

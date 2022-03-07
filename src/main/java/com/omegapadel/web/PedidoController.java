@@ -6,8 +6,15 @@ import java.io.Serializable;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -124,6 +131,55 @@ public class PedidoController implements Serializable {
 
 			FacesContext.getCurrentInstance().getExternalContext().redirect("listaPedidosParaTramitar.xhtml");
 		}
+	}
+
+	public boolean filtrarFechaCreacion(Object value, Object filter, Locale locale) {
+
+		Timestamp valor = null;
+		List<LocalDate> listaFiltros = new ArrayList<LocalDate>();
+
+		if (value instanceof Timestamp && filter instanceof ArrayList) {
+			valor = (Timestamp) value;
+			listaFiltros = (ArrayList<LocalDate>) filter;
+
+			LocalDate fechaValor = valor.toLocalDateTime().toLocalDate();
+			LocalDate fechaFiltro1 = listaFiltros.get(0);
+			LocalDate fechaFiltro2 = listaFiltros.get(1);
+
+			if ((fechaValor.isAfter(fechaFiltro1) && fechaValor.isBefore(fechaFiltro2))
+					|| (fechaValor.isEqual(fechaFiltro1) || fechaValor.isEqual(fechaFiltro2))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean filtrarTablaPorProducto(Object value, Object filter, Locale locale) {
+
+		Set<Integer> listaProductos = new HashSet<Integer>();
+		String textoFiltro = null;
+		if (value instanceof Integer) {
+			Integer idPed = (Integer) value;
+			Pedido pedido = pedidoService.findById(idPed).get();
+
+			listaProductos = pedido.getMapaAnunciosCantidad().keySet();
+		}
+
+		if (filter instanceof String) {
+			textoFiltro = (String) filter;
+			textoFiltro = textoFiltro.trim().toUpperCase();
+		}
+
+		for (Integer i : listaProductos) {
+			Anuncio anuncio = anuncioService.findById(i).get();
+			String prod = anuncio.getTitulo().trim().toUpperCase();
+			if (prod.contains(textoFiltro)) {
+				return true;
+			}
+		}
+
+		return false;
+
 	}
 
 	public void abrirDetallesPedido(Pedido pedido) throws IOException {
@@ -316,8 +372,8 @@ public class PedidoController implements Serializable {
 
 		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("CON_DISPUTA"))) {
 
-			//TODO
-			
+			// TODO
+
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoDisputaDenegada(this.textoMotivoAbrirDisputa);
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
 

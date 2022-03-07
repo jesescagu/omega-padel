@@ -64,9 +64,16 @@
 				<div class="col-sm-3"></div>
 
 				<div class="col-sm-6">
-					<p:dataTable value="#{marcaController.listaMarcas}" var="marca">
+					<p:dataTable allowUnsorting="true" sortMode="single" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						value="#{marcaController.listaMarcas}" var="marca">
 
-						<p:column style="text-align:center" headerText="Nombre">
+						<p:column sortBy="#{marca.nombre}" filterMatchMode="contains"
+							filterBy="#{marca.nombre}" style="text-align:center"
+							headerText="Nombre">
 							<h:outputText value="#{marca.nombre}" />
 						</p:column>
 

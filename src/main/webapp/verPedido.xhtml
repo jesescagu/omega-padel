@@ -32,10 +32,6 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column style="text-align:center" headerText="PARA PRUEBAS">
-						<h:outputText value="#{estado.orden}" />
-					</p:column>
-
 				</p:dataTable>
 			</h:panelGroup>
 
@@ -118,9 +114,9 @@
 
 			<hr />
 
-			<h:panelGroup layout="block" styleClass="container">
-				<p:commandButton value="Cancelar" process="@this" resetValues="true"
-					action="#{inicioController.verPaginaInicio()}" /> CAMBIAR POR IR ATRAS
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Ir Atrás" process="@this" resetValues="true"
+					action="#{pedidoController.abrirHistorialPedidos()}" />
 			</h:panelGroup>
 
 		</h:form>

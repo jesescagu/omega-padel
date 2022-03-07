@@ -80,20 +80,28 @@
 				<div class="col-sm-3"></div>
 
 				<div class="col-sm-6">
-					<p:dataTable value="#{tipoRopaController.listaTipoRopas}"
-						var="tipoRopa">
+					<p:dataTable allowUnsorting="true" sortMode="single" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						value="#{tipoRopaController.listaTipoRopas}" var="tipoRopa">
 
-						<p:column style="text-align:center"
+						<p:column sortBy="#{tipoRopa.tipoRopa}" filterMatchMode="contains"
+							filterBy="#{tipoRopa.tipoRopa}" style="text-align:center"
 							headerText="Nombre tipo de ropa">
 							<h:outputText value="#{tipoRopa.tipoRopa}" />
 						</p:column>
 
-						<p:column style="text-align:center" headerText="tipo de talla">
+						<p:column sortBy="#{tipoRopa.tipoTalla}"
+							filterMatchMode="contains" filterBy="#{tipoRopa.tipoTalla}"
+							style="text-align:center" headerText="tipo de talla">
 							<h:outputText value="#{tipoRopa.tipoTalla}" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
-							<p:commandButton styleClass="btn btn-primary" process="@this" update=":listaTipoRopas"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":listaTipoRopas"
 								actionListener="#{tipoRopaController.eliminarTipoRopa(tipoRopa)}"
 								value="Eliminar">
 							</p:commandButton>
