@@ -1,5 +1,8 @@
 package com.omegapadel.model;
 
+import java.util.Map;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -9,8 +12,13 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "ropa")
 public class Ropa extends Producto {
 
-	@NotBlank
-	private String talla;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 659083532689046607L;
+
+	@ElementCollection
+	private Map<String, Integer> mapaTallaStock;
 
 	@NotBlank
 	private String sexo;
@@ -18,20 +26,20 @@ public class Ropa extends Producto {
 	@ManyToOne
 	private TipoRopa tipoRopa;
 
-	public String getTalla() {
-		return talla;
-	}
-
-	public void setTalla(String talla) {
-		this.talla = talla;
-	}
-
 	public String getSexo() {
 		return sexo;
 	}
 
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
+	}
+
+	public Map<String, Integer> getMapaTallaStock() {
+		return mapaTallaStock;
+	}
+
+	public void setMapaTallaStock(Map<String, Integer> mapaTallaStock) {
+		this.mapaTallaStock = mapaTallaStock;
 	}
 
 	public TipoRopa getTipoRopa() {

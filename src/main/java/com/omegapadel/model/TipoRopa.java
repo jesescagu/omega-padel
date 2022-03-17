@@ -9,6 +9,11 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "tipo_ropa")
 public class TipoRopa extends EntidadBase {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6805463204328715425L;
+
 	@NotBlank
 	private String tipoTalla;
 

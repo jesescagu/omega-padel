@@ -299,50 +299,50 @@ public class TemplateController implements Serializable {
 		Marca marca7 = marcaService.create("Nike");
 		marcaService.save(marca7);
 
-		Pala pa1 = palaService.create(marca1, "alpha", 1000, 2020);
-		palaService.save(pa1);
-		Pala pa2 = palaService.create(marca2, "k90", 99, 2021);
-		palaService.save(pa2);
-		Pala pa3 = palaService.create(marca3, "shot", 3, 2019);
-		palaService.save(pa3);
-		Pala pa4 = palaService.create(marca4, "run", 500, 2021);
-		palaService.save(pa4);
-		Pala pa5 = palaService.create(marca5, "silver", 50, 2020);
-		palaService.save(pa5);
+//		Pala pa1 = palaService.create(marca1, "alpha", 1000, 2020);
+//		palaService.save(pa1);
+//		Pala pa2 = palaService.create(marca2, "k90", 99, 2021);
+//		palaService.save(pa2);
+//		Pala pa3 = palaService.create(marca3, "shot", 3, 2019);
+//		palaService.save(pa3);
+//		Pala pa4 = palaService.create(marca4, "run", 500, 2021);
+//		palaService.save(pa4);
+//		Pala pa5 = palaService.create(marca5, "silver", 50, 2020);
+//		palaService.save(pa5);
 
-		Paletero pale1 = paleteroService.create(marca1, "team padel", 1000);
-		paleteroService.save(pale1);
-		Paletero pale2 = paleteroService.create(marca2, "RH team", 99);
-		paleteroService.save(pale2);
-		Paletero pale3 = paleteroService.create(marca3, "perf lite", 3);
-		paleteroService.save(pale3);
-		Paletero pale4 = paleteroService.create(marca4, "maleta", 500);
-		paleteroService.save(pale4);
-		Paletero pale5 = paleteroService.create(marca5, "tm padel", 50);
-		paleteroService.save(pale5);
+//		Paletero pale1 = paleteroService.create(marca1, "team padel", 1000);
+//		paleteroService.save(pale1);
+//		Paletero pale2 = paleteroService.create(marca2, "RH team", 99);
+//		paleteroService.save(pale2);
+//		Paletero pale3 = paleteroService.create(marca3, "perf lite", 3);
+//		paleteroService.save(pale3);
+//		Paletero pale4 = paleteroService.create(marca4, "maleta", 500);
+//		paleteroService.save(pale4);
+//		Paletero pale5 = paleteroService.create(marca5, "tm padel", 50);
+//		paleteroService.save(pale5);
 
-		Map<Integer, Integer> mapStockTalla1 = new HashMap<Integer, Integer>();
-		mapStockTalla1.put(36, 800);
-		mapStockTalla1.put(37, 900);
-		mapStockTalla1.put(38, 900);
-		mapStockTalla1.put(39, 1000);
-		mapStockTalla1.put(40, 1000);
-		mapStockTalla1.put(41, 1000);
-		mapStockTalla1.put(42, 1000);
-		mapStockTalla1.put(43, 1000);
-		mapStockTalla1.put(44, 1000);
-		mapStockTalla1.put(45, 900);
+//		Map<Integer, Integer> mapStockTalla1 = new HashMap<Integer, Integer>();
+//		mapStockTalla1.put(36, 800);
+//		mapStockTalla1.put(37, 900);
+//		mapStockTalla1.put(38, 900);
+//		mapStockTalla1.put(39, 1000);
+//		mapStockTalla1.put(40, 1000);
+//		mapStockTalla1.put(41, 1000);
+//		mapStockTalla1.put(42, 1000);
+//		mapStockTalla1.put(43, 1000);
+//		mapStockTalla1.put(44, 1000);
+//		mapStockTalla1.put(45, 900);
 
-		Zapatilla za1 = zapatillaService.create(marca1, "sprint ", 1000, "HOMBRE", mapStockTalla1);
-		zapatillaService.save(za1);
-		Zapatilla za2 = zapatillaService.create(marca2, "extreme sprint", 99, "MUJER", mapStockTalla1);
-		zapatillaService.save(za2);
-		Zapatilla za3 = zapatillaService.create(marca3, "grip", 3, "JUNIOR", mapStockTalla1);
-		zapatillaService.save(za3);
-		Zapatilla za4 = zapatillaService.create(marca4, "revolt", 500, "HOMBRE", mapStockTalla1);
-		zapatillaService.save(za4);
-		Zapatilla za5 = zapatillaService.create(marca5, "brazer", 50, "MUJER", mapStockTalla1);
-		zapatillaService.save(za5);
+//		Zapatilla za1 = zapatillaService.create(marca1, "sprint ", 1000, "HOMBRE", mapStockTalla1);
+//		zapatillaService.save(za1);
+//		Zapatilla za2 = zapatillaService.create(marca2, "extreme sprint", 99, "MUJER", mapStockTalla1);
+//		zapatillaService.save(za2);
+//		Zapatilla za3 = zapatillaService.create(marca3, "grip", 3, "JUNIOR", mapStockTalla1);
+//		zapatillaService.save(za3);
+//		Zapatilla za4 = zapatillaService.create(marca4, "revolt", 500, "HOMBRE", mapStockTalla1);
+//		zapatillaService.save(za4);
+//		Zapatilla za5 = zapatillaService.create(marca5, "brazer", 50, "MUJER", mapStockTalla1);
+//		zapatillaService.save(za5);
 
 		TipoRopa tp1 = tipoRopaService.create("Camisetas", "LETRAS");
 		TipoRopa tp1Saved = tipoRopaService.save(tp1);
@@ -355,58 +355,58 @@ public class TemplateController implements Serializable {
 		TipoRopa tp5 = tipoRopaService.create("Chandales", "LETRAS");
 		tipoRopaService.save(tp5);
 
-		Ropa ro1 = ropaService.create(marca1, "Camiseta Sanyo", 1000, "M", "HOMBRE", tp1Saved);
-		ropaService.save(ro1);
-		Ropa ro2 = ropaService.create(marca2, "Calzonas k90", 99, "L", "HOMBRE", tp2Saved);
-		ropaService.save(ro2);
+//		Ropa ro1 = ropaService.create(marca1, "Camiseta Sanyo", 1000, "M", "HOMBRE", tp1Saved);
+//		ropaService.save(ro1);
+//		Ropa ro2 = ropaService.create(marca2, "Calzonas k90", 99, "L", "HOMBRE", tp2Saved);
+//		ropaService.save(ro2);
 
-		Pelota pe1 = pelotaService.create(marca1, "normal", 3, 2000);
-		pelotaService.save(pe1);
-		Pelota pe2 = pelotaService.create(marca6, "power", 3, 53);
-		pelotaService.save(pe2);
-		Pelota pe3 = pelotaService.create(marca5, "control", 9, 100);
-		pelotaService.save(pe3);
+//		Pelota pe1 = pelotaService.create(marca1, "normal", 3, 2000);
+//		pelotaService.save(pe1);
+//		Pelota pe2 = pelotaService.create(marca6, "power", 3, 53);
+//		pelotaService.save(pe2);
+//		Pelota pe3 = pelotaService.create(marca5, "control", 9, 100);
+//		pelotaService.save(pe3);
 
-		TipoAccesorio ta1 = tipoAccesorioService.create("overgrip");
-		tipoAccesorioService.save(ta1);
-		TipoAccesorio ta2 = tipoAccesorioService.create("muñequera");
-		tipoAccesorioService.save(ta2);
-		TipoAccesorio ta3 = tipoAccesorioService.create("calcetines");
-		tipoAccesorioService.save(ta3);
+//		TipoAccesorio ta1 = tipoAccesorioService.create("overgrip");
+//		tipoAccesorioService.save(ta1);
+//		TipoAccesorio ta2 = tipoAccesorioService.create("muñequera");
+//		tipoAccesorioService.save(ta2);
+//		TipoAccesorio ta3 = tipoAccesorioService.create("calcetines");
+//		tipoAccesorioService.save(ta3);
+//
+//		Accesorio acc1 = accesorioService.create(ta1, marca1, "sanyo", 150);
+//		accesorioService.save(acc1);
+//		Accesorio acc2 = accesorioService.create(ta3, marca7, "cortez", 30);
+//		accesorioService.save(acc2);
+//		Accesorio acc3 = accesorioService.create(ta1, marca2, "leo", 69);
+//		accesorioService.save(acc3);
+//		Accesorio acc4 = accesorioService.create(ta2, marca3, "adipower", 73);
+//		accesorioService.save(acc4);
 
-		Accesorio acc1 = accesorioService.create(ta1, marca1, "sanyo", 150);
-		accesorioService.save(acc1);
-		Accesorio acc2 = accesorioService.create(ta3, marca7, "cortez", 30);
-		accesorioService.save(acc2);
-		Accesorio acc3 = accesorioService.create(ta1, marca2, "leo", 69);
-		accesorioService.save(acc3);
-		Accesorio acc4 = accesorioService.create(ta2, marca3, "adipower", 73);
-		accesorioService.save(acc4);
-
-		List<Producto> prods1 = new ArrayList<>();
-		prods1.add(pa1);
-		prods1.add(pale1);
-		prods1.add(za1);
-		prods1.add(ro1);
-		prods1.add(acc1);
-		Anuncio an1 = anuncioService.create("Productos head", "varios productos head", 100.0, e1, prods1);
-		Anuncio an1Saved = anuncioService.save(an1);
-
-		List<Producto> prods2 = new ArrayList<>();
-		prods2.add(pa2);
-		prods2.add(pe1);
-		prods1.add(pale2);
-		prods1.add(za2);
-		prods1.add(ro2);
-		prods2.add(acc1);
-		Anuncio an2 = anuncioService.create("Productos variados", "varios productos", 150.0, e2, prods2);
-		Anuncio an2Saved = anuncioService.save(an2);
-
-		List<Producto> prods3 = new ArrayList<>();
-		prods2.add(pa3);
-		Anuncio an3 = anuncioService.create("Pala Nox Silver", "Buena pala de iniciación con una buena rebaja", 75.0,
-				e1, prods3);
-		Anuncio an3Saved = anuncioService.save(an3);
+//		List<Producto> prods1 = new ArrayList<>();
+//		prods1.add(pa1);
+//		prods1.add(pale1);
+////		prods1.add(za1);
+////		prods1.add(ro1);
+//		prods1.add(acc1);
+////		Anuncio an1 = anuncioService.create("Productos head", "varios productos head", 100.0, e1, prods1);
+////		Anuncio an1Saved = anuncioService.save(an1);
+//
+//		List<Producto> prods2 = new ArrayList<>();
+//		prods2.add(pa2);
+//		prods2.add(pe1);
+//		prods1.add(pale2);
+////		prods1.add(za2);
+////		prods1.add(ro2);
+//		prods2.add(acc1);
+////		Anuncio an2 = anuncioService.create("Productos variados", "varios productos", 150.0, e2, prods2);
+////		Anuncio an2Saved = anuncioService.save(an2);
+//
+//		List<Producto> prods3 = new ArrayList<>();
+//		prods2.add(pa3);
+////		Anuncio an3 = anuncioService.create("Pala Nox Silver", "Buena pala de iniciación con una buena rebaja", 75.0,
+////				e1, prods3);
+////		Anuncio an3Saved = anuncioService.save(an3);
 
 		municipioService.createAndSave("02", "Albacete");
 		municipioService.createAndSave("03", "Alicante/Alacant");
@@ -472,36 +472,36 @@ public class TemplateController implements Serializable {
 		DireccionPostal d5 = direccionPostalService.create("Chipiona, 3A", "41166", sev, emp2Saved);
 		DireccionPostal d5Saved = direccionPostalService.save(d5);
 
-		Map<Integer, Integer> anuncios = new HashMap<Integer, Integer>();
-		anuncios.put(an1Saved.getId(), 2);
-		Pedido pedido1 = pedidoService.create(cl1, d1Saved, anuncios, cestaService.getReferenciaPedidoUnicoGenerado());
-		Pedido pedido1Saved = pedidoService.save(pedido1);
-
-		List<Pedido> pedidosPrueba = new ArrayList<Pedido>();
-		pedidosPrueba.add(pedido1Saved);
-		d1Saved.setPedidos(pedidosPrueba);
-		direccionPostalService.save(d1Saved);
-
-		List<DireccionPostal> dps1 = new ArrayList<DireccionPostal>();
-		dps1.add(d1Saved);
-		cli1Saved.setDireccionesPostales(dps1);
-		clienteService.save(cli1Saved);
-
-		List<DireccionPostal> dps2 = new ArrayList<DireccionPostal>();
-		dps2.add(d2Saved);
-		cli2Saved.setDireccionesPostales(dps2);
-		clienteService.save(cli2Saved);
-
-		List<DireccionPostal> dps3 = new ArrayList<DireccionPostal>();
-		dps3.add(d3Saved);
-		dps3.add(d4Saved);
-		emp1Saved.setDireccionesPostales(dps3);
-		empleadoService.save(emp1Saved);
-
-		List<DireccionPostal> dps5 = new ArrayList<DireccionPostal>();
-		dps5.add(d5Saved);
-		emp2Saved.setDireccionesPostales(dps5);
-		empleadoService.save(emp2Saved);
+//		Map<Integer, Integer> anuncios = new HashMap<Integer, Integer>();
+////		anuncios.put(an1Saved.getId(), 2);
+////		Pedido pedido1 = pedidoService.create(cl1, d1Saved, anuncios, cestaService.getReferenciaPedidoUnicoGenerado());
+////		Pedido pedido1Saved = pedidoService.save(pedido1);
+//
+//		List<Pedido> pedidosPrueba = new ArrayList<Pedido>();
+////		pedidosPrueba.add(pedido1Saved);
+//		d1Saved.setPedidos(pedidosPrueba);
+//		direccionPostalService.save(d1Saved);
+//
+//		List<DireccionPostal> dps1 = new ArrayList<DireccionPostal>();
+//		dps1.add(d1Saved);
+//		cli1Saved.setDireccionesPostales(dps1);
+//		clienteService.save(cli1Saved);
+//
+//		List<DireccionPostal> dps2 = new ArrayList<DireccionPostal>();
+//		dps2.add(d2Saved);
+//		cli2Saved.setDireccionesPostales(dps2);
+//		clienteService.save(cli2Saved);
+//
+//		List<DireccionPostal> dps3 = new ArrayList<DireccionPostal>();
+//		dps3.add(d3Saved);
+//		dps3.add(d4Saved);
+//		emp1Saved.setDireccionesPostales(dps3);
+//		empleadoService.save(emp1Saved);
+//
+//		List<DireccionPostal> dps5 = new ArrayList<DireccionPostal>();
+//		dps5.add(d5Saved);
+//		emp2Saved.setDireccionesPostales(dps5);
+//		empleadoService.save(emp2Saved);
 
 	}
 
@@ -532,9 +532,9 @@ public class TemplateController implements Serializable {
 	@PostConstruct
 	public void init() {
 
-//		if (usuarioService.findAll().isEmpty()) {
-//			cargaDatos();
-//		}
+		if (usuarioService.findAll().isEmpty()) {
+			cargaDatos();
+		}
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 

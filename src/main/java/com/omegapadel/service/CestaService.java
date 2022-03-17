@@ -1,6 +1,5 @@
 package com.omegapadel.service;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -10,6 +9,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.omegapadel.model.Anuncio;
+import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Pedido;
@@ -22,9 +22,9 @@ public class CestaService {
 	@Inject
 	private CestaRepository cestRepository;
 	@Inject
-	private ClienteService clienteService;
-	@Inject
 	private PedidoService pedidoService;
+	@Inject
+	private AnuncioCantidadService anuncioCantidadService;
 
 	public <S extends Cesta> S save(S entity) {
 		return cestRepository.save(entity);
@@ -54,13 +54,11 @@ public class CestaService {
 		cestRepository.delete(entity);
 	}
 
-	public Cesta create(Map<Integer, Integer> anuncios) {
+	public Cesta create() {
 		Cesta c = new Cesta();
 
 		String referenciaProvisional = getReferenciaPedidoUnicoGenerado();
 		c.setReferenciaProvisional(referenciaProvisional);
-
-		c.setMapaAnunciosCantidad(anuncios);
 
 		return c;
 	}
@@ -92,29 +90,21 @@ public class CestaService {
 	public void addAnuncioAlCarrito(Anuncio anuncio, Cliente clienteLogado) {
 
 		if (clienteLogado != null) {
-
 			Cesta cestaCliente = clienteLogado.getCesta();
-//			if (cestaCliente == null) {
-//				cestaCliente = create();
-//
-//				Map<Integer, Integer> mapaAnuncios = new HashMap<Integer, Integer>();
-//				mapaAnuncios.put(anuncio.getId(), 1);
-//
-//				cestaCliente.setMapaAnunciosCantidad(mapaAnuncios);
-//				cestaCliente.setCosto(anuncio.getPrecio());
-//				
-//			} else {
-			Map<Integer, Integer> mapaAnuncios = cestaCliente.getMapaAnunciosCantidad();
-			if (mapaAnuncios.containsKey(anuncio.getId())) {
-				mapaAnuncios.put(anuncio.getId(), mapaAnuncios.get(anuncio.getId()) + 1);
+
+			Optional<AnuncioCantidad> anuncioTCOpt = null;
+			anuncioTCOpt = anuncioCantidadService.getAnunciosCantidadDeCestaYAnuncio(cestaCliente.getId(),
+					anuncio.getId());
+
+			if (anuncioTCOpt.isPresent()) {
+				AnuncioCantidad anuncioTC = anuncioTCOpt.get();
+				Integer cantidad = anuncioTC.getCantidad() + 1;
+				anuncioTC.setCantidad(cantidad);
+				anuncioCantidadService.save(anuncioTC);
 			} else {
-				mapaAnuncios.put(anuncio.getId(), 1);
+				AnuncioCantidad anuncioTC = anuncioCantidadService.create(anuncio, cestaCliente);
+				anuncioCantidadService.save(anuncioTC);
 			}
-			cestaCliente.setMapaAnunciosCantidad(mapaAnuncios);
-//			}
-			Cesta cestaSaved = save(cestaCliente);
-			clienteLogado.setCesta(cestaSaved);
-			clienteService.save(clienteLogado);
 		}
 	}
 

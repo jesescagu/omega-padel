@@ -1,9 +1,7 @@
 package com.omegapadel.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,6 +11,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.DireccionPostal;
@@ -30,8 +29,6 @@ public class PedidoService {
 	private EstadoPedidoService estadoPedidoService;
 	@Inject
 	private ConfiguracionService configuracionService;
-	@Inject
-	private AnuncioService anuncioService;
 	@Inject
 	private CestaService cestaService;
 
@@ -63,9 +60,9 @@ public class PedidoService {
 		pedidoRepository.delete(entity);
 	}
 
-	public Pedido create(Cliente cliente, DireccionPostal direccionPostal, Map<Integer, Integer> anuncios, String referencia) {
+	public Pedido create(Cliente cliente, DireccionPostal direccionPostal, List<AnuncioCantidad> anuncios,
+			String referencia) {
 		Pedido p = new Pedido();
-		p.setMapaAnunciosCantidad(anuncios);
 		p.setCliente(cliente);
 		p.setDireccionPostal(direccionPostal);
 		p.setReferenciaPedido(referencia);
@@ -82,21 +79,17 @@ public class PedidoService {
 		return p;
 	}
 
-	public Double getPrecioTotalAnuncios(Map<Integer, Integer> mapaAnunciosCantidad) {
+	public Double getPrecioTotalAnuncios(List<AnuncioCantidad> anuncios) {
 
 		Double total = 0.0;
-
-		Set<Integer> setCesta = mapaAnunciosCantidad.keySet();
-		for (Integer anuncioId : setCesta) {
-			Double precio = anuncioService.findById(anuncioId).get().getPrecio();
-			Integer cantidad = mapaAnunciosCantidad.get(anuncioId);
+		for (AnuncioCantidad a : anuncios) {
+			Double precio = a.getAnuncio().getPrecio();
+			Integer cantidad = a.getCantidad();
 			total = total + (precio * cantidad);
 		}
-
 		return total;
-
 	}
-	
+
 	public String getReferenciaPedidoUnicoGenerado() {
 		String cadenaGenerada = "";
 		String banco = "1234567890";

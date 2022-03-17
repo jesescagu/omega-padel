@@ -25,7 +25,7 @@ public class Anuncio extends EntidadBase {
 
 	@NotNull
 	private Double precio;
-	
+
 	@NotNull
 	private boolean activo;
 
@@ -79,7 +79,7 @@ public class Anuncio extends EntidadBase {
 	public void setProductos(List<Producto> productos) {
 		this.productos = productos;
 	}
-
+	
 	public boolean isActivo() {
 		return activo;
 	}
@@ -113,6 +113,4 @@ public class Anuncio extends EntidadBase {
 		return true;
 	}
 
-	
-	
 }

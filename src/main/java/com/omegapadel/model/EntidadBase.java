@@ -18,7 +18,7 @@ public class EntidadBase implements Serializable {
 	private static final long serialVersionUID = -3019687232984868307L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Integer id;
 	protected Integer version;
 	protected Date fechaCreacion;

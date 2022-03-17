@@ -58,8 +58,8 @@ public class ZapatillaController implements Serializable {
 	private String marcaEscogida;
 	private Integer stockNuevaZapatilla;
 	private String modeloNuevaZapatilla;
-	private Map<Integer, Integer> mapaTallaStockNuevaZapatilla;
-	private Set<Integer> listaKeysTallas;
+	private Map<String, Integer> mapaTallaStockNuevaZapatilla;
+	private Set<String> listaKeysTallas;
 	private String sexoNuevaZapatilla;
 
 	private Integer tallaNuevaZapatilla;
@@ -97,10 +97,10 @@ public class ZapatillaController implements Serializable {
 			this.stockNuevaZapatilla = null;
 			this.modeloNuevaZapatilla = "";
 			this.marcaEscogida = "";
-			this.mapaTallaStockNuevaZapatilla = new HashMap<Integer, Integer>();
+			this.mapaTallaStockNuevaZapatilla = new HashMap<String, Integer>();
 			this.sexoNuevaZapatilla = "";
-			this.listaKeysTallas = new HashSet<Integer>();
-			
+			this.listaKeysTallas = new HashSet<String>();
+
 			this.tallaNuevaZapatilla = null;
 			this.stockNuevaTallaZapatilla = null;
 
@@ -113,7 +113,7 @@ public class ZapatillaController implements Serializable {
 			this.mapaTallaStockNuevaZapatilla = this.nuevaZapatilla.getMapaTallaStock();
 			this.sexoNuevaZapatilla = this.nuevaZapatilla.getSexo();
 			this.listaKeysTallas = this.mapaTallaStockNuevaZapatilla.keySet();
-			
+
 			this.tallaNuevaZapatilla = null;
 			this.stockNuevaTallaZapatilla = null;
 
@@ -121,25 +121,25 @@ public class ZapatillaController implements Serializable {
 	}
 
 	public void addTallaAZapatilla() {
-		
+
 		if (this.tallaNuevaZapatilla == null || this.tallaNuevaZapatilla.equals(0)
 				|| this.stockNuevaTallaZapatilla == null || this.stockNuevaTallaZapatilla.equals(0)) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Introduce datos de talla y stock para añadir la talla de la zapatilla.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 		}
-		
-		this.mapaTallaStockNuevaZapatilla.put(this.tallaNuevaZapatilla, this.stockNuevaTallaZapatilla);
+
+		this.mapaTallaStockNuevaZapatilla.put(this.tallaNuevaZapatilla.toString(), this.stockNuevaTallaZapatilla);
 	}
-	
+
 	public void eliminarTallaDeZapatilla(Integer talla) {
-		this.mapaTallaStockNuevaZapatilla.remove(this.tallaNuevaZapatilla);
+		this.mapaTallaStockNuevaZapatilla.remove(talla.toString());
 	}
-	
+
 	public Integer getStockDeTalla(Zapatilla zapa, Integer talla) {
 
 		if (zapa != null && !CollectionUtils.isEmpty(zapa.getMapaTallaStock().keySet())) {
-			return zapa.getMapaTallaStock().get(talla);
+			return zapa.getMapaTallaStock().get(talla.toString());
 		} else {
 			return 0;
 		}
@@ -428,11 +428,11 @@ public class ZapatillaController implements Serializable {
 		this.modeloNuevaZapatilla = modeloNuevaZapatilla;
 	}
 
-	public Map<Integer, Integer> getMapaTallaStockNuevaZapatilla() {
+	public Map<String, Integer> getMapaTallaStockNuevaZapatilla() {
 		return mapaTallaStockNuevaZapatilla;
 	}
 
-	public void setMapaTallaStockNuevaZapatilla(Map<Integer, Integer> mapaTallaStockNuevaZapatilla) {
+	public void setMapaTallaStockNuevaZapatilla(Map<String, Integer> mapaTallaStockNuevaZapatilla) {
 		this.mapaTallaStockNuevaZapatilla = mapaTallaStockNuevaZapatilla;
 	}
 
@@ -460,11 +460,11 @@ public class ZapatillaController implements Serializable {
 		this.validacionImagenes = validacionImagenes;
 	}
 
-	public Set<Integer> getListaKeysTallas() {
+	public Set<String> getListaKeysTallas() {
 		return listaKeysTallas;
 	}
 
-	public void setListaKeysTallas(Set<Integer> listaKeysTallas) {
+	public void setListaKeysTallas(Set<String> listaKeysTallas) {
 		this.listaKeysTallas = listaKeysTallas;
 	}
 

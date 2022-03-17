@@ -8,13 +8,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -30,10 +27,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.omegapadel.model.Anuncio;
+import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.EstadoPedido;
 import com.omegapadel.model.Pedido;
-import com.omegapadel.service.AnuncioService;
+import com.omegapadel.service.AnuncioCantidadService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.EstadoPedidoService;
 import com.omegapadel.service.PedidoService;
@@ -52,8 +50,8 @@ public class PedidoController implements Serializable {
 	private PedidoService pedidoService;
 	@Inject
 	private EstadoPedidoService estadoPedidoService;
-	@Inject
-	private AnuncioService anuncioService;
+	@Inject 
+	private AnuncioCantidadService anuncioCantidadService;
 
 	private Cliente clienteLogado;
 	private List<Pedido> listaPedidos;
@@ -113,12 +111,6 @@ public class PedidoController implements Serializable {
 
 	}
 
-	public Anuncio getAnuncioPorId(Integer id) {
-
-		return anuncioService.findById(id).get();
-
-	}
-
 	public void abrirHistorialPedidos() throws IOException {
 		if (this.clienteLogado != null) {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("listaPedidos.xhtml");
@@ -133,6 +125,7 @@ public class PedidoController implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean filtrarFechaCreacion(Object value, Object filter, Locale locale) {
 
 		Timestamp valor = null;
@@ -156,13 +149,11 @@ public class PedidoController implements Serializable {
 
 	public boolean filtrarTablaPorProducto(Object value, Object filter, Locale locale) {
 
-		Set<Integer> listaProductos = new HashSet<Integer>();
+		List<AnuncioCantidad> listaProductos = new ArrayList<AnuncioCantidad>();
 		String textoFiltro = null;
 		if (value instanceof Integer) {
 			Integer idPed = (Integer) value;
-			Pedido pedido = pedidoService.findById(idPed).get();
-
-			listaProductos = pedido.getMapaAnunciosCantidad().keySet();
+			listaProductos = anuncioCantidadService.getAnunciosCantidadDePedido(idPed);
 		}
 
 		if (filter instanceof String) {
@@ -170,8 +161,8 @@ public class PedidoController implements Serializable {
 			textoFiltro = textoFiltro.trim().toUpperCase();
 		}
 
-		for (Integer i : listaProductos) {
-			Anuncio anuncio = anuncioService.findById(i).get();
+		for (AnuncioCantidad a : listaProductos) {
+			Anuncio anuncio = a.getAnuncio();
 			String prod = anuncio.getTitulo().trim().toUpperCase();
 			if (prod.contains(textoFiltro)) {
 				return true;
@@ -180,6 +171,12 @@ public class PedidoController implements Serializable {
 
 		return false;
 
+	}
+	
+	public List<AnuncioCantidad> getAnunciosDelPedido(Pedido pedido){
+		
+		return anuncioCantidadService.getAnunciosCantidadDePedido(pedido.getId());
+		
 	}
 
 	public void abrirDetallesPedido(Pedido pedido) throws IOException {

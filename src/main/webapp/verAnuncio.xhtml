@@ -3,6 +3,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="content">
@@ -152,19 +153,10 @@
 												value="Eliminar">
 											</p:commandButton>
 										</p:column>
-
 									</p:dataTable>
-
-
-
 								</h:panelGroup>
-
 							</h:panelGroup>
-
-
 						</h:panelGroup>
-
-
 
 					</h:panelGroup>
 					<h:panelGroup style="background-color:#fafaf4;border:solid;"
@@ -180,26 +172,88 @@
 						<hr />
 
 						<h:panelGroup
-							rendered="#{anuncioController.renderSeleccionTallas()}"
+							rendered="#{anuncioController.renderUnicaTallaZapatillaRopa()}"
 							styleClass="row">
 
-							<h:outputText styleClass="col-sm-3"
-								value="Escoger talla de la zapatilla" />
-								
-							<p:selectOneMenu styleClass="col-sm-6"
-								id="tallaZapatilla"
-								value="#{anuncioController.tallaZapatillaSeleccionada}">
+							<p:outputLabel styleClass="col-sm-6" for="selectTalla" value="Selecciona talla del producto" />
+							
+							<p:selectOneMenu id="selectTalla" styleClass="col-sm-6"
+								value="#{anuncioController.tallaSeleccionadaDeProducto}">
+								<p:ajax event="change" process="@this" />
 
-								<f:selectItem itemLabel="Selecciona municipio" />
-								<f:selectItems var="temp" itemLabel="#{temp.descripcion}"
-									itemValue="#{temp.codigo}"
-									value="#{direccionPostalController.listaMunicipios}" />
-
+								<f:selectItem itemLabel="Selecciona talla" />
+								<f:selectItems var="temp" itemLabel="#{temp}"
+									itemValue="#{temp}"
+									value="#{anuncioController.getTallasProductosUnica(anuncioController.anuncioSeleccionado.productos.get(0))}" />
 							</p:selectOneMenu>
 
-
-
 						</h:panelGroup>
+						<h:panelGroup
+							rendered="#{anuncioController.renderListaTallasProducto()}"
+							styleClass="row">
+
+							<p:dataTable var="elem" id="tablaTallas"
+								value="#{anuncioController.tallasProductoDeAnuncioSeleccionado.keySet()}">
+
+								<p:column headerText="Producto">
+
+									<h:outputText value="#{elem.marca.nombre} #{elem.modelo}" />
+
+								</p:column>
+
+								<p:column headerText="Talla">
+									<h:panelGroup
+										rendered="#{elem['class'].simpleName eq 'Pala' or elem['class'].simpleName eq 'Pelota' or elem['class'].simpleName eq 'Paletero'}">
+										<h:outputText styleClass="col-sm-3" value="Unica" />
+									</h:panelGroup>
+
+									<h:panelGroup
+										rendered="#{elem['class'].simpleName eq 'Zapatilla' or elem['class'].simpleName eq 'Ropa'}">
+
+										<p:selectOneMenu styleClass="col-sm-6"
+											rendered="#{anuncioController.renderModificarTallaProductoLista(elem) eq false}"
+											value="#{anuncioController.tallaSeleccionadaDeProducto}">
+											<p:ajax event="change" process="@this" />
+
+											<f:selectItem itemLabel="Selecciona talla" />
+											<f:selectItems var="temp" itemLabel="#{temp}"
+												itemValue="#{temp}"
+												value="#{anuncioController.getTallasProductosUnica(elem)}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu styleClass="col-sm-6" disabled="true"
+											rendered="#{anuncioController.renderModificarTallaProductoLista(elem) eq true}"
+											value="#{anuncioController.tallasProductoDeAnuncioSeleccionado.get(elem)}">
+
+											<f:selectItem itemLabel="Selecciona talla" />
+											<f:selectItems var="temp" itemLabel="#{temp}"
+												itemValue="#{temp}"
+												value="#{anuncioController.getTallasProductosUnica(elem)}" />
+										</p:selectOneMenu>
+
+									</h:panelGroup>
+								</p:column>
+
+								<p:column headerText="Acciones">
+
+									<p:commandButton styleClass="btn btn-primary" process="@this"
+										update=":detalleAnuncio:tablaTallas"
+										rendered="#{anuncioController.renderModificarTallaProductoLista(elem)}"
+										actionListener="#{anuncioController.renderCambiaValorTalla(elem)}"
+										value="Elegir talla">
+									</p:commandButton>
+
+									<p:commandButton styleClass="btn btn-primary" process="@this"
+										update=":detalleAnuncio:tablaTallas"
+										rendered="#{anuncioController.renderModificarTallaProductoLista(elem) eq false}"
+										actionListener="#{anuncioController.cambiaValorTalla(elem)}"
+										value="Guardar">
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</h:panelGroup>
+						
+						<br/>
 
 						<h:panelGroup styleClass="row">
 
@@ -209,7 +263,7 @@
 							<p:commandButton styleClass="col-sm-7" process="@this"
 								update="@all"
 								disabled="#{anuncioController.estaClienteLogado eq false}"
-								actionListener="#{cestaController.addAnuncioAlCarrito(anuncioController.anuncioSeleccionado)}"
+								actionListener="#{anuncioController.addAnuncioAlCarrito()}"
 								value="Añadir al carrito" />
 							<p:staticMessage styleClass="col-sm-12"
 								rendered="#{anuncioController.estaClienteLogado eq false}"

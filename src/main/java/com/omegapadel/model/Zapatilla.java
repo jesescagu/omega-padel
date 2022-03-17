@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -21,17 +22,17 @@ public class Zapatilla extends Producto {
 //	@Max(value = 99)
 //	private Integer talla;
 
-	@ElementCollection
-	private Map<Integer, Integer> mapaTallaStock;
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Map<String, Integer> mapaTallaStock;
 
 	@NotBlank
 	private String sexo;
 
-	public Map<Integer, Integer> getMapaTallaStock() {
+	public Map<String, Integer> getMapaTallaStock() {
 		return mapaTallaStock;
 	}
 
-	public void setMapaTallaStock(Map<Integer, Integer> mapaTallaStock) {
+	public void setMapaTallaStock(Map<String, Integer> mapaTallaStock) {
 		this.mapaTallaStock = mapaTallaStock;
 	}
 

@@ -1,6 +1,7 @@
 package com.omegapadel.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -52,14 +53,13 @@ public class RopaService {
 		ropaRepository.delete(entity);
 	}
 
-	public Ropa create(Marca marca, String modelo, Integer stock, String talla, String sexo, TipoRopa tipoRopa) {
+	public Ropa create(Marca marca, String modelo, Integer stock, String talla, String sexo, TipoRopa tipoRopa,
+			Map<String, Integer> mapaTallasStock) {
 		Ropa p = new Ropa();
 		p.setMarca(marca);
 		p.setModelo(modelo);
 		p.setStock(stock);
-		p.setTalla(talla);
-		p.setSexo(sexo);
-		p.setTipoRopa(tipoRopa);
+		p.setMapaTallaStock(mapaTallasStock);
 		return p;
 
 	}

@@ -32,9 +32,9 @@
 
 				<div class="col-sm-10">
 
-					<p:dataTable widgetVar="tablaPedidos" allowUnsorting="true" sortMode="single" rows="5"
-						paginator="true" paginatorPosition="bottom"
-						paginatorAlwaysVisible="false"
+					<p:dataTable widgetVar="tablaPedidos" allowUnsorting="true"
+						sortMode="single" rows="5" paginator="true"
+						paginatorPosition="bottom" paginatorAlwaysVisible="false"
 						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						id="datatablePedidosATramitar"
@@ -75,10 +75,10 @@
 						<p:column filterBy="#{pedido.id}"
 							filterFunction="#{pedidoController.filtrarTablaPorProducto}"
 							style="text-align:center" headerText="Productos">
-							<ui:repeat value="#{pedido.mapaAnunciosCantidad.keySet()}"
+							<ui:repeat
+								value="#{pedidoController.getAnunciosDelPedido(pedido)}"
 								var="elem">
-								<h:outputText
-									value="#{pedidoController.getAnuncioPorId(elem).titulo} - #{pedido.mapaAnunciosCantidad.get(elem)}" />
+								<h:outputText value="#{elem.anuncio.titulo} - #{elem.cantidad}" />
 								<br />
 							</ui:repeat>
 						</p:column>

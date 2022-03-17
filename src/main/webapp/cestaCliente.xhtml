@@ -20,24 +20,25 @@
 					<p:column width="45%" headerText="Descripción">
 
 						<p:commandLink
-							actionListener="#{anuncioController.mostrarAnuncio(prod)}">
+							actionListener="#{anuncioController.mostrarAnuncio(prod.anuncio)}">
 							<h:panelGroup styleClass="row">
 								<h:panelGroup styleClass="col-sm-5">
+
 									<h:graphicImage style="border:solid;"
-										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(prod.id))}"
+										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(prod.anuncio.id))}"
 										width="200" height="200" />
 
 								</h:panelGroup>
 
 								<h:panelGroup styleClass="col-sm-6">
 									<h2>
-										<h:outputText value="#{prod.titulo}" />
+										<h:outputText value="#{prod.anuncio.titulo}" />
 									</h2>
 									<br />
-									<h:outputText value="prod.referencia" />
+									<h:outputText value="prod.anuncio.referencia" />
 									<br />
 									<b><h:outputText value="Precio individual: " /></b>
-									<h:outputText value="#{prod.precio} €" />
+									<h:outputText value="#{prod.anuncio.precio} €" />
 								</h:panelGroup>
 
 							</h:panelGroup>
@@ -51,12 +52,13 @@
 							styleClass="ui-inputgroup">
 
 							<p:commandButton process="@this" style="width:15%;"
+								disabled="#{prod.cantidad eq 1}"
 								update=":detalleCesta:grupoProductosCesta"
 								actionListener="#{cestaController.quitarUnProductoDelCarrito(prod)}"
 								value="-" />
 
 							<h:inputText style="width:70%; text-align:center" readonly="true"
-								value="#{cestaController.getCantidadProductoEnCesta(prod)}" />
+								value="#{prod.cantidad}" />
 
 							<p:commandButton process="@this" style="width:15%;"
 								update=":detalleCesta:grupoProductosCesta"
@@ -85,8 +87,8 @@
 							value="Cambiar cantidad manualmente">
 						</p:commandButton>
 
-						<p:commandButton styleClass="btn btn-primary"
-							update=":detalleCesta:grupoProductosCesta"
+						<p:commandButton styleClass="btn btn-primary" process="@form"
+							update=":detalleCesta:datatableDestalleCestaId"
 							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
 							actionListener="#{cestaController.cambioCantidadProducto(prod)}"
 							value="Guardar cantidad">
@@ -170,6 +172,11 @@
 				value="Cancelar compra">
 			</p:commandButton>
 
+			<p:remoteCommand name="inicializaVariables"
+				actionListener="#{cestaController.inicializaVariablesRedsys()}" />
+			<p:remoteCommand name="pagarCarrito"
+				actionListener="#{cestaController.pagarCarrito()}" />
+
 		</h:form>
 
 		<form id="formPagarCarritoId" method="post"
@@ -189,16 +196,9 @@
 
 		</form>
 
-		<p:remoteCommand name="inicializaVariables"
-			actionListener="#{cestaController.inicializaVariablesRedsys()}" />
-		<p:remoteCommand name="pagarCarrito"
-			actionListener="#{cestaController.pagarCarrito()}" />
-
 		<SCRIPT type="text/javascript">
 			function somejavascript() {
-				inicializaVariables();
-				document.getElementById("formPagarCarritoId").submit();
-				pagarCarrito();
+				inicializaVariables().then(()=>{pagarCarrito();}).then(()=>{document.getElementById("formPagarCarritoId").submit();});
 			}
 		</SCRIPT>
 

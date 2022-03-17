@@ -52,8 +52,9 @@ public class ZapatillaService {
 		zapatillaRepository.delete(entity);
 	}
 
-	public Zapatilla create(Marca marca, String modelo, Integer stock, String sexo, Map<Integer,Integer> mapaTallaStock) {
-		
+	public Zapatilla create(Marca marca, String modelo, Integer stock, String sexo,
+			Map<String, Integer> mapaTallaStock) {
+
 		Optional<Zapatilla> zapa = getZapatillaUnica(marca.getNombre(), modelo, sexo);
 
 		Zapatilla p = null;
@@ -62,7 +63,7 @@ public class ZapatillaService {
 		} else {
 			p = zapa.get();
 		}
-		
+
 		p.setMapaTallaStock(mapaTallaStock);
 		p.setMarca(marca);
 		p.setModelo(modelo);

@@ -6,13 +6,8 @@ import java.io.Serializable;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -30,12 +25,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.omegapadel.model.Anuncio;
+import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Configuracion;
 import com.omegapadel.model.DireccionPostal;
 import com.omegapadel.model.Pedido;
-import com.omegapadel.service.AnuncioService;
+import com.omegapadel.service.AnuncioCantidadService;
 import com.omegapadel.service.CestaService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.ConfiguracionService;
@@ -56,17 +52,17 @@ public class CestaController implements Serializable {
 	@Inject
 	private ClienteService clienteService;
 	@Inject
-	private AnuncioService anuncioService;
-	@Inject
 	private DireccionPostalService direccionPostalService;
 	@Inject
 	private ConfiguracionService configuracionService;
 	@Inject
 	private PedidoService pedidoService;
+	@Inject
+	private AnuncioCantidadService anuncioCantidadService;
 
 	private Cliente clienteLogado;
 
-	public List<Anuncio> listaProductosCesta;
+	public List<AnuncioCantidad> listaProductosCesta;
 	private List<DireccionPostal> listaDireccionesUsuario;
 	private DireccionPostal direccionPostalSeleccionada;
 
@@ -89,7 +85,7 @@ public class CestaController implements Serializable {
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
 //			User user = (User) auth.getPrincipal();
 //			String nombreUsuario = user.getUsername();
-			
+
 			String nombreUsuario = null;
 			Object princ = auth.getPrincipal();
 			if (princ instanceof User) {
@@ -98,7 +94,7 @@ public class CestaController implements Serializable {
 			} else {
 				nombreUsuario = (String) auth.getPrincipal();
 			}
-			
+
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -111,13 +107,11 @@ public class CestaController implements Serializable {
 				this.valorCantidadEnEdicion = (Integer) valorCantidadEnEdicionObject;
 			}
 
-			this.listaProductosCesta = new ArrayList<Anuncio>();
 			Cesta c = this.clienteLogado.getCesta();
 			if (c != null) {
-				Set<Integer> setCesta = c.getMapaAnunciosCantidad().keySet();
-				setCesta.stream().forEach(ci -> this.listaProductosCesta.add(anuncioService.findById(ci).get()));
+				this.listaProductosCesta = anuncioCantidadService.getAnunciosCantidadDeCesta(c.getId());
 			} else {
-				Cesta cesta = cestaService.create(new HashMap<Integer, Integer>());
+				Cesta cesta = cestaService.create();
 				this.clienteLogado.setCesta(cestaService.save(cesta));
 				clienteService.save(this.clienteLogado);
 			}
@@ -149,20 +143,10 @@ public class CestaController implements Serializable {
 		}
 	}
 
-	public Integer getCantidadProductoEnCesta(Anuncio anuncio) {
-
-		Map<Integer, Integer> maps = this.clienteLogado.getCesta().getMapaAnunciosCantidad();
-		Integer i = maps.get(anuncio.getId());
-		return i;
-	}
-
-	public void cambiarCantidadManualmenteProductoDelCarrito(Anuncio anuncio) throws IOException {
-
-		Cesta cesta = this.clienteLogado.getCesta();
-		Map<Integer, Integer> maps = cesta.getMapaAnunciosCantidad();
+	public void cambiarCantidadManualmenteProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
 
 		this.anuncioIdParaEditar = anuncio.getId();
-		this.valorCantidadEnEdicion = maps.get(this.anuncioIdParaEditar);
+		this.valorCantidadEnEdicion = anuncio.getCantidad();
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("anuncioIdParaEditar", this.anuncioIdParaEditar);
@@ -170,70 +154,51 @@ public class CestaController implements Serializable {
 
 	}
 
-	public void cambioCantidadProducto(Anuncio anuncio) throws IOException {
-		Cesta cesta = this.clienteLogado.getCesta();
+	public void cambioCantidadProducto(AnuncioCantidad anuncio) throws IOException {
 
-		Map<Integer, Integer> maps = cesta.getMapaAnunciosCantidad();
-		Integer i = this.valorCantidadEnEdicion;
-		maps.put(anuncio.getId(), i);
+		Integer cantidad = this.valorCantidadEnEdicion;
+		anuncio.setCantidad(cantidad);
+		anuncioCantidadService.save(anuncio);
 
-		cesta.setMapaAnunciosCantidad(maps);
-		cestaService.save(cesta);
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("anuncioIdParaEditar");
+		context.getExternalContext().getSessionMap().remove("valorCantidadEnEdicion");
+
 		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
 	}
 
-	public void quitarUnProductoDelCarrito(Anuncio anuncio) throws IOException {
-		Cesta cesta = this.clienteLogado.getCesta();
+	public void quitarUnProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
 
-		Map<Integer, Integer> maps = cesta.getMapaAnunciosCantidad();
-		Integer i = maps.get(anuncio.getId());
+		Integer cantidad = anuncio.getCantidad() - 1;
+		anuncio.setCantidad(cantidad);
+		anuncioCantidadService.save(anuncio);
 
-		maps.put(anuncio.getId(), i - 1);
-
-		cesta.setMapaAnunciosCantidad(maps);
-		cestaService.save(cesta);
 		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
 	}
 
-	public void addUnProductoDelCarrito(Anuncio anuncio) throws IOException {
-		Cesta cesta = this.clienteLogado.getCesta();
+	public void addUnProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
 
-		Map<Integer, Integer> maps = cesta.getMapaAnunciosCantidad();
-		Integer i = maps.get(anuncio.getId());
+		Integer cantidad = anuncio.getCantidad() + 1;
+		anuncio.setCantidad(cantidad);
+		anuncioCantidadService.save(anuncio);
 
-		maps.put(anuncio.getId(), i + 1);
-
-		cesta.setMapaAnunciosCantidad(maps);
-		cestaService.save(cesta);
 		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
 	}
 
-	public Double totalPrecioProducto(Anuncio anuncio) {
+	public Double totalPrecioProducto(AnuncioCantidad anuncio) {
 
 		Double total = 0.0;
-
-		Cesta c = this.clienteLogado.getCesta();
-
-		if (c != null) {
-			Map<Integer, Integer> maps = c.getMapaAnunciosCantidad();
-
-			Integer cant = maps.get(anuncio.getId());
-			total = cant * anuncio.getPrecio();
-
-		}
+		Integer cant = anuncio.getCantidad();
+		total = cant * anuncio.getAnuncio().getPrecio();
 
 		return total;
+
 	}
 
-	public void eliminarProductoDelCarrito(Anuncio anuncio) throws IOException {
+	public void eliminarProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
 
-		Cesta c = this.clienteLogado.getCesta();
-		Map<Integer, Integer> maps = c.getMapaAnunciosCantidad();
+		anuncioCantidadService.deleteById(anuncio.getId());
 
-		maps.remove(anuncio.getId());
-		c.setMapaAnunciosCantidad(maps);
-
-		cestaService.save(c);
 		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
 	}
 
@@ -243,16 +208,16 @@ public class CestaController implements Serializable {
 		Cesta c = this.clienteLogado.getCesta();
 
 		if (c != null) {
-			Map<Integer, Integer> maps = c.getMapaAnunciosCantidad();
 
-			Set<Integer> setCesta = c.getMapaAnunciosCantidad().keySet();
-			for (Integer anuncioId : setCesta) {
-				Double precio = anuncioService.findById(anuncioId).get().getPrecio();
-				Integer cantidad = maps.get(anuncioId);
+			List<AnuncioCantidad> listaAnuncios = anuncioCantidadService.getAnunciosCantidadDeCesta(c.getId());
+
+			for (AnuncioCantidad a : listaAnuncios) {
+
+				Integer cantidad = a.getCantidad();
+				Double precio = a.getAnuncio().getPrecio();
 				total = total + (precio * cantidad);
 			}
 		}
-
 		return total;
 
 	}
@@ -361,9 +326,16 @@ public class CestaController implements Serializable {
 
 			if (cesta != null) {
 
+				List<AnuncioCantidad> listaAnuncios = anuncioCantidadService.getAnunciosCantidadDeCesta(cesta.getId());
 				Pedido pedido = pedidoService.create(this.clienteLogado, this.direccionPostalSeleccionada,
-						cesta.getMapaAnunciosCantidad(), cesta.getReferenciaProvisional());
-				pedidoService.save(pedido);
+						listaAnuncios, cesta.getReferenciaProvisional());
+				Pedido pedidoSaved = pedidoService.save(pedido);
+
+				for (AnuncioCantidad ac : listaAnuncios) {
+					ac.setCesta(null);
+					ac.setPedido(pedidoSaved);
+					anuncioCantidadService.save(ac);
+				}
 
 				cestaService.delete(cesta);
 
@@ -373,21 +345,12 @@ public class CestaController implements Serializable {
 		return false;
 	}
 
-	public void addAnuncioAlCarrito(Anuncio anuncio) {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-			cestaService.addAnuncioAlCarrito(anuncio, this.clienteLogado);
-		}
-	}
-	
 	public Boolean desactivarBotonCesta() {
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
+
 		return (auth == null || !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente")));
-		
+
 	}
 
 	public Integer numeroProductosCarritoCliente() {
@@ -396,7 +359,7 @@ public class CestaController implements Serializable {
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
 //			User user = (User) auth.getPrincipal();
 //			String nombreUsuario = user.getUsername();
-			
+
 			String nombreUsuario = null;
 			Object princ = auth.getPrincipal();
 			if (princ instanceof User) {
@@ -405,15 +368,16 @@ public class CestaController implements Serializable {
 			} else {
 				nombreUsuario = (String) auth.getPrincipal();
 			}
-			
+
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 			Cesta cesta = this.clienteLogado.getCesta();
 			if (cesta == null) {
 				return 0;
 			} else {
-				Collection<Integer> intList = cesta.getMapaAnunciosCantidad().values();
+				List<AnuncioCantidad> intList = anuncioCantidadService.getAnunciosCantidadDeCesta(cesta.getId());
 				Integer suma = 0;
-				for (Integer i : intList) {
+				for (AnuncioCantidad a : intList) {
+					Integer i = a.getCantidad();
 					suma = suma + i;
 				}
 				return suma;
@@ -422,7 +386,10 @@ public class CestaController implements Serializable {
 		return 0;
 	}
 
-	public boolean renderModificarCantidadManualmente(Anuncio anuncio) {
+	public boolean renderModificarCantidadManualmente(AnuncioCantidad anuncio) {
+		if (this.anuncioIdParaEditar == null) {
+			return false;
+		}
 		return anuncio.getId() == this.anuncioIdParaEditar;
 	}
 
@@ -438,7 +405,7 @@ public class CestaController implements Serializable {
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
 //			User user = (User) auth.getPrincipal();
 //			String nombreUsuario = user.getUsername();
-			
+
 			String nombreUsuario = null;
 			Object princ = auth.getPrincipal();
 			if (princ instanceof User) {
@@ -447,7 +414,7 @@ public class CestaController implements Serializable {
 			} else {
 				nombreUsuario = (String) auth.getPrincipal();
 			}
-			
+
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
 			context.getExternalContext().getSessionMap().put("cestaClienteLogado", this.clienteLogado.getCesta());
@@ -466,11 +433,11 @@ public class CestaController implements Serializable {
 		this.clienteLogado = clienteLogado;
 	}
 
-	public List<Anuncio> getListaProductosCesta() {
+	public List<AnuncioCantidad> getListaProductosCesta() {
 		return listaProductosCesta;
 	}
 
-	public void setListaProductosCesta(List<Anuncio> listaProductosCesta) {
+	public void setListaProductosCesta(List<AnuncioCantidad> listaProductosCesta) {
 		this.listaProductosCesta = listaProductosCesta;
 	}
 

@@ -67,27 +67,27 @@
 				<h1>Productos del pedido</h1>
 
 				<p:dataTable
-					value="#{pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.keySet()}"
+					value="#{pedidoController.getAnunciosDelPedido(pedidoController.pedidoParaMostrar)}"
 					var="elem">
 
 					<p:column style="text-align:center" headerText="Producto">
 						<h:outputText
-							value="#{pedidoController.getAnuncioPorId(elem).titulo}" />
+							value="#{elem.anuncio.titulo}" />
 					</p:column>
 
 					<p:column style="text-align:center" headerText="Cantidad">
 						<h:outputText
-							value="#{pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.get(elem)}" />
+							value="#{elem.cantidad}" />
 					</p:column>
 
 					<p:column style="text-align:center" headerText="Precio Unitario">
 						<h:outputText
-							value="#{pedidoController.getAnuncioPorId(elem).precio} €" />
+							value="#{elem.anuncio.precio} €" />
 					</p:column>
 
 					<p:column style="text-align:center" headerText="Precio Total">
 						<h:outputText
-							value="#{pedidoController.getAnuncioPorId(elem).precio * pedidoController.pedidoParaMostrar.mapaAnunciosCantidad.get(elem)} €" />
+							value="#{elem.anuncio.precio * elem.cantidad} €" />
 					</p:column>
 
 				</p:dataTable>

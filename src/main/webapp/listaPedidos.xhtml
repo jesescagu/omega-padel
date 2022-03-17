@@ -56,10 +56,10 @@
 						<p:column filterBy="#{pedido.id}"
 							filterFunction="#{pedidoController.filtrarTablaPorProducto}"
 							style="text-align:center" headerText="Productos">
-							<ui:repeat value="#{pedido.mapaAnunciosCantidad.keySet()}"
+							<ui:repeat value="#{pedidoController.getAnunciosDelPedido(pedido)}"
 								var="elem">
 								<h:outputText
-									value="#{pedidoController.getAnuncioPorId(elem).titulo} - #{pedido.mapaAnunciosCantidad.get(elem)}" />
+									value="#{elem.anuncio.titulo} - #{elem.cantidad}" />
 								<br />
 							</ui:repeat>
 						</p:column>
@@ -194,7 +194,6 @@
 
 		<SCRIPT type="text/javascript">
 			function somejavascript(pedido) {
-				console.log(pedido);
 				inicializaVariables([{name:'pedidoId', value:pedido}]).then(()=>{document.getElementById("formPagarPagoPendienteId").submit();})
 			}
 		</SCRIPT>

@@ -5,8 +5,12 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -17,6 +21,7 @@ import javax.inject.Named;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.primefaces.model.file.UploadedFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,14 +32,20 @@ import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Comentario;
 import com.omegapadel.model.Empleado;
 import com.omegapadel.model.Imagen;
+import com.omegapadel.model.Pala;
+import com.omegapadel.model.Paletero;
+import com.omegapadel.model.Pelota;
 import com.omegapadel.model.Producto;
+import com.omegapadel.model.Ropa;
 import com.omegapadel.model.Zapatilla;
 import com.omegapadel.service.AnuncioService;
+import com.omegapadel.service.CestaService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.ComentarioService;
 import com.omegapadel.service.EmpleadoService;
 import com.omegapadel.service.ImagenService;
 import com.omegapadel.service.ProductoService;
+import com.omegapadel.service.ProductoTallaService;
 
 @Named("anuncioController")
 @ViewScoped
@@ -49,11 +60,15 @@ public class AnuncioController implements Serializable {
 	@Inject
 	private ProductoService productoService;
 	@Inject
+	private ProductoTallaService productoTallaService;
+	@Inject
 	private EmpleadoService empleadoService;
 	@Inject
 	private ComentarioService comentarioService;
 	@Inject
 	private ClienteService clienteService;
+	@Inject
+	private CestaService cestaService;
 
 	private int activeIndex = 0;
 
@@ -87,6 +102,10 @@ public class AnuncioController implements Serializable {
 
 	private List<Anuncio> listaAnunciosPacksPorMarca;
 
+	private Map<Producto, String> tallasProductoDeAnuncioSeleccionado;
+	private Integer idProductoParaElegirTalla;
+	private String tallaSeleccionadaDeProducto;
+
 	public static final String TEXTO_ERROR_IMAGENES_VACIAS = "Debe existir alguna imagen del anuncio.";
 
 	public void popularListaProductos() {
@@ -99,6 +118,8 @@ public class AnuncioController implements Serializable {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		this.tallasProductoDeAnuncioSeleccionado = new HashedMap<Producto, String>();
 
 		if (auth != null && auth.getAuthorities().stream()
 				.anyMatch(a -> (a.getAuthority().equals("empleado") || a.getAuthority().equals("admin")))) {
@@ -125,6 +146,9 @@ public class AnuncioController implements Serializable {
 		if (anuncioParaMostrar != null && anuncioParaMostrar instanceof Anuncio) {
 			this.anuncioSeleccionado = (Anuncio) anuncioParaMostrar;
 			this.listaComentariosAnuncio = comentarioService.getComentariosDeAnuncio(this.anuncioSeleccionado.getId());
+
+			this.tallasProductoDeAnuncioSeleccionado = getMapaProductoTalla();
+
 		}
 
 		if (anuncioParaEditar != null && anuncioParaEditar instanceof Anuncio) {
@@ -136,14 +160,18 @@ public class AnuncioController implements Serializable {
 			this.imagenesAnuncioNuevo = new ArrayList<>();
 			this.descripcionNuevoAnuncio = null;
 			this.tituloNuevoAnuncio = null;
+			popularListaProductos();
 		} else {
 
 			this.imagenesAnuncioNuevo = imagenService.getImagenesDelAnuncio(this.nuevoAnuncio.getId());
 			this.descripcionNuevoAnuncio = this.nuevoAnuncio.getDescripcion();
 			this.tituloNuevoAnuncio = this.nuevoAnuncio.getTitulo();
 			this.precioNuevoAnuncio = this.nuevoAnuncio.getPrecio();
+
+			this.listaProductosParaAnadir = new ArrayList<Producto>();
 			this.listaProductosParaAnadir = this.nuevoAnuncio.getProductos();
 
+			popularListaProductos();
 		}
 
 		if (this.anuncioSeleccionado != null) {
@@ -152,6 +180,30 @@ public class AnuncioController implements Serializable {
 			for (Imagen i : imagenesAux) {
 				this.imagenesAMostrarDelAnuncio.add(getBytesDeImagen(i));
 			}
+
+//			List<Producto> prods = this.anuncioSeleccionado.getProductos();
+//			if (prods.size() == 1) {
+//				Producto prod = prods.get(0);
+//				if (prod instanceof Zapatilla) {
+//					Zapatilla zapa = (Zapatilla) prod;
+//
+//					for (String talla : zapa.getMapaTallaStock().keySet()) {
+//						if (zapa.getMapaTallaStock().get(talla) != 0) {
+//							this.listaTallas.add(talla);
+//						}
+//					}
+//				}
+//				if (prod instanceof Ropa) {
+//					Ropa ropa = (Ropa) prod;
+//
+//					for (String talla : ropa.getMapaTallaStock().keySet()) {
+//						if (ropa.getMapaTallaStock().get(talla) != 0) {
+//							this.listaTallas.add(talla);
+//						}
+//					}
+//
+//				}
+//			}
 		}
 
 		Object marcaDeAnunciosObject = context.getExternalContext().getSessionMap().get("marcaDeAnuncios");
@@ -161,7 +213,81 @@ public class AnuncioController implements Serializable {
 			this.listaAnunciosPacksPorMarca = anuncioService.getAnunciosPorMarcaPack(marcaDeAnuncios);
 		}
 
-		popularListaProductos();
+	}
+
+	public boolean renderModificarTallaProductoLista(Producto prod) {
+
+		// TODO Accesorios??
+		if (prod instanceof Pala || prod instanceof Paletero || prod instanceof Pelota) {
+			return false;
+		}
+
+		if (this.idProductoParaElegirTalla == null) {
+			return true;
+		}
+		return prod.getId() != this.idProductoParaElegirTalla;
+	}
+
+	public boolean renderUnicaTallaZapatillaRopa() {
+
+		// TODO Accesorios
+		if (this.anuncioSeleccionado != null) {
+
+			List<Producto> prods = this.anuncioSeleccionado.getProductos();
+			if (prods.size() != 1) {
+				return false;
+			}
+			if (prods.get(0) instanceof Zapatilla || prods.get(0) instanceof Ropa) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	public boolean renderListaTallasProducto() {
+
+		// TODO Accesorios
+		if (this.anuncioSeleccionado != null) {
+
+			List<Producto> prods = this.anuncioSeleccionado.getProductos();
+			if (prods.size() <= 1) {
+				return false;
+			}
+			for (Producto p : prods) {
+				if (p instanceof Zapatilla || p instanceof Ropa) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public Map<Producto, String> getMapaProductoTalla() {
+
+		Map<Producto, String> result = new HashedMap<Producto, String>();
+		List<Producto> productosDelAnuncio = this.anuncioSeleccionado.getProductos();
+		for (Producto p : productosDelAnuncio) {
+			if (p instanceof Pala || p instanceof Paletero || p instanceof Pelota) {
+				result.put(p, "UNICA");
+			} else {
+				result.put(p, null);
+			}
+		}
+		return result;
+	}
+
+	public void renderCambiaValorTalla(Producto prod) {
+
+		this.idProductoParaElegirTalla = prod.getId();
+
+	}
+
+	public void cambiaValorTalla(Producto prod) {
+
+		this.tallasProductoDeAnuncioSeleccionado.put(prod, this.tallaSeleccionadaDeProducto);
+		this.idProductoParaElegirTalla = null;
+
 	}
 
 	public void mostrarAnuncio(Anuncio anuncio) throws IOException {
@@ -232,6 +358,7 @@ public class AnuncioController implements Serializable {
 
 			Anuncio anuncio = null;
 			if (this.nuevoAnuncio == null) {
+
 				anuncio = anuncioService.create(tituloNuevoAnuncio, descripcionNuevoAnuncio, precioNuevoAnuncio,
 						empleadoLogado, listaProductosParaAnadir);
 			} else {
@@ -392,6 +519,59 @@ public class AnuncioController implements Serializable {
 
 	}
 
+	public void addAnuncioAlCarrito() {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
+
+			if(renderListaTallasProducto()) {
+				// lISTA DE PRODUCTOS, ALGUNOS TIENE TALLA.
+				Map<Producto, String> mps = this.tallasProductoDeAnuncioSeleccionado;
+			}
+			
+			if(renderUnicaTallaZapatillaRopa()) {
+				// Un unico producto con su talla.
+				String s = this.tallaSeleccionadaDeProducto;
+			}
+
+			Anuncio anuncio = this.anuncioSeleccionado;
+
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
+
+			Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
+
+			cestaService.addAnuncioAlCarrito(anuncio, clienteLogado);
+		}
+	}
+
+	public List<String> getTallasProductosUnica(Producto prod) {
+
+		List<String> res = new ArrayList<String>();
+
+		Zapatilla zapa = (Zapatilla) prod;
+		Map<String, Integer> mapa = zapa.getMapaTallaStock();
+
+		SortedSet<Integer> ss = new TreeSet<Integer>();
+		for (String s : mapa.keySet()) {
+			if (mapa.get(s) != 0) {
+				ss.add(Integer.valueOf(s));
+			}
+		}
+		for (Integer i : ss) {
+			res.add(i.toString());
+		}
+		return res;
+
+	}
+
 	public void nuevaImagen() {
 
 		try {
@@ -484,18 +664,63 @@ public class AnuncioController implements Serializable {
 
 	}
 
-	public Boolean renderSeleccionTallas() {
-
-		if (this.estaClienteLogado) {
-			List<Producto> listaProductos = this.anuncioSeleccionado.getProductos();
-			for (Producto prod : listaProductos) {
-				if (prod instanceof Zapatilla) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	public Boolean renderSeleccionTallaZapatillaUnica() {
+//
+//		if (this.estaClienteLogado) {
+//			List<Producto> listaProductos = this.anuncioSeleccionado.getProductos();
+//
+//			if (listaProductos.size() > 1) {
+//				return false;
+//			}
+//
+//			for (Producto prod : listaProductos) {
+//				if (prod instanceof Zapatilla) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
+//
+//	public Boolean renderSeleccionTallaRopaUnica() {
+//
+//		if (this.estaClienteLogado) {
+//			List<Producto> listaProductos = this.anuncioSeleccionado.getProductos();
+//
+//			if (listaProductos.size() > 1) {
+//				return false;
+//			}
+//
+//			for (Producto prod : listaProductos) {
+//				if (prod instanceof Ropa) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
+//
+//	public Boolean renderSeleccionTallaRopaPack() {
+//
+//		if (this.estaClienteLogado) {
+//			List<Producto> listaProductos = this.anuncioSeleccionado.getProductos();
+//
+//			if (listaProductos.size() == 1) {
+//				return false;
+//			}
+//
+//			for (Producto prod : listaProductos) {
+//				
+//				if (prod instanceof Zapatilla) {
+//					return true;
+//				}
+//				if (prod instanceof Ropa) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
 	public Anuncio getAnuncioSeleccionado() {
 		return anuncioSeleccionado;
@@ -671,6 +896,30 @@ public class AnuncioController implements Serializable {
 
 	public void setListaAnunciosPacksPorMarca(List<Anuncio> listaAnunciosPacksPorMarca) {
 		this.listaAnunciosPacksPorMarca = listaAnunciosPacksPorMarca;
+	}
+
+	public Map<Producto, String> getTallasProductoDeAnuncioSeleccionado() {
+		return tallasProductoDeAnuncioSeleccionado;
+	}
+
+	public void setTallasProductoDeAnuncioSeleccionado(Map<Producto, String> tallasProductoDeAnuncioSeleccionado) {
+		this.tallasProductoDeAnuncioSeleccionado = tallasProductoDeAnuncioSeleccionado;
+	}
+
+	public Integer getIdProductoParaElegirTalla() {
+		return idProductoParaElegirTalla;
+	}
+
+	public void setIdProductoParaElegirTalla(Integer idProductoParaElegirTalla) {
+		this.idProductoParaElegirTalla = idProductoParaElegirTalla;
+	}
+
+	public String getTallaSeleccionadaDeProducto() {
+		return tallaSeleccionadaDeProducto;
+	}
+
+	public void setTallaSeleccionadaDeProducto(String tallaSeleccionadaDeProducto) {
+		this.tallaSeleccionadaDeProducto = tallaSeleccionadaDeProducto;
 	}
 
 }

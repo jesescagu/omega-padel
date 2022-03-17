@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
@@ -19,9 +20,6 @@ import javax.validation.constraints.NotNull;
 public class Pedido extends EntidadBase {
 
 	private static final long serialVersionUID = 4261985202231520506L;
-
-	@ElementCollection
-	private Map<Integer, Integer> mapaAnunciosCantidad;
 
 	@ManyToOne(optional = false)
 	private DireccionPostal direccionPostal;
@@ -45,14 +43,6 @@ public class Pedido extends EntidadBase {
 
 	@NotNull
 	private String ultimoEstado;
-
-	public Map<Integer, Integer> getMapaAnunciosCantidad() {
-		return mapaAnunciosCantidad;
-	}
-
-	public void setMapaAnunciosCantidad(Map<Integer, Integer> mapaAnunciosCantidad) {
-		this.mapaAnunciosCantidad = mapaAnunciosCantidad;
-	}
 
 	public DireccionPostal getDireccionPostal() {
 		return direccionPostal;

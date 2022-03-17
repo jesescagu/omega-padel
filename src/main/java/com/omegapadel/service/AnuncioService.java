@@ -3,9 +3,9 @@ package com.omegapadel.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.omegapadel.model.Anuncio;
