@@ -528,6 +528,7 @@ public class AnuncioController implements Serializable {
 			if(renderListaTallasProducto()) {
 				// lISTA DE PRODUCTOS, ALGUNOS TIENE TALLA.
 				Map<Producto, String> mps = this.tallasProductoDeAnuncioSeleccionado;
+				seguir aqui
 			}
 			
 			if(renderUnicaTallaZapatillaRopa()) {
