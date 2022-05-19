@@ -8,9 +8,52 @@
 
 	<ui:define name="content">
 
+		<h:panelGroup rendered="#{pelotaController.nuevaPelota eq null}">
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{pelotaController.verListaPelotas()}"
+						value="Lista de pelotas"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{pelotaController.verNuevoPackPelota()}"
+						value="Añadir pack pelotas"></p:commandLink></li>
+			</ul>
+		</h:panelGroup>
+		<h:panelGroup rendered="#{pelotaController.nuevaPelota ne null}">
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+				<h:panelGroup
+					rendered="#{pelotaController.breadcrumb eq 'lista'}">
+					<li><p:commandLink styleClass="a"
+							action="#{pelotaController.verListaPelotas()}"
+							value="Lista de pelotas"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup
+					rendered="#{pelotaController.breadcrumb eq 'bajoStock'}">
+					<li><p:commandLink styleClass="a"
+							action="#{productoController.verListaProductosBajoStock()}"
+							value="Lista de productos con bajo stock"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup
+					rendered="#{pelotaController.breadcrumb eq 'desactivado'}">
+					<li><p:commandLink styleClass="a"
+							action="#{productoController.verListaProductosDesactivados()}"
+							value="Lista de productos desactivados"></p:commandLink></li>
+				</h:panelGroup>
+
+
+				<li><p:commandLink styleClass="a"
+						action="#{pelotaController.verEditarPelota(pelotaController.nuevaPelota, pelotaController.breadcrumb)}"
+						value="Editar pack pelotas"></p:commandLink></li>
+			</ul>
+		</h:panelGroup>
+
 		<h:form id="nuevaPelotaForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -50,6 +93,13 @@
 						style="padding:0px;" styleClass="col-sm-6" thousandSeparator=""
 						decimalSeparator="." decimalPlaces="0"
 						value="#{pelotaController.numeroPackNuevaPelota}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="referenciaPelotaTexto"
+						value="Referencia" />
+					<p:inputText id="referenciaPelotaTexto" styleClass="col-sm-6"
+						value="#{pelotaController.referenciaNuevaPelota}" />
 				</div>
 			</h:panelGroup>
 

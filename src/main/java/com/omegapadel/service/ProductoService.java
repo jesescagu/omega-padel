@@ -2,6 +2,7 @@ package com.omegapadel.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -11,10 +12,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.omegapadel.model.Accesorio;
+import com.omegapadel.model.Anuncio;
+import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Pala;
 import com.omegapadel.model.Paletero;
 import com.omegapadel.model.Pelota;
 import com.omegapadel.model.Producto;
+import com.omegapadel.model.ProductoTalla;
 import com.omegapadel.model.Ropa;
 import com.omegapadel.model.Zapatilla;
 import com.omegapadel.repository.ProductoRepository;
@@ -25,12 +29,16 @@ public class ProductoService {
 
 	@Inject
 	private ProductoRepository productoRepository;
-//	@Inject
-//	private PalaRepository palaRepository;
-//	@Inject
-//	private PelotaRepository pelotaRepository;
-//	@Inject
-//	private AccesorioRepository accesorioRepository;
+	@Inject
+	private ZapatillaService zapatillaService;
+	@Inject
+	private RopaService ropaService;
+	@Inject
+	private AccesorioService accesorioService;
+	@Inject
+	private ProductoTallaService productoTallaService;
+	@Inject
+	private AnuncioService anuncioService;
 
 	public <S extends Producto> S save(S entity) {
 		return productoRepository.save(entity);
@@ -142,6 +150,121 @@ public class ProductoService {
 			return new ArrayList<Producto>();
 		}
 
+	}
+
+	public Boolean hayStockDeProductos(AnuncioCantidad acNueva, Integer nuevaCantidad) {
+
+		List<Producto> lp = acNueva.getAnuncio().getProductos();
+		List<ProductoTalla> lpt = productoTallaService.getProductosTallaDeAnuncioCantidad(acNueva.getId());
+		Integer cantidad = nuevaCantidad;
+
+		if (CollectionUtils.isEmpty(lpt)) {
+
+			for (Producto p : lp) {
+				Integer stock = p.getStock();
+				if (stock.compareTo(cantidad) < 0) {
+					return false;
+				}
+			}
+		} else {
+			for (Producto p : lp) {
+				if (p instanceof Pala || p instanceof Paletero || p instanceof Pelota) {
+
+					Integer stock = p.getStock();
+					if (stock.compareTo(cantidad) < 0) {
+						return false;
+					}
+
+				} else if (p instanceof Zapatilla) {
+
+					ProductoTalla pt = productoTallaService.getProductoTallaDeAnuncioCantidadYProducto(p.getId(),
+							acNueva.getId());
+					String i = pt.getTalla();
+
+					Zapatilla zapa = zapatillaService.findById(p.getId()).get();
+					Map<String, Integer> map = zapa.getMapaTallaStock();
+					Integer stock = map.get(i);
+
+					if (stock.compareTo(cantidad) < 0) {
+						return false;
+					}
+
+				} else if (p instanceof Ropa) {
+
+					ProductoTalla pt = productoTallaService.getProductoTallaDeAnuncioCantidadYProducto(p.getId(),
+							acNueva.getId());
+					String i = pt.getTalla();
+
+					Ropa ropa = ropaService.findById(p.getId()).get();
+					Map<String, Integer> map = ropa.getMapaTallaStock();
+					Integer stock = map.get(i);
+
+					if (stock.compareTo(cantidad) < 0) {
+						return false;
+					}
+
+				} else if (p instanceof Accesorio) {
+
+					Accesorio acc = accesorioService.findById(p.getId()).get();
+					if (acc.getTipo().getTipoTalla().equals("UNICA")) {
+
+						Integer stock = acc.getStock();
+						if (stock.compareTo(cantidad) < 0) {
+							return false;
+						}
+
+					} else {
+
+						ProductoTalla pt = productoTallaService.getProductoTallaDeAnuncioCantidadYProducto(p.getId(),
+								acNueva.getId());
+						String i = pt.getTalla();
+
+						Map<String, Integer> map = acc.getMapaTallaStock();
+						Integer stock = map.get(i);
+
+						if (stock.compareTo(cantidad) < 0) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	public Boolean hayStockDeProductosDelAnuncio(Anuncio anuncio) {
+
+		List<Producto> lp = anuncio.getProductos();
+		for (Producto p : lp) {
+			Integer stock = p.getStock();
+			if (stock == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public List<Producto> getProductosConStockBajo(Integer limite) {
+		return productoRepository.getProductosConStockBajo(limite);
+	}
+
+	public List<Producto> getProductosDesactivados() {
+		return productoRepository.getProductosDesactivados();
+	}
+
+	public List<Anuncio> getAnunciosDeProducto(Integer productoId) {
+		return productoRepository.getAnunciosDeProducto(productoId);
+	}
+
+	public void desactivarAnunciosDelProducto(Producto prod) {
+
+		List<Anuncio> ans = getAnunciosDeProducto(prod.getId());
+		if(!CollectionUtils.isEmpty(ans)) {
+			for(Anuncio an : ans) {
+				an.setActivo(false);
+				anuncioService.save(an);
+			}
+		}
 	}
 
 }

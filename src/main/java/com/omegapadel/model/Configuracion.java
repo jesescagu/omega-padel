@@ -23,6 +23,8 @@ public class Configuracion extends EntidadBase {
 
 	private Double precioaPartirEnvioGratis;
 
+	private Integer limiteStockBajo;
+
 	public Boolean getMostrarBanners() {
 		return mostrarBanners;
 	}
@@ -61,6 +63,14 @@ public class Configuracion extends EntidadBase {
 
 	public void setPrecioaPartirEnvioGratis(Double precioaPartirEnvioGratis) {
 		this.precioaPartirEnvioGratis = precioaPartirEnvioGratis;
+	}
+
+	public Integer getLimiteStockBajo() {
+		return limiteStockBajo;
+	}
+
+	public void setLimiteStockBajo(Integer limiteStockBajo) {
+		this.limiteStockBajo = limiteStockBajo;
 	}
 
 }

@@ -10,7 +10,34 @@
 
 		<h:form id="nuevoDireccionPostalForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<h:panelGroup
+				rendered="#{direccionPostalController.direccionPostalSeleccionada eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{direccionPostalController.abrirListaDireccionesActor()}"
+							value="Lista de direcciones postales"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{direccionPostalController.abrirNuevaDireccionPostal()}"
+							value="Nueva Dirección postal"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup
+				rendered="#{direccionPostalController.direccionPostalSeleccionada ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{direccionPostalController.abrirListaDireccionesActor()}"
+							value="Lista de direcciones postales"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{direccionPostalController.abrirEditarDireccionPostal(direccionPostalController.direccionPostalSeleccionada)}"
+							value="Editar Dirección postal"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -27,8 +54,8 @@
 
 
 				<div class="row">
-					<p:outputLabel for="codigoPostalDireccionPostal" styleClass="col-sm-6"
-						value="Código postal" />
+					<p:outputLabel for="codigoPostalDireccionPostal"
+						styleClass="col-sm-6" value="Código postal" />
 					<p:inputText id="codigoPostalDireccionPostal" styleClass="col-sm-6"
 						value="#{direccionPostalController.codigoPostalSeleccionado}" />
 
@@ -37,7 +64,8 @@
 				<div class="row">
 					<p:outputLabel styleClass="col-sm-6" for="municipioDireccionPostal"
 						value="Municipio" />
-					<p:selectOneMenu styleClass="col-sm-6" id="municipioDireccionPostal"
+					<p:selectOneMenu styleClass="col-sm-6"
+						id="municipioDireccionPostal"
 						value="#{direccionPostalController.codigoMunicipioSeleccionado}">
 
 						<f:selectItem itemLabel="Selecciona municipio" />

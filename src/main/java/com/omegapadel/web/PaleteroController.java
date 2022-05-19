@@ -54,9 +54,12 @@ public class PaleteroController implements Serializable {
 	private String marcaEscogida;
 	private Integer stockNuevoPaletero;
 	private String modeloNuevoPaletero;
+	private String referenciaNuevoPaletero;
 
 	private List<Imagen> imagenesPaleteroNuevo;
 	private Boolean validacionImagenes;
+
+	private String breadcrumb;
 
 	public static final String TEXTO_ERROR_IMAGENES_VACIAS = "Debe existir alguna imagen del producto.";
 
@@ -69,12 +72,6 @@ public class PaleteroController implements Serializable {
 		this.listaPaleteros = paleteroService.findAll();
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		Object marcaDeAnunciosObject = context.getExternalContext().getSessionMap().get("marcaDeAnuncios");
-
-		if (marcaDeAnunciosObject != null) {
-			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
-			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPaletero(marcaDeAnuncios);
-		}
 
 		Object paleteroParaEditar = context.getExternalContext().getSessionMap().get("paleteroParaEditar");
 		if (paleteroParaEditar != null && paleteroParaEditar instanceof Paletero) {
@@ -86,6 +83,7 @@ public class PaleteroController implements Serializable {
 			this.imagenesPaleteroNuevo = new ArrayList<>();
 			this.stockNuevoPaletero = null;
 			this.modeloNuevoPaletero = "";
+			this.referenciaNuevoPaletero = "";
 			this.marcaEscogida = "";
 
 		} else {
@@ -93,10 +91,33 @@ public class PaleteroController implements Serializable {
 			this.imagenesPaleteroNuevo = imagenService.getImagenesDelProducto(this.nuevoPaletero.getId());
 			this.stockNuevoPaletero = this.nuevoPaletero.getStock();
 			this.modeloNuevoPaletero = this.nuevoPaletero.getModelo();
+			this.referenciaNuevoPaletero = this.nuevoPaletero.getReferencia();
 			this.marcaEscogida = this.nuevoPaletero.getMarca().getNombre();
+
+			Object breadcrumbObject = context.getExternalContext().getSessionMap().get("breadcrumb");
+			this.breadcrumb = (String) breadcrumbObject;
 
 		}
 
+		Object marcaDeAnunciosObject = context.getExternalContext().getSessionMap().get("marcaDeAnuncios");
+
+		if (marcaDeAnunciosObject != null) {
+			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
+			this.marcaEscogida = marcaDeAnuncios;
+			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPaletero(marcaDeAnuncios);
+		} else {
+			this.marcaEscogida = "";
+		}
+
+		Object verAnunciosTodoObject = context.getExternalContext().getSessionMap().get("verTodoAnuncio");
+		if (verAnunciosTodoObject != null) {
+			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorTipo("Paletero");
+		}
+
+	}
+
+	public Boolean renderMarcaPaletero() {
+		return this.marcaEscogida != null && !this.marcaEscogida.equals("");
 	}
 
 	public void verPaleterosMarcas(String marca) throws IOException {
@@ -104,10 +125,21 @@ public class PaleteroController implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("marcaDeAnuncios", marca);
 
+		context.getExternalContext().getSessionMap().remove("verTodoAnuncio");
+
 		FacesContext.getCurrentInstance().getExternalContext().redirect("paleteros.xhtml");
 	}
-	
-	
+
+	public void verPaleterosTodos() throws IOException {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().put("verTodoAnuncio", true);
+
+		context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
+
+		FacesContext.getCurrentInstance().getExternalContext().redirect("paleteros.xhtml");
+	}
+
 	public String guardarPaletero() throws IOException {
 
 		Boolean validacionErronea = false;
@@ -120,14 +152,28 @@ public class PaleteroController implements Serializable {
 		}
 		if (this.modeloNuevoPaletero == null || this.modeloNuevoPaletero.equals("")) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"El modelo de la paletero no puede estar vacio.", null);
+					"El modelo del paletero no puede estar vacio.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
+		}
+		if (this.referenciaNuevoPaletero == null || this.referenciaNuevoPaletero.equals("")) {
+			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"La referencia del paletero no puede estar vacia.", null);
+			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+			validacionErronea = true;
+		} else {
+
+			if (this.nuevoPaletero == null && paleteroService.existeReferencia(this.referenciaNuevoPaletero)) {
+				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"La referencia ya se encuentra en el sistema.", null);
+				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+				validacionErronea = true;
+			}
 		}
 
 		if (this.stockNuevoPaletero == null) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"El stock de la paletero no puede estar vacio.", null);
+					"El stock del paletero no puede estar vacio.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
@@ -140,7 +186,8 @@ public class PaleteroController implements Serializable {
 
 			if (this.nuevoPaletero == null) {
 				Marca marca = marcaService.getMarcaPorNombre(this.marcaEscogida);
-				Paletero paletero = paleteroService.create(marca, this.modeloNuevoPaletero, this.stockNuevoPaletero);
+				Paletero paletero = paleteroService.create(marca, this.modeloNuevoPaletero, this.stockNuevoPaletero,
+						this.referenciaNuevoPaletero);
 				Paletero saved = paleteroService.save(paletero);
 
 				List<Imagen> imagenesGuardadas = new ArrayList<>();
@@ -155,6 +202,7 @@ public class PaleteroController implements Serializable {
 
 				p.setMarca(marca);
 				p.setModelo(this.modeloNuevoPaletero);
+				p.setReferencia(this.referenciaNuevoPaletero);
 				p.setStock(this.stockNuevoPaletero);
 				Paletero saved = paleteroService.save(p);
 
@@ -168,11 +216,16 @@ public class PaleteroController implements Serializable {
 			}
 		}
 		this.nuevoPaletero = null;
-		return "listaPaleteros.xhtml";
 
+		if (this.breadcrumb.equals("bajoStock")) {
+			return "listaProductosBajoStock.xhtml";
+		} else if (this.breadcrumb.equals("desactivado")) {
+			return "listaProductosDesactivados.xhtml";
+		} else {
+			return "listaPaleteros.xhtml";
+		}
 	}
-	
-	
+
 	public List<Imagen> getImagenesDePaletero(Integer paleteroId) {
 		List<Imagen> imagenes = imagenService.getImagenesDelProducto(paleteroId);
 		if (!CollectionUtils.isEmpty(imagenes)) {
@@ -187,7 +240,8 @@ public class PaleteroController implements Serializable {
 
 		if (this.imagenPaleteroNuevo != null && this.imagenPaleteroNuevo.getSize() != 0) {
 
-			Imagen imagen = imagenService.create(this.imagenPaleteroNuevo.getFileName(), this.imagenPaleteroNuevo.getContent());
+			Imagen imagen = imagenService.create(this.imagenPaleteroNuevo.getFileName(),
+					this.imagenPaleteroNuevo.getContent());
 
 			Boolean yaEsta = false;
 			for (Imagen im : this.imagenesPaleteroNuevo) {
@@ -251,7 +305,8 @@ public class PaleteroController implements Serializable {
 			this.listaPaleteros = paleteroService.findAll();
 			return "";
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede eliminar mientras exista anuncios con este producto.", ""));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"No se puede eliminar mientras exista anuncios con este producto.", ""));
 			return null;
 		}
 	}
@@ -264,10 +319,12 @@ public class PaleteroController implements Serializable {
 
 	}
 
-	public void verEditarPaletero(Paletero paletero) throws IOException {
+	public void verEditarPaletero(Paletero paletero, String breadcrumb) throws IOException {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("paleteroParaEditar", paletero);
+
+		context.getExternalContext().getSessionMap().put("breadcrumb", breadcrumb);
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevoPaletero.xhtml");
 
@@ -347,6 +404,22 @@ public class PaleteroController implements Serializable {
 
 	public void setImagenesPaleteroNuevo(List<Imagen> imagenesPaleteroNuevo) {
 		this.imagenesPaleteroNuevo = imagenesPaleteroNuevo;
+	}
+
+	public String getReferenciaNuevoPaletero() {
+		return referenciaNuevoPaletero;
+	}
+
+	public void setReferenciaNuevoPaletero(String referenciaNuevoPaletero) {
+		this.referenciaNuevoPaletero = referenciaNuevoPaletero;
+	}
+
+	public String getBreadcrumb() {
+		return breadcrumb;
+	}
+
+	public void setBreadcrumb(String breadcrumb) {
+		this.breadcrumb = breadcrumb;
 	}
 
 }

@@ -96,4 +96,41 @@ public class AnuncioService {
 		return anuncioRepository.countAnunciosDeProducto(productoId);
 	}
 
+	public List<Anuncio> getAnunciosPorTipo(String tipo) {
+
+		switch (tipo) {
+		case "Pala":
+			return anuncioRepository.getAnunciosPala();
+		case "Pelota":
+			return anuncioRepository.getAnunciosPelota();
+		case "Paletero":
+			return anuncioRepository.getAnunciosPaletero();
+		case "Zapatilla":
+			return anuncioRepository.getAnunciosZapatilla();
+		case "Ropa":
+			return anuncioRepository.getAnunciosRopa();
+		case "Accesorio":
+			return anuncioRepository.getAnunciosAccesorio();
+		default:
+			return null;
+		}
+	}
+
+	public List<Anuncio> getPacksAnuncios() {
+		return anuncioRepository.getPacksAnuncios();
+	}
+
+	public List<Anuncio> getAnunciosPorMarcaRopa(String marca) {
+		return anuncioRepository.getAnunciosPorMarcaRopa(marca);
+	}
+
+	public List<Anuncio> getAnunciosPorTipoAccesorio(String tipoAccesorio) {
+		return anuncioRepository.getAnunciosPorTipoAccesorio(tipoAccesorio);
+	}
+
+	public List<Anuncio> getAnunciosPorTextoBuscador(String texto){
+		
+		return anuncioRepository.getAnunciosPorTextoBuscador(texto);
+	}
+	
 }

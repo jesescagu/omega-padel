@@ -9,6 +9,16 @@
 
 		<h:form id="nuevaMarcaForm">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal" process="@this" type="submit"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a" process="@this" type="submit"
+						action="#{marcaController.verMarcas()}"
+						value="Lista de marcas"></p:commandLink></li>
+			</ul>
+
+			<br />
+
 			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />

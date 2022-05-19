@@ -53,9 +53,12 @@ public class PelotaController implements Serializable {
 	private String marcaEscogida;
 	private Integer stockNuevaPelota;
 	private String modeloNuevaPelota;
+	private String referenciaNuevaPelota;
 	private Integer numeroPackNuevaPelota;
 	private Boolean validacionImagenes;
 	private Collection<Marca> listaMarcas;
+
+	private String breadcrumb;
 
 	public static final String TEXTO_ERROR_IMAGENES_VACIAS = "Debe existir alguna imagen del producto.";
 
@@ -79,6 +82,7 @@ public class PelotaController implements Serializable {
 			this.imagenesPelotaNueva = new ArrayList<>();
 			this.stockNuevaPelota = null;
 			this.modeloNuevaPelota = "";
+			this.referenciaNuevaPelota = "";
 			this.marcaEscogida = "";
 			this.numeroPackNuevaPelota = null;
 
@@ -87,18 +91,29 @@ public class PelotaController implements Serializable {
 			this.imagenesPelotaNueva = imagenService.getImagenesDelProducto(this.nuevaPelota.getId());
 			this.stockNuevaPelota = this.nuevaPelota.getStock();
 			this.modeloNuevaPelota = this.nuevaPelota.getModelo();
+			this.referenciaNuevaPelota = this.nuevaPelota.getReferencia();
 			this.marcaEscogida = this.nuevaPelota.getMarca().getNombre();
 			this.numeroPackNuevaPelota = this.nuevaPelota.getNumero();
 
+			Object breadcrumbObject = context.getExternalContext().getSessionMap().get("breadcrumb");
+			this.breadcrumb = (String) breadcrumbObject;
 		}
 
 		Object marcaDeAnunciosObject = context.getExternalContext().getSessionMap().get("marcaDeAnuncios");
 		if (marcaDeAnunciosObject != null) {
 
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
+			this.marcaEscogida = marcaDeAnuncios;
 			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPelota(marcaDeAnuncios);
+		} else {
+			this.marcaEscogida = "";
 		}
 
+		Object verTodasPelotasObject = context.getExternalContext().getSessionMap().get("verTodasPelotas");
+		if (verTodasPelotasObject != null) {
+
+			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorTipo("Pelota");
+		}
 	}
 
 	public String guardarPelota() throws IOException {
@@ -111,9 +126,24 @@ public class PelotaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgImagenes);
 			validacionErronea = true;
 		}
-		if (this.modeloNuevaPelota == null || this.modeloNuevaPelota.equals("")) {
+		if (this.referenciaNuevaPelota == null || this.modeloNuevaPelota.equals("")) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"El modelo de la pelota no puede estar vacio.", null);
+			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+			validacionErronea = true;
+		} else {
+
+			if (this.nuevaPelota == null && pelotaService.existeReferencia(this.referenciaNuevaPelota)) {
+				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"La referencia ya se encuentra en el sistema.", null);
+				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+				validacionErronea = true;
+			}
+		}
+
+		if (this.referenciaNuevaPelota == null || this.referenciaNuevaPelota.equals("")) {
+			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"La referencia de la pelota no puede estar vacia.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
@@ -141,7 +171,7 @@ public class PelotaController implements Serializable {
 			if (this.nuevaPelota == null) {
 				Marca marca = marcaService.getMarcaPorNombre(this.marcaEscogida);
 				Pelota pelota = pelotaService.create(marca, modeloNuevaPelota, this.numeroPackNuevaPelota,
-						this.stockNuevaPelota);
+						this.stockNuevaPelota, this.referenciaNuevaPelota);
 				Pelota saved = pelotaService.save(pelota);
 
 				List<Imagen> imagenesGuardadas = new ArrayList<>();
@@ -155,6 +185,7 @@ public class PelotaController implements Serializable {
 				Pelota p = this.nuevaPelota;
 				p.setMarca(marca);
 				p.setModelo(this.modeloNuevaPelota);
+				p.setReferencia(this.referenciaNuevaPelota);
 				p.setNumero(this.numeroPackNuevaPelota);
 				p.setStock(this.stockNuevaPelota);
 
@@ -170,8 +201,14 @@ public class PelotaController implements Serializable {
 
 		}
 		this.nuevaPelota = null;
-		return "listaPelotasCreadas";
 
+		if (this.breadcrumb.equals("bajoStock")) {
+			return "listaProductosBajoStock.xhtml";
+		} else if (this.breadcrumb.equals("desactivado")) {
+			return "listaProductosDesactivados.xhtml";
+		} else {
+			return "listaPelotasCreadas.xhtml";
+		}
 	}
 
 	public List<Imagen> getImagenesDePelota(Integer pelotaId) {
@@ -182,6 +219,10 @@ public class PelotaController implements Serializable {
 			return new ArrayList<>();
 		}
 
+	}
+
+	public Boolean renderMarcaPelota() {
+		return this.marcaEscogida != null && !this.marcaEscogida.equals("");
 	}
 
 	public void nuevaImagen() throws IOException, SerialException, SQLException {
@@ -253,7 +294,8 @@ public class PelotaController implements Serializable {
 			this.listaPelotasCreadas = pelotaService.findAll();
 			return "";
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede eliminar mientras exista anuncios con este producto.", ""));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"No se puede eliminar mientras exista anuncios con este producto.", ""));
 			return null;
 		}
 	}
@@ -265,10 +307,12 @@ public class PelotaController implements Serializable {
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevasPackPelotas.xhtml");
 	}
 
-	public void verEditarPelota(Pelota pelota) throws IOException {
+	public void verEditarPelota(Pelota pelota, String breadcrumb) throws IOException {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("pelotaParaEditar", pelota);
+
+		context.getExternalContext().getSessionMap().put("breadcrumb", breadcrumb);
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevasPackPelotas.xhtml");
 	}
@@ -282,7 +326,20 @@ public class PelotaController implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("marcaDeAnuncios", marca);
 
+		context.getExternalContext().getSessionMap().remove("verTodasPelotas");
+
 		FacesContext.getCurrentInstance().getExternalContext().redirect("pelotas.xhtml");
+	}
+
+	public void verPelotasTodas() throws IOException {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().put("verTodasPelotas", true);
+
+		context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
+
+		FacesContext.getCurrentInstance().getExternalContext().redirect("pelotas.xhtml");
+
 	}
 
 	public List<Anuncio> getListaAnunciosPorMarca() {
@@ -375,6 +432,22 @@ public class PelotaController implements Serializable {
 
 	public void setListaPelotasCreadas(List<Pelota> listaPelotasCreadas) {
 		this.listaPelotasCreadas = listaPelotasCreadas;
+	}
+
+	public String getReferenciaNuevaPelota() {
+		return referenciaNuevaPelota;
+	}
+
+	public void setReferenciaNuevaPelota(String referenciaNuevaPelota) {
+		this.referenciaNuevaPelota = referenciaNuevaPelota;
+	}
+
+	public String getBreadcrumb() {
+		return breadcrumb;
+	}
+
+	public void setBreadcrumb(String breadcrumb) {
+		this.breadcrumb = breadcrumb;
 	}
 
 }

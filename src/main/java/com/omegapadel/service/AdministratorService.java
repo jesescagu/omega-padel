@@ -47,12 +47,72 @@ public class AdministratorService {
 	public void delete(Administrador entity) {
 		adminiRepository.delete(entity);
 	}
-	
+
+	public List<Integer> getAnyosConAlgunaVenta() {
+		return adminiRepository.getAnyosConAlgunaVenta();
+	}
+
+	public List<Number[]> getPedidosPalasPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosPalasPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosPacksPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosPacksPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosPaleterosPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosPaleterosPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosZapatillasPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosZapatillasPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosRopaPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosRopaPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosPelotasPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosPelotasPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosAccesoriosPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosAccesoriosPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosPacksPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosPacksPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosPalasPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosPalasPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosPaleterosPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosPaleterosPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosZapatillasPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosZapatillasPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosRopaPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosRopaPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosPelotasPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosPelotasPorAnyo(anyo);
+	}
+
+	public List<Number[]> getPedidosReembolsadosAccesoriosPorAnyo(Integer anyo) {
+		return adminiRepository.getPedidosReembolsadosAccesoriosPorAnyo(anyo);
+	}
+
 	public Administrador create(Usuario usuario, List<DireccionPostal> direccionesPostales) {
 		Administrador a = new Administrador();
 		a.setDireccionesPostales(direccionesPostales);
 		a.setUsuario(usuario);
 		return a;
 	}
-	
+
 }

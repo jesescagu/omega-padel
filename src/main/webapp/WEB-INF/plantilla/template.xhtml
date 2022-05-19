@@ -19,6 +19,42 @@
 			rel="stylesheet" />
 		<link href="resources/css/style.css" type="text/css" rel="stylesheet" />
 
+		<style type="text/css">
+.ui-breadcrumb-chevron {
+	icon: url(#{ resource [ 'resources/images/icon-chevron-right.png' ]
+}
+)
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+!
+important
+
+
+
+
+
+
+
+
+
+
+
+
+;
+}
+</style>
+
 	</h:head>
 	<h:body style="background-color:#EEFFEB;">
 
@@ -74,13 +110,36 @@
 					<ui:param name="#{m.nombre}" value="#{m.nombre}" />
 				</c:forEach>
 
+				<c:forEach items="#{templateController.listaTiposAccesorios}"
+					var="t">
+					<ui:param name="#{t.nombre}" value="#{t.nombre}" />
+				</c:forEach>
+
 				<p:menubar model="#{templateController.model}">
 
 					<f:facet style="float:right !important;" name="options">
 						<p:outputPanel style="display:inline;">
 							<p:outputPanel style="display:inline;">
 								<i class="pi pi-fw pi-search" />
-								<p:inputText placeholder="Search" />
+
+								<p:autoComplete id="search" placeholder="Buscar..." var="elem"
+									minQueryLength="3" maxResults="5"
+									converter="#{anuncioConverter}" itemValue="#{elem}"
+									itemLabel="#{elem.titulo}"
+									completeMethod="#{inicioController.completeAnuncio}">
+
+									<p:ajax event="itemSelect"
+										listener="#{anuncioController.mostrarAnuncioBuscador}" />
+
+									<f:facet name="footer">
+										<div class="ui-fluid" style="padding: 0.5rem 1rem 1rem 1rem">
+											<p:commandButton value="Todos los productos" process="@this"
+												action="#{inicioController.verAnunciosFiltrados()}" />
+										</div>
+									</f:facet>
+
+								</p:autoComplete>
+
 							</p:outputPanel>
 							<p:outputPanel style="display:inline;">
 								<p:badge
@@ -131,7 +190,7 @@
 
 			<div class="container-fluid">
 
-				<h1>Conjunto de enlaces de interes y demas.</h1>
+				<hr />
 
 			</div>
 

@@ -10,6 +10,50 @@
 
 		<h:form id="nuevaZapatillaForm" enctype="multipart/form-data">
 
+			<h:panelGroup
+				rendered="#{zapatillaController.nuevaZapatilla eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{zapatillaController.verListaZapatillas()}"
+							value="Lista de zapatilla"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{zapatillaController.verNuevaZapatilla()}"
+							value="Añadir zapatilla"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup
+				rendered="#{zapatillaController.nuevaZapatilla ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+					<h:panelGroup
+						rendered="#{zapatillaController.breadcrumb eq 'lista'}">
+						<li><p:commandLink styleClass="a"
+								action="#{zapatillaController.verListaZapatillas()}"
+								value="Lista de zapatillas"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{zapatillaController.breadcrumb eq 'bajoStock'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosBajoStock()}"
+								value="Lista de productos con bajo stock"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{zapatillaController.breadcrumb eq 'desactivado'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosDesactivados()}"
+								value="Lista de productos desactivados"></p:commandLink></li>
+					</h:panelGroup>
+
+					<li><p:commandLink styleClass="a"
+							action="#{zapatillaController.verEditarZapatilla(zapatillaController.nuevaZapatilla, zapatillaController.breadcrumb)}"
+							value="Editar zapatilla"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
 			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
@@ -28,20 +72,17 @@
 				</div>
 
 				<div class="row">
-					<p:outputLabel styleClass="col-sm-6" for="stockZapatillaNumber"
-						value="Stock inicial" />
-					<p:inputNumber id="stockZapatillaNumber" padControl="false"
-						style="padding:0px;" styleClass="col-sm-6" thousandSeparator=""
-						decimalSeparator="." decimalPlaces="0"
-						value="#{zapatillaController.stockNuevaZapatilla}" />
-				</div>
-
-
-				<div class="row">
 					<p:outputLabel styleClass="col-sm-6" for="modeloZapatillaTexto"
 						value="Modelo" />
 					<p:inputText id="modeloZapatillaTexto" styleClass="col-sm-6"
 						value="#{zapatillaController.modeloNuevaZapatilla}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="referenciaZapatillaTexto"
+						value="Referencia" />
+					<p:inputText id="referenciaZapatillaTexto" styleClass="col-sm-6"
+						value="#{zapatillaController.referenciaNuevaZapatilla}" />
 				</div>
 
 				<div class="row">
@@ -75,8 +116,7 @@
 						value="#{zapatillaController.stockNuevaTallaZapatilla}" />
 
 					<p:commandButton styleClass="container-fluid" value="Añadir talla"
-						type="submit" resetValues="true"
-						update=":nuevaZapatillaForm:datatableTallas"
+						type="submit" resetValues="true" update=":nuevaZapatillaForm"
 						action="#{zapatillaController.addTallaAZapatilla()}" />
 
 				</div>
@@ -175,7 +215,8 @@
 								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
 							</p:column>
 							<p:column headerText="Acciones">
-								<p:commandButton styleClass="btn btn-primary"
+								<p:commandButton styleClass="btn btn-primary" process="@this"
+									update=":ImagenesNuevaZapatillaForm"
 									actionListener="#{zapatillaController.eliminaImagen(elem)}"
 									value="Eliminar">
 								</p:commandButton>

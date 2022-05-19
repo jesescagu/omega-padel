@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.omegapadel.model.Marca;
 import com.omegapadel.model.Pala;
 import com.omegapadel.repository.PalaRepository;
+import com.omegapadel.repository.ProductoRepository;
 
 @Service
 @Transactional
@@ -18,6 +19,12 @@ public class PalaService {
 
 	@Inject
 	private PalaRepository palaRepository;
+	@Inject
+	private ProductoRepository productoRepository;
+
+	public Boolean existeReferencia(String referencia) {
+		return productoRepository.existeReferencia(referencia) > 0;
+	}
 
 	public <S extends Pala> S save(S entity) {
 		return palaRepository.save(entity);
@@ -55,7 +62,7 @@ public class PalaService {
 		return palaRepository.getPalaUnica(marca, modelo, temporada);
 	}
 
-	public Pala create(Marca marca, String modelo, Integer stock, Integer temporada) {
+	public Pala create(Marca marca, String modelo, Integer stock, Integer temporada, String referencia) {
 
 		Optional<Pala> pala = getPalaUnica(marca.getNombre(), modelo, temporada);
 
@@ -70,6 +77,7 @@ public class PalaService {
 		p.setModelo(modelo);
 		p.setStock(stock);
 		p.setTemporada(temporada);
+		p.setReferencia(referencia);
 		return p;
 	}
 }

@@ -27,9 +27,6 @@ public class Cliente extends Actor {
 	@Email
 	private String email;
 
-	// TODO
-	// private List<TarjetaBancaria> tarjetaBancaria;
-
 	@OneToOne(optional = true)
 	private Cesta cesta;
 

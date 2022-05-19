@@ -10,7 +10,120 @@
 
 		<h:form id="nuevaAnuncioForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color:red;" globalOnly="true" />
+			<h:panelGroup rendered="#{anuncioController.nuevoAnuncio eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{anuncioController.verNuevoAnuncio()}"
+							value="Nuevo anuncio"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{anuncioController.nuevoAnuncio ne null}">
+				<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'packs'}">
+					<li><p:commandLink styleClass="a"
+							action="#{anuncioController.verTodosPacks()}"
+							value="Lista de packs"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'cesta'}">
+					<li><p:commandLink styleClass="a"
+							action="#{cestaController.verCarritoCompraCliente()}"
+							value="Cesta"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'pedidos' and anuncioController.estaClienteLogado}">
+					<li><p:commandLink styleClass="a"
+							action="#{pedidoController.abrirHistorialPedidos()}"
+							value="Mis pedidos"></p:commandLink></li>
+					<li><p:commandLink styleClass="a" value="Detalles del pedido"
+							onclick="window.history.back();" /></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'pedidos' and anuncioController.estaEmpleadoLogado}">
+					<li><p:commandLink styleClass="a"
+							action="#{pedidoController.abrirPedidosParaTramitar()}"
+							value="Lista de pedidos a tramitar"></p:commandLink></li>
+					<li><p:commandLink styleClass="a" value="Detalles del pedido"
+							onclick="window.history.back();" /></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'desactivados'}">
+					<li><p:commandLink styleClass="a"
+							action="#{anuncioController.verListaAnunciosDesactivados()}"
+							value="Lista anuncios desactivados"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'prod'}">
+
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Pala'}">
+						<li><p:commandLink styleClass="a"
+								action="#{palaController.verPalasTodas()}"
+								value="Lista de palas"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{palaController.verPalasMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Paletero'}">
+						<li><p:commandLink styleClass="a"
+								action="#{paleteroController.verPaleterosTodos()}"
+								value="Lista de paleteros"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{paleteroController.verPaleterosMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Pelota'}">
+						<li><p:commandLink styleClass="a"
+								action="#{pelotaController.verPelotasTodas()}"
+								value="Lista de packs de pelotas"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{pelotaController.verPelotasMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Ropa'}">
+						<li><p:commandLink styleClass="a"
+								action="#{ropaController.verRopaTodas()}" value="Lista de Ropa"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{ropaController.verRopaMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Zapatilla'}">
+						<li><p:commandLink styleClass="a"
+								action="#{zapatillaController.verZapatillasTodas()}"
+								value="Lista de palas"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{zapatillaController.verZapatillasMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Accesorio'}">
+						<li><p:commandLink styleClass="a"
+								action="#{accesorioController.verAccesorioTodas()}"
+								value="Lista de accesorios"></p:commandLink></li>
+					</h:panelGroup>
+
+				</h:panelGroup>
+
+				<li><p:commandLink styleClass="a"
+						action="#{anuncioController.mostrarAnuncio(anuncioController.anuncioSeleccionado, anuncioController.renderBreadcrumb)}"
+						value="Mostrar anuncio"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{anuncioController.editarAnuncio(anuncioController.anuncioSeleccionado)}"
+						value="Editar anuncio"></p:commandLink></li>
+			</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color:red;" globalOnly="true" />
 
 			<br />
 
@@ -115,14 +228,15 @@
 
 							<p:column headerText="Imagen">
 								<div class="row">
-									<ui:repeat
-										value="#{anuncioController.getImagenesDeProducto(elem.id)}"
-										var="img">
-										<h:graphicImage
-											value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(img)}"
-											style="width: 100px; height: 100px;" />
-									</ui:repeat>
+									<h:graphicImage
+										value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelProducto(elem.id))}"
+										style="width: 100px; height: 100px;" />
 								</div>
+							</p:column>
+
+							<p:column width="20%" filterMatchMode="contains"
+								filterBy="#{elem.referencia}" headerText="Referencia">
+								<h:outputText value="#{elem.referencia}" />
 							</p:column>
 
 							<p:column sortBy="#{elem.marca.nombre}"
@@ -136,8 +250,24 @@
 								<h:outputText value="#{elem.modelo}" />
 							</p:column>
 
-							<p:column headerText="Stock">
+							<p:column
+								rendered="#{anuncioController.tipoProductoEscogido ne 'Ropa' and anuncioController.tipoProductoEscogido ne 'Zapatilla'}"
+								width="10%" headerText="Stock">
 								<h:outputText value="#{elem.stock}" />
+							</p:column>
+
+							<p:column sortBy="#{elem.tipoRopa.tipoRopa}"
+								filterMatchMode="contains" filterBy="#{elem.tipoRopa.tipoRopa}"
+								rendered="#{anuncioController.tipoProductoEscogido eq 'Ropa'}"
+								headerText="Tipo">
+								<h:outputText value="#{elem.tipoRopa.tipoRopa}" />
+							</p:column>
+
+							<p:column sortBy="#{elem.sexo}" filterMatchMode="contains"
+								filterBy="#{elem.sexo}"
+								rendered="#{anuncioController.tipoProductoEscogido eq 'Ropa'}"
+								headerText="Sexo">
+								<h:outputText value="#{elem.sexo}" />
 							</p:column>
 
 							<p:column sortBy="#{elem.temporada}" filterMatchMode="contains"
@@ -189,16 +319,16 @@
 								</div>
 							</p:column>
 
+							<p:column width="20%" headerText="Referencia">
+								<h:outputText value="#{elem.referencia}" />
+							</p:column>
+
 							<p:column headerText="Marca">
 								<h:outputText value="#{elem.marca.nombre}" />
 							</p:column>
 
 							<p:column headerText="Modelo">
 								<h:outputText value="#{elem.modelo}" />
-							</p:column>
-
-							<p:column headerText="Stock">
-								<h:outputText value="#{elem.stock}" />
 							</p:column>
 
 							<p:column headerText="Acciones">
@@ -273,11 +403,11 @@
 								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
 							</p:column>
 							<p:column headerText="Acciones">
-								<h:commandButton styleClass="btn btn-primary" process="@this"
+								<p:commandButton styleClass="btn btn-primary" process="@this"
 									update=":ImagenesNuevaAnuncioForm"
 									actionListener="#{anuncioController.eliminaImagen(elem)}"
 									value="Eliminar">
-								</h:commandButton>
+								</p:commandButton>
 							</p:column>
 						</p:dataTable>
 

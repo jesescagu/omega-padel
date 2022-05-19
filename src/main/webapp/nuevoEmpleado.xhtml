@@ -10,7 +10,18 @@
 
 		<h:form id="nuevoEmpleadoForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{empleadoController.verListaEmpleados()}"
+						value="Lista de puestos de empleados"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{empleadoController.abrirNuevoEmpleado()}"
+						value="Registrar nuevo empleado"></p:commandLink></li>
+			</ul>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -66,7 +77,8 @@
 
 
 				<div class="row">
-					<p:outputLabel for="emailEmpleado" styleClass="col-sm-6" value="Email" />
+					<p:outputLabel for="emailEmpleado" styleClass="col-sm-6"
+						value="Email" />
 					<p:inputText id="emailEmpleado" styleClass="col-sm-6"
 						value="#{empleadoController.emailEscogido}" />
 				</div>

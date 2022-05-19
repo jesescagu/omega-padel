@@ -9,49 +9,57 @@
 
 		<h:form id="productDetail">
 
-			<div class="product card">
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{palaController.verPalasTodas()}" value="Lista de palas"></p:commandLink></li>
+				<li><h:panelGroup layout="block"
+						rendered="#{palaController.renderMarcaPala() eq true}">
+						<p:commandLink styleClass="a"
+							action="#{palaController.verPalasMarcas(palaController.marcaEscogida)}"
+							value="#{palaController.marcaEscogida}" />
+					</h:panelGroup></li>
+			</ul>
 
-				<div class="container-fluid">
 
-					<p:dataView value="#{palaController.listaAnunciosPorMarca}"
-						var="product" rows="12" paginator="false"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-						gridIcon="pi pi-th-large" listIcon="pi pi-bars" layout="grid">
+			<div class="container-fluid">
 
-						<p:dataViewGridItem>
-							<p:commandLink
-								action="#{anuncioController.mostrarAnuncio(product)}">
+				<p:dataView value="#{palaController.listaAnunciosPorMarca}"
+					var="product" gridIcon="pi pi-th-large" listIcon="pi pi-bars"
+					rows="12" paginator="true" paginatorPosition="bottom"
+					paginatorAlwaysVisible="false" rowsPerPageTemplate="6,12,16"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					layout="grid">
 
-								<p:panel id="pnl" header="#{product.titulo}"
-									style="text-align:center">
+					<p:dataViewGridItem columns="4">
+						<p:commandLink
+							action="#{anuncioController.mostrarAnuncio(product,'prod')}">
+							<p:panel id="productGrid" header="#{product.titulo}"
+								style="text-align:center;">
+								<h:panelGrid columns="1" style="width:100%">
+									<div class="product-grid-item card border-1">
 
-									<h:panelGrid columns="1" style="width:100%">
+										<h:graphicImage style="border:solid;"
+											value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(product.id))}"
+											width="200" height="200" />
 
-										<div class="product-grid-item card border-1">
-
-											<h:graphicImage
-												value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(product.id))}"
-												width="200" height="200" />
-
-											<div>
-												<p:rating readonly="true"
-													value="#{anuncioController.notaMedia(product)}" />
-											</div>
-
-											<div>
-												<h:outputText value="#{product.precio}" style="color:red;"
-													styleClass="product-price">
-													<f:convertNumber currencySymbol="€" type="currency" />
-												</h:outputText>
-												<br /> <span class="product-badge">#{product.stock().toLowerCase()}</span>
-											</div>
+										<div>
+											<p:rating readonly="true"
+												value="#{anuncioController.notaMedia(product)}" />
 										</div>
-									</h:panelGrid>
-								</p:panel>
-							</p:commandLink>
-						</p:dataViewGridItem>
-					</p:dataView>
-				</div>
+										<div>
+											<h:outputText value="#{product.precio}" style="color:red;"
+												styleClass="product-pwrrice">
+												<f:convertNumber currencySymbol="€" type="currency" />
+											</h:outputText>
+										</div>
+									</div>
+								</h:panelGrid>
+							</p:panel>
+						</p:commandLink>
+					</p:dataViewGridItem>
+				</p:dataView>
 			</div>
 		</h:form>
 	</ui:define>

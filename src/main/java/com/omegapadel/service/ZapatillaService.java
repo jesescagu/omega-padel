@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.omegapadel.model.Marca;
 import com.omegapadel.model.Zapatilla;
+import com.omegapadel.repository.ProductoRepository;
 import com.omegapadel.repository.ZapatillaRepository;
 
 @Service
@@ -19,7 +20,13 @@ public class ZapatillaService {
 
 	@Inject
 	private ZapatillaRepository zapatillaRepository;
+	@Inject
+	private ProductoRepository productoRepository;
 
+	public Boolean existeReferencia(String referencia) {
+		return productoRepository.existeReferencia(referencia) > 0;
+	}
+	
 	public <S extends Zapatilla> S save(S entity) {
 		return zapatillaRepository.save(entity);
 	}
@@ -53,7 +60,7 @@ public class ZapatillaService {
 	}
 
 	public Zapatilla create(Marca marca, String modelo, Integer stock, String sexo,
-			Map<String, Integer> mapaTallaStock) {
+			Map<String, Integer> mapaTallaStock, String referencia) {
 
 		Optional<Zapatilla> zapa = getZapatillaUnica(marca.getNombre(), modelo, sexo);
 
@@ -69,6 +76,7 @@ public class ZapatillaService {
 		p.setModelo(modelo);
 		p.setStock(stock);
 		p.setSexo(sexo);
+		p.setReferencia(referencia);
 		return p;
 	}
 

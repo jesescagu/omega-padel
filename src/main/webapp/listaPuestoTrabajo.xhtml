@@ -9,6 +9,14 @@
 
 		<h:form id="nuevoPuestoTrabajoForm">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						process="@this" action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a" process="@this"
+						action="#{puestoTrabajoController.verListaPuestoTrabajo()}"
+						value="Lista de puestos de trabajo"></p:commandLink></li>
+			</ul>
+
 			<p:messages for="erroresGuardarPuestoTrabajo" id="messages"
 				showDetail="true" closable="true">
 				<p:autoUpdate />

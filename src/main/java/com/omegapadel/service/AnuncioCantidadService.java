@@ -48,6 +48,13 @@ public class AnuncioCantidadService {
 	public void delete(AnuncioCantidad entity) {
 		anuncioCantidadRepository.delete(entity);
 	}
+	
+	
+
+	public void deleteAllPedidoId(Integer pedidoId) {
+		List<AnuncioCantidad> acs = getAnunciosCantidadDePedido(pedidoId);
+		anuncioCantidadRepository.deleteAll(acs);
+	}
 
 	public AnuncioCantidad create(Anuncio anuncio, Cesta cesta) {
 		AnuncioCantidad a = new AnuncioCantidad();
@@ -69,15 +76,15 @@ public class AnuncioCantidadService {
 
 	}
 
-	public List<AnuncioCantidad> getAnunciosCantidadDeCesta(Integer cesta) {
-		return anuncioCantidadRepository.getAnunciosCantidadDeCesta(cesta);
+	public List<AnuncioCantidad> getAnunciosCantidadDeCesta(Integer cestaId) {
+		return anuncioCantidadRepository.getAnunciosCantidadDeCesta(cestaId);
 	}
 
-	public List<AnuncioCantidad> getAnunciosCantidadDePedido(Integer pedido) {
-		return anuncioCantidadRepository.getAnunciosCantidadDePedido(pedido);
+	public List<AnuncioCantidad> getAnunciosCantidadDePedido(Integer pedidoId) {
+		return anuncioCantidadRepository.getAnunciosCantidadDePedido(pedidoId);
 	}
 
-	public Optional<AnuncioCantidad> getAnunciosCantidadDeCestaYAnuncio(Integer cestaId, Integer anuncioId) {
+	public List<AnuncioCantidad> getAnunciosCantidadDeCestaYAnuncio(Integer cestaId, Integer anuncioId) {
 		return anuncioCantidadRepository.getAnunciosCantidadDeCestaYAnuncio(cestaId, anuncioId);
 	}
 

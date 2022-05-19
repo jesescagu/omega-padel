@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.omegapadel.model.Accesorio;
+import com.omegapadel.model.Anuncio;
 import com.omegapadel.model.Pala;
 import com.omegapadel.model.Paletero;
 import com.omegapadel.model.Pelota;
@@ -54,4 +55,15 @@ public interface ProductoRepository extends CrudRepository<Producto, Integer> {
 	@Query("select p from Ropa p where p not in (:prods)")
 	public List<Ropa> getProductosDeTipoRopa(@Param("prods") List<Producto> productosEscogidos);
 
+	@Query("select count(p) from Producto p where p.referencia = ?1")
+	public Long existeReferencia(String referencia);
+	
+	@Query("select p from Producto p where p.stock < ?1 and p.stock >= 0")
+	public List<Producto> getProductosConStockBajo(Integer limite);
+	
+	@Query("select p from Producto p where p.stock < 0")
+	public List<Producto> getProductosDesactivados();
+	
+	@Query("select a from Anuncio a join a.productos p where p.id = ?1")
+	public List<Anuncio> getAnunciosDeProducto(Integer productoId);
 }

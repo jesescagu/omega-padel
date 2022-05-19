@@ -10,6 +10,16 @@
 
 		<h:form id="listaPelotas">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{pelotaController.verListaPelotas()}"
+						value="Lista de pelotas"></p:commandLink></li>
+			</ul>
+
+			<br />
+
 			<h:panelGroup layout="block" styleClass="row">
 
 				<div class="col-sm-1"></div>
@@ -28,6 +38,11 @@
 										style="width: 100px; height: 100px;" />
 								</ui:repeat>
 							</div>
+						</p:column>
+
+						<p:column style="text-align:center" filterMatchMode="contains"
+							filterBy="#{pelota.referencia}" headerText="Referencia">
+							<h:outputText value="#{pelota.referencia}" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Marca">
@@ -50,7 +65,7 @@
 						<p:column style="text-align:center" headerText="Acciones">
 							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{pelotaController.verEditarPelota(pelota)}"
+								action="#{pelotaController.verEditarPelota(pelota, 'lista')}"
 								value="Editar">
 							</p:commandButton>
 							<p:commandButton styleClass="btn btn-primary" process="@this"

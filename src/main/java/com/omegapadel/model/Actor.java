@@ -30,7 +30,6 @@ public class Actor extends EntidadBase{
 	private List<DireccionPostal> direccionesPostales;
 
 	public List<DireccionPostal> getDireccionesPostales() {
-		
 		return new ArrayList<DireccionPostal>(this.direccionesPostales);
 	}
 

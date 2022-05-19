@@ -9,6 +9,107 @@
 	<ui:define name="content">
 
 		<h:form id="detalleAnuncio">
+		
+			<p:messages id="messages" showDetail="true" closable="true" />
+
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'packs'}">
+					<li><p:commandLink styleClass="a"
+							action="#{anuncioController.verTodosPacks()}"
+							value="Lista de packs"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'cesta'}">
+					<li><p:commandLink styleClass="a"
+							action="#{cestaController.verCarritoCompraCliente()}"
+							value="Cesta"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'pedidos' and anuncioController.estaClienteLogado}">
+					<li><p:commandLink styleClass="a"
+							action="#{pedidoController.abrirHistorialPedidos()}"
+							value="Mis pedidos"></p:commandLink></li>
+					<li><p:commandLink styleClass="a" value="Detalles del pedido"
+							onclick="window.history.back();" /></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'pedidos' and anuncioController.estaEmpleadoLogado}">
+					<li><p:commandLink styleClass="a"
+							action="#{pedidoController.abrirPedidosParaTramitar()}"
+							value="Lista de pedidos a tramitar"></p:commandLink></li>
+					<li><p:commandLink styleClass="a" value="Detalles del pedido"
+							onclick="window.history.back();" /></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'desactivados'}">
+					<li><p:commandLink styleClass="a"
+							action="#{anuncioController.verListaAnunciosDesactivados()}"
+							value="Lista anuncios desactivados"></p:commandLink></li>
+				</h:panelGroup>
+				<h:panelGroup layout="block"
+					rendered="#{anuncioController.renderBreadcrumb eq 'prod'}">
+
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Pala'}">
+						<li><p:commandLink styleClass="a"
+								action="#{palaController.verPalasTodas()}"
+								value="Lista de palas"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{palaController.verPalasMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Paletero'}">
+						<li><p:commandLink styleClass="a"
+								action="#{paleteroController.verPaleterosTodos()}"
+								value="Lista de paleteros"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{paleteroController.verPaleterosMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Pelota'}">
+						<li><p:commandLink styleClass="a"
+								action="#{pelotaController.verPelotasTodas()}"
+								value="Lista de packs de pelotas"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{pelotaController.verPelotasMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Ropa'}">
+						<li><p:commandLink styleClass="a"
+								action="#{ropaController.verRopaTodas()}" value="Lista de Ropa"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{ropaController.verRopaMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Zapatilla'}">
+						<li><p:commandLink styleClass="a"
+								action="#{zapatillaController.verZapatillasTodas()}"
+								value="Lista de palas"></p:commandLink></li>
+						<li><p:commandLink styleClass="a"
+								action="#{zapatillaController.verZapatillasMarcas(anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre)}"
+								value="#{anuncioController.anuncioSeleccionado.productos.get(0).marca.nombre}" /></li>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						rendered="#{anuncioController.anuncioSeleccionado.productos.get(0)['class'].simpleName eq 'Accesorio'}">
+						<li><p:commandLink styleClass="a"
+								action="#{accesorioController.verAccesorioTodas()}"
+								value="Lista de accesorios"></p:commandLink></li>
+					</h:panelGroup>
+
+				</h:panelGroup>
+
+				<li><p:commandLink styleClass="a"
+						action="#{anuncioController.mostrarAnuncio(anuncioController.anuncioSeleccionado, anuncioController.renderBreadcrumb)}"
+						value="Mostrar anuncio"></p:commandLink></li>
+			</ul>
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
 
@@ -59,7 +160,7 @@
 							<h:panelGroup rendered="#{anuncioController.estaClienteLogado}"
 								layout="block" styleClass="container-fluid">
 
-								<h:messages errorStyle="color:red;" globalOnly="true" />
+								<p:messages errorStyle="color:red;" globalOnly="true" />
 
 								<br />
 
@@ -175,8 +276,9 @@
 							rendered="#{anuncioController.renderUnicaTallaZapatillaRopa()}"
 							styleClass="row">
 
-							<p:outputLabel styleClass="col-sm-6" for="selectTalla" value="Selecciona talla del producto" />
-							
+							<p:outputLabel styleClass="col-sm-6" for="selectTalla"
+								value="Selecciona talla del producto" />
+
 							<p:selectOneMenu id="selectTalla" styleClass="col-sm-6"
 								value="#{anuncioController.tallaSeleccionadaDeProducto}">
 								<p:ajax event="change" process="@this" />
@@ -252,23 +354,35 @@
 								</p:column>
 							</p:dataTable>
 						</h:panelGroup>
-						
-						<br/>
+
+						<br />
 
 						<h:panelGroup styleClass="row">
+
+							<p:staticMessage styleClass="col-sm-12"
+								rendered="#{anuncioController.renderMensajePocoStock()}"
+								severity="info" detail="¡Quedan pocas unidades!" />
+							<br />
+							<br />
 
 							<h:outputText styleClass="col-sm-3"
 								style="font-size:2em;font-weight: bold;color:red;"
 								value="#{anuncioController.anuncioSeleccionado.precio} €" />
 							<p:commandButton styleClass="col-sm-7" process="@this"
 								update="@all"
-								disabled="#{anuncioController.estaClienteLogado eq false}"
+								disabled="#{anuncioController.estaClienteLogado eq false or anuncioController.renderHayStock() eq false}"
 								actionListener="#{anuncioController.addAnuncioAlCarrito()}"
 								value="Añadir al carrito" />
+							<br />
 							<p:staticMessage styleClass="col-sm-12"
 								rendered="#{anuncioController.estaClienteLogado eq false}"
 								severity="warn"
 								detail="Inicie sesión para comprar este producto."
+								style="width: 100%" />
+							<p:staticMessage styleClass="col-sm-12"
+								rendered="#{anuncioController.estaClienteLogado eq true and anuncioController.renderHayStock() eq false}"
+								severity="warn"
+								detail="No hay stock de este producto. Disculpe las molestias."
 								style="width: 100%" />
 						</h:panelGroup>
 

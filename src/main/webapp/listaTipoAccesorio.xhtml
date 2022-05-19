@@ -9,6 +9,17 @@
 
 		<h:form id="nuevaTipoAccesorioForm">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						process="@this" type="submit"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a" process="@this" type="submit"
+						action="#{tipoAccesorioController.verTipoAccesorios()}"
+						value="Lista de tipos de accesorios"></p:commandLink></li>
+			</ul>
+
+			<br />
+
 			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
@@ -17,17 +28,36 @@
 
 				<div class="row">
 
-					<div class="col-sm-3"></div>
+					<div class="col-sm-2"></div>
 
-					<div class="col-sm-6">
-						<p:outputLabel for="nuevaTipoAccesorioNombre" styleClass="col-sm-6"
-							value="Nombre Nuevo Tipo accesorio" />
-						<p:inputText id="nuevaTipoAccesorioNombre" title="TipoAccesorio" styleClass="col-sm-6"
-							required="true" requiredMessage="Obligatorio"
+					<div class="col-sm-8">
+						<p:outputLabel for="nuevaTipoAccesorioNombre"
+							styleClass="col-sm-6" value="Nombre Nuevo Tipo accesorio" />
+						<p:inputText id="nuevaTipoAccesorioNombre" title="TipoAccesorio"
+							styleClass="col-sm-6" required="true"
+							requiredMessage="Obligatorio"
 							value="#{tipoAccesorioController.nuevaTipoAccesorio}" />
 					</div>
 
-					<div class="col-sm-3"></div>
+					<div class="col-sm-2"></div>
+				</div>
+				<div class="row">
+
+					<div class="col-sm-2"></div>
+
+					<div class="col-sm-8">
+						<p:outputLabel for="nuevaTipoTalla" value="Tipo de talla"
+							styleClass="col-sm-6" />
+						<p:selectOneButton id="nuevaTipoTalla" styleClass="col-sm-6"
+							requiredMessage="Obligatorio" required="true"
+							value="#{tipoAccesorioController.nuevaTipoTalla}">
+							<f:selectItem itemLabel="Numérico" itemValue="NUMERICO" />
+							<f:selectItem itemLabel="Letras" itemValue="LETRAS" />
+							<f:selectItem itemLabel="Única" itemValue="UNICA" />
+						</p:selectOneButton>
+					</div>
+
+					<div class="col-sm-2"></div>
 				</div>
 
 				<div class="row">
@@ -62,21 +92,27 @@
 				<div class="col-sm-3"></div>
 
 				<div class="col-sm-6">
-					<p:dataTable allowUnsorting="true" sortMode="single" rows="5" paginator="true"
-						paginatorPosition="bottom" paginatorAlwaysVisible="false"
+					<p:dataTable allowUnsorting="true" sortMode="single" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false"
 						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						 value="#{tipoAccesorioController.listaTipoAccesorios}"
+						value="#{tipoAccesorioController.listaTipoAccesorios}"
 						var="tipoAccesorio">
 
-						<p:column sortBy="#{tipoAccesorio.nombre}" filterMatchMode="contains"
-							filterBy="#{tipoAccesorio.nombre}"  style="text-align:center" headerText="Nombre">
+						<p:column sortBy="#{tipoAccesorio.nombre}"
+							filterMatchMode="contains" filterBy="#{tipoAccesorio.nombre}"
+							style="text-align:center" headerText="Nombre">
 							<h:outputText value="#{tipoAccesorio.nombre}" />
 						</p:column>
 
+						<p:column style="text-align:center" headerText="Tipo de talla">
+							<h:outputText value="#{tipoAccesorio.tipoTalla}" />
+						</p:column>
+
 						<p:column style="text-align:center" headerText="Acciones">
-							<p:commandButton styleClass="btn btn-primary"
-								update=":listaTipoAccesorios" process="@this"
+							<p:commandButton styleClass="btn btn-primary" update="@all"
+								process="@this"
 								actionListener="#{tipoAccesorioController.eliminarTipoAccesorio(tipoAccesorio)}"
 								value="Eliminar">
 							</p:commandButton>

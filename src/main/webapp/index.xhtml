@@ -9,6 +9,11 @@
 
 		<h:form id="productDetail">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+			</ul>
+
 			<div class="container-fluid">
 
 				<p:dataView value="#{inicioController.listaAnuncios}" var="product"
@@ -20,7 +25,7 @@
 
 					<p:dataViewGridItem columns="4">
 						<p:commandLink
-							action="#{anuncioController.mostrarAnuncio(product)}">
+							action="#{anuncioController.mostrarAnuncio(product,'prod')}">
 							<p:panel id="productGrid" header="#{product.titulo}"
 								style="text-align:center;">
 								<h:panelGrid columns="1" style="width:100%">
@@ -39,38 +44,12 @@
 												styleClass="product-pwrrice">
 												<f:convertNumber currencySymbol="€" type="currency" />
 											</h:outputText>
-											<span class="product-badge">#{product.stock().toLowerCase()}</span>
 										</div>
 									</div>
 								</h:panelGrid>
 							</p:panel>
 						</p:commandLink>
-					</p:dataViewGridItem> 
-
-					<p:dataViewListItem>
-						<p:commandLink
-							action="#{anuncioController.mostrarAnuncio(product)}">
-							<div class="product-list-item">
-								<h:graphicImage style="border:solid;"
-									value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(product.id))}"
-									width="200" height="200" />
-
-								<div class="product-list-detail">
-									<div class="product-name">#{product.titulo}</div>
-									<p:rating readonly="true"
-										value="#{anuncioController.notaMedia(product)}" />
-								</div>
-								<div class="product-list-action">
-									<h:outputText value="#{product.precio}" style="color:red;"
-										styleClass="product-price">
-										<f:convertNumber currencySymbol="€" type="currency" />
-									</h:outputText>
-
-									<span class="product-badge">#{product.stock().toLowerCase()}</span>
-								</div>
-							</div>
-						</p:commandLink>
-					</p:dataViewListItem>
+					</p:dataViewGridItem>
 				</p:dataView>
 			</div>
 		</h:form>

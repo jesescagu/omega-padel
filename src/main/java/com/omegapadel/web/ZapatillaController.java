@@ -22,6 +22,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.primefaces.model.file.UploadedFile;
 
 import com.omegapadel.model.Anuncio;
@@ -58,6 +59,7 @@ public class ZapatillaController implements Serializable {
 	private String marcaEscogida;
 	private Integer stockNuevaZapatilla;
 	private String modeloNuevaZapatilla;
+	private String referenciaNuevaZapatilla;
 	private Map<String, Integer> mapaTallaStockNuevaZapatilla;
 	private Set<String> listaKeysTallas;
 	private String sexoNuevaZapatilla;
@@ -67,6 +69,8 @@ public class ZapatillaController implements Serializable {
 
 	private List<Imagen> imagenesZapatillaNueva;
 	private Boolean validacionImagenes;
+
+	private String breadcrumb;
 
 	public static final String TEXTO_ERROR_IMAGENES_VACIAS = "Debe existir alguna imagen del producto.";
 
@@ -79,12 +83,6 @@ public class ZapatillaController implements Serializable {
 		this.listaZapatillas = zapatillaService.findAll();
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		Object marcaDeAnunciosObject = context.getExternalContext().getSessionMap().get("marcaDeAnuncios");
-
-		if (marcaDeAnunciosObject != null) {
-			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
-			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaZapatilla(marcaDeAnuncios);
-		}
 
 		Object zapatillaParaEditar = context.getExternalContext().getSessionMap().get("zapatillaParaEditar");
 		if (zapatillaParaEditar != null && zapatillaParaEditar instanceof Zapatilla) {
@@ -96,6 +94,7 @@ public class ZapatillaController implements Serializable {
 			this.imagenesZapatillaNueva = new ArrayList<>();
 			this.stockNuevaZapatilla = null;
 			this.modeloNuevaZapatilla = "";
+			this.referenciaNuevaZapatilla = "";
 			this.marcaEscogida = "";
 			this.mapaTallaStockNuevaZapatilla = new HashMap<String, Integer>();
 			this.sexoNuevaZapatilla = "";
@@ -109,6 +108,7 @@ public class ZapatillaController implements Serializable {
 			this.imagenesZapatillaNueva = imagenService.getImagenesDelProducto(this.nuevaZapatilla.getId());
 			this.stockNuevaZapatilla = this.nuevaZapatilla.getStock();
 			this.modeloNuevaZapatilla = this.nuevaZapatilla.getModelo();
+			this.referenciaNuevaZapatilla = this.nuevaZapatilla.getReferencia();
 			this.marcaEscogida = this.nuevaZapatilla.getMarca().getNombre();
 			this.mapaTallaStockNuevaZapatilla = this.nuevaZapatilla.getMapaTallaStock();
 			this.sexoNuevaZapatilla = this.nuevaZapatilla.getSexo();
@@ -117,6 +117,23 @@ public class ZapatillaController implements Serializable {
 			this.tallaNuevaZapatilla = null;
 			this.stockNuevaTallaZapatilla = null;
 
+			Object breadcrumbObject = context.getExternalContext().getSessionMap().get("breadcrumb");
+			this.breadcrumb = (String) breadcrumbObject;
+		}
+
+		Object marcaDeAnunciosObject = context.getExternalContext().getSessionMap().get("marcaDeAnuncios");
+
+		if (marcaDeAnunciosObject != null) {
+			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
+			this.marcaEscogida = marcaDeAnuncios;
+			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaZapatilla(marcaDeAnuncios);
+		} else {
+			this.marcaEscogida = "";
+		}
+
+		Object verAnunciosTodoObject = context.getExternalContext().getSessionMap().get("verTodoZapatillas");
+		if (verAnunciosTodoObject != null) {
+			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorTipo("Zapatilla");
 		}
 	}
 
@@ -127,9 +144,9 @@ public class ZapatillaController implements Serializable {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Introduce datos de talla y stock para añadir la talla de la zapatilla.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+		} else {
+			this.mapaTallaStockNuevaZapatilla.put(this.tallaNuevaZapatilla.toString(), this.stockNuevaTallaZapatilla);
 		}
-
-		this.mapaTallaStockNuevaZapatilla.put(this.tallaNuevaZapatilla.toString(), this.stockNuevaTallaZapatilla);
 	}
 
 	public void eliminarTallaDeZapatilla(Integer talla) {
@@ -150,6 +167,22 @@ public class ZapatillaController implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("marcaDeAnuncios", marca);
 
+		context.getExternalContext().getSessionMap().remove("verTodoZapatillas");
+
+		FacesContext.getCurrentInstance().getExternalContext().redirect("zapatillas.xhtml");
+	}
+
+	public Boolean renderMarcaZapatilla() {
+		return this.marcaEscogida != null && !this.marcaEscogida.equals("");
+	}
+
+	public void verZapatillasTodas() throws IOException {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().put("verTodoZapatillas", true);
+
+		context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
+
 		FacesContext.getCurrentInstance().getExternalContext().redirect("zapatillas.xhtml");
 	}
 
@@ -169,27 +202,27 @@ public class ZapatillaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-
-		if (this.stockNuevaZapatilla == null) {
+		if (this.referenciaNuevaZapatilla == null || this.referenciaNuevaZapatilla.equals("")) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"El stock de la zapatilla no puede estar vacio.", null);
+					"La referencia de la zapatilla no puede estar vacia.", null);
+			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+			validacionErronea = true;
+		} else {
+
+			if (this.nuevaZapatilla == null && zapatillaService.existeReferencia(this.referenciaNuevaZapatilla)) {
+				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"La referencia ya se encuentra en el sistema.", null);
+				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+				validacionErronea = true;
+			}
+		}
+
+		if (MapUtils.isEmpty(this.mapaTallaStockNuevaZapatilla)) {
+			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Debe añadir alguna talla del producto.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-
-//		if (this.tallaNuevaZapatilla == null) {
-//			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//					"La talla de la zapatilla no puede estar vacio.", null);
-//			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
-//			validacionErronea = true;
-//		} else {
-//			if (this.tallaNuevaZapatilla < 01 || this.tallaNuevaZapatilla > 99) {
-//				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//						"La talla de la zapatilla no es correcta.", null);
-//				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
-//				validacionErronea = true;
-//			}
-//		}
 
 		if (this.sexoNuevaZapatilla == null || this.sexoNuevaZapatilla.equals("")) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -204,10 +237,18 @@ public class ZapatillaController implements Serializable {
 
 		if (this.validacionImagenes && (this.modeloNuevaZapatilla != null && !this.modeloNuevaZapatilla.equals(""))) {
 
+			Collection<Integer> iColl = this.mapaTallaStockNuevaZapatilla.values();
+			Integer res = 0;
+			for (Integer i : iColl) {
+				res = res + i;
+			}
+			this.stockNuevaZapatilla = res;
+
 			if (this.nuevaZapatilla == null) {
 				Marca marca = marcaService.getMarcaPorNombre(this.marcaEscogida);
 				Zapatilla zapatilla = zapatillaService.create(marca, this.modeloNuevaZapatilla,
-						this.stockNuevaZapatilla, this.sexoNuevaZapatilla, this.mapaTallaStockNuevaZapatilla);
+						this.stockNuevaZapatilla, this.sexoNuevaZapatilla, this.mapaTallaStockNuevaZapatilla,
+						this.referenciaNuevaZapatilla);
 				Zapatilla saved = zapatillaService.save(zapatilla);
 
 				List<Imagen> imagenesGuardadas = new ArrayList<>();
@@ -222,8 +263,8 @@ public class ZapatillaController implements Serializable {
 
 				p.setMarca(marca);
 				p.setModelo(this.modeloNuevaZapatilla);
+				p.setReferencia(this.referenciaNuevaZapatilla);
 				p.setStock(this.stockNuevaZapatilla);
-//				p.setTalla(this.tallaNuevaZapatilla);
 				p.setMapaTallaStock(this.mapaTallaStockNuevaZapatilla);
 				p.setSexo(this.sexoNuevaZapatilla);
 				Zapatilla saved = zapatillaService.save(p);
@@ -238,8 +279,14 @@ public class ZapatillaController implements Serializable {
 			}
 		}
 		this.nuevaZapatilla = null;
-		return "listaZapatillas.xhtml";
 
+		if (this.breadcrumb.equals("bajoStock")) {
+			return "listaProductosBajoStock.xhtml";
+		} else if (this.breadcrumb.equals("desactivado")) {
+			return "listaProductosDesactivados.xhtml";
+		} else {
+			return "listaZapatillas.xhtml";
+		}
 	}
 
 	public String parseaTextoSexo(Zapatilla z) {
@@ -351,10 +398,12 @@ public class ZapatillaController implements Serializable {
 
 	}
 
-	public void verEditarZapatilla(Zapatilla zapatilla) throws IOException {
+	public void verEditarZapatilla(Zapatilla zapatilla, String breadcrumb) throws IOException {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("zapatillaParaEditar", zapatilla);
+
+		context.getExternalContext().getSessionMap().put("breadcrumb", breadcrumb);
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevaZapatilla.xhtml");
 
@@ -482,6 +531,22 @@ public class ZapatillaController implements Serializable {
 
 	public void setStockNuevaTallaZapatilla(Integer stockNuevaTallaZapatilla) {
 		this.stockNuevaTallaZapatilla = stockNuevaTallaZapatilla;
+	}
+
+	public String getReferenciaNuevaZapatilla() {
+		return referenciaNuevaZapatilla;
+	}
+
+	public void setReferenciaNuevaZapatilla(String referenciaNuevaZapatilla) {
+		this.referenciaNuevaZapatilla = referenciaNuevaZapatilla;
+	}
+
+	public String getBreadcrumb() {
+		return breadcrumb;
+	}
+
+	public void setBreadcrumb(String breadcrumb) {
+		this.breadcrumb = breadcrumb;
 	}
 
 }

@@ -8,6 +8,16 @@
 
 	<ui:define name="content">
 
+		<ul class="breadcrumb">
+			<li><p:commandLink styleClass="a" value="Principal"
+					action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+			<li><p:commandLink styleClass="a"
+					action="#{anuncioController.verListaAnunciosDesactivados()}"
+					value="Lista anuncios desactivados"></p:commandLink></li>
+		</ul>
+
+		<br />
+
 		<h:form id="listaAnuncios">
 
 			<h:panelGroup layout="block" styleClass="row">
@@ -35,18 +45,22 @@
 							</div>
 						</p:column>
 
-						<p:column sortBy="#{anuncio.titulo}" filterMatchMode="contains" filterBy="#{anuncio.titulo}"  style="text-align:center" headerText="Titulo">
+						<p:column sortBy="#{anuncio.titulo}" filterMatchMode="contains"
+							filterBy="#{anuncio.titulo}" style="text-align:center"
+							headerText="Titulo">
 							<h:outputText value="#{anuncio.titulo}" />
 						</p:column>
 
-						<p:column sortBy="#{anuncio.precio}" filterMatchMode="contains" filterBy="#{anuncio.precio}"  style="text-align:center" headerText="precio">
+						<p:column sortBy="#{anuncio.precio}" filterMatchMode="contains"
+							filterBy="#{anuncio.precio}" style="text-align:center"
+							headerText="precio">
 							<h:outputText value="#{anuncio.precio}" />
 						</p:column>
 
 						<p:column style="text-align:center" headerText="Acciones">
 							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{anuncioController.mostrarAnuncio(anuncio)}"
+								action="#{anuncioController.mostrarAnuncio(anuncio,'desactivados')}"
 								value="Ver anuncio">
 							</p:commandButton>
 						</p:column>

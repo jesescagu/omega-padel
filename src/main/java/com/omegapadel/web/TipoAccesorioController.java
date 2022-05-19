@@ -29,6 +29,7 @@ public class TipoAccesorioController implements Serializable {
 
 	private Collection<TipoAccesorio> listaTipoAccesorios;
 	private String nuevaTipoAccesorio;
+	private String nuevaTipoTalla;
 
 	@PostConstruct
 	public void init() {
@@ -47,14 +48,16 @@ public class TipoAccesorioController implements Serializable {
 			tipoAccesorioService.delete(elem);
 			FacesContext.getCurrentInstance().getExternalContext().redirect("listaTipoAccesorio.xhtml");
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Existe un accesorio de este tipo! No se puede eliminar mientras exista un accesorio de ese tipo.", ""));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Existe un accesorio de este tipo! No se puede eliminar mientras exista un accesorio de ese tipo.",
+					""));
 		}
 
 	}
 
 	public void guardarTipoAccesorio() throws IOException {
-		TipoAccesorio m = tipoAccesorioService.getTipoAccesorioPorNombre(nuevaTipoAccesorio);
-		TipoAccesorio tipoAccesorio = tipoAccesorioService.create(nuevaTipoAccesorio);
+		TipoAccesorio m = tipoAccesorioService.getTipoAccesorioPorNombre(this.nuevaTipoAccesorio);
+		TipoAccesorio tipoAccesorio = tipoAccesorioService.create(this.nuevaTipoAccesorio, this.nuevaTipoTalla);
 
 		if (m != null && m.getNombre().equals(tipoAccesorio.getNombre())) {
 
@@ -83,6 +86,14 @@ public class TipoAccesorioController implements Serializable {
 
 	public void setNuevaTipoAccesorio(String nuevaTipoAccesorio) {
 		this.nuevaTipoAccesorio = nuevaTipoAccesorio;
+	}
+
+	public String getNuevaTipoTalla() {
+		return nuevaTipoTalla;
+	}
+
+	public void setNuevaTipoTalla(String nuevaTipoTalla) {
+		this.nuevaTipoTalla = nuevaTipoTalla;
 	}
 
 }

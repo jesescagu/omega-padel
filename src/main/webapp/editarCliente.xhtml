@@ -10,6 +10,14 @@
 
 		<h:form id="nuevoClienteForm" enctype="multipart/form-data">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{clienteController.abrirEditarCliente()}"
+						value="Editar mis datos"></p:commandLink></li>
+			</ul>
+
 			<h:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
@@ -28,17 +36,18 @@
 
 					<p:outputLabel styleClass="col-sm-6" for="contrasenyaActualCliente"
 						value="Contraseña Actual" />
-					<p:password toggleMask="true" redisplay="true" id="contrasenyaActualCliente"
-						styleClass="col-sm-6" value="#{clienteController.contrasenyaActual}" />
+					<p:password toggleMask="true" redisplay="true"
+						id="contrasenyaActualCliente" styleClass="col-sm-6"
+						value="#{clienteController.contrasenyaActual}" />
 
 				</div>
 
 				<div class="row">
 
 					<p:outputLabel styleClass="col-sm-6" for="contrasenyaCliente"
-						value="Contraseña" />
-					<p:password toggleMask="true" redisplay="true" id="contrasenyaCliente"
-						styleClass="col-sm-6"
+						value="Nueva Contraseña" />
+					<p:password toggleMask="true" redisplay="true"
+						id="contrasenyaCliente" styleClass="col-sm-6"
 						value="#{clienteController.contrasenyaEscogida}" />
 
 				</div>
@@ -46,9 +55,9 @@
 				<div class="row">
 
 					<p:outputLabel styleClass="col-sm-6"
-						for="contrasenyaConfirmacionCliente" value="Confirmar Contraseña" />
-					<p:password toggleMask="true" redisplay="true" id="contrasenyaConfirmacionCliente"
-						styleClass="col-sm-6"
+						for="contrasenyaConfirmacionCliente" value="Confirmar Nueva Contraseña" />
+					<p:password toggleMask="true" redisplay="true"
+						id="contrasenyaConfirmacionCliente" styleClass="col-sm-6"
 						value="#{clienteController.contrasenyaConfirmacion}" />
 
 				</div>
@@ -73,7 +82,8 @@
 
 				<div class="row">
 
-					<p:outputLabel for="emailCliente" styleClass="col-sm-6" value="Email" />
+					<p:outputLabel for="emailCliente" styleClass="col-sm-6"
+						value="Email" />
 					<p:inputText id="emailCliente" styleClass="col-sm-6"
 						value="#{clienteController.emailEscogido}" />
 

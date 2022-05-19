@@ -47,6 +47,7 @@ public class EmpleadoController implements Serializable {
 	private PuestoTrabajoService puestoTrabajoService;
 
 	private Empleado empleadoLogado;
+	private Empleado empleadoParaEditar;
 
 	private List<Empleado> listaEmpleados;
 
@@ -73,7 +74,6 @@ public class EmpleadoController implements Serializable {
 		this.listaEmpleados = empleadoService.findAll();
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		Object emp = context.getExternalContext().getSessionMap().get("empleadoParaEditar");
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -98,20 +98,20 @@ public class EmpleadoController implements Serializable {
 			this.edicionPorAdministrador = false;
 		} else if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
 
-			Empleado empleadoParaEditar = null;
+			Object emp = context.getExternalContext().getSessionMap().get("empleadoParaEditar");
 			if (emp instanceof Empleado) {
-				empleadoParaEditar = (Empleado) emp;
+				this.empleadoParaEditar = (Empleado) emp;
 			}
 
-			if (empleadoParaEditar != null) {
+			if (this.empleadoParaEditar != null) {
 
-				this.nickEscogido = empleadoParaEditar.getUsuario().getUsuario();
-				this.nombreEscogido = empleadoParaEditar.getNombre();
-				this.apellidosEscogido = empleadoParaEditar.getApellidos();
-				this.emailEscogido = empleadoParaEditar.getEmail();
-				this.puestoTrabajoEscogido = empleadoParaEditar.getPuesto().getId();
-				this.dniEscogido = empleadoParaEditar.getDni();
-				this.telefonoEscogido = empleadoParaEditar.getTelefono();
+				this.nickEscogido = this.empleadoParaEditar.getUsuario().getUsuario();
+				this.nombreEscogido = this.empleadoParaEditar.getNombre();
+				this.apellidosEscogido = this.empleadoParaEditar.getApellidos();
+				this.emailEscogido = this.empleadoParaEditar.getEmail();
+				this.puestoTrabajoEscogido = this.empleadoParaEditar.getPuesto().getId();
+				this.dniEscogido = this.empleadoParaEditar.getDni();
+				this.telefonoEscogido = this.empleadoParaEditar.getTelefono();
 
 				this.edicionPorAdministrador = true;
 			}
@@ -614,6 +614,14 @@ public class EmpleadoController implements Serializable {
 
 	public void setEdicionPorAdministrador(Boolean edicionPorAdministrador) {
 		this.edicionPorAdministrador = edicionPorAdministrador;
+	}
+
+	public Empleado getEmpleadoParaEditar() {
+		return empleadoParaEditar;
+	}
+
+	public void setEmpleadoParaEditar(Empleado empleadoParaEditar) {
+		this.empleadoParaEditar = empleadoParaEditar;
 	}
 
 }

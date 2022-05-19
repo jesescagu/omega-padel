@@ -12,6 +12,16 @@
 
 			<h:panelGroup layout="block" styleClass="row">
 
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{palaController.verListaPalas()}"
+							value="Lista de palas"></p:commandLink></li>
+				</ul>
+
+				<br />
+
 				<div class="col-sm-1"></div>
 
 				<div class="col-sm-10">
@@ -31,6 +41,11 @@
 										style="width: 100px; height: 100px;" />
 								</ui:repeat>
 							</div>
+						</p:column>
+
+						<p:column style="text-align:center" filterMatchMode="contains"
+							filterBy="#{pala.referencia}" headerText="Referencia">
+							<h:outputText value="#{pala.referencia}" />
 						</p:column>
 
 						<p:column sortBy="#{pala.marca.nombre}" filterMatchMode="contains"
@@ -59,7 +74,7 @@
 						<p:column style="text-align:center" headerText="Acciones">
 							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{palaController.verEditarPala(pala)}" value="Editar">
+								action="#{palaController.verEditarPala(pala, 'lista')}" value="Editar">
 							</p:commandButton>
 							<p:commandButton styleClass="btn btn-primary" process="@this"
 								update=":listaPalas"

@@ -10,6 +10,15 @@
 
 		<h:form id="listaPaleteros">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{paleteroController.verListaPaleteros()}" value="Lista de paleteros"></p:commandLink></li>
+			</ul>
+
+			<br />
+
 			<h:panelGroup layout="block" styleClass="row">
 
 				<p:messages errorStyle="color: red" globalOnly="true" />
@@ -37,9 +46,14 @@
 							</div>
 						</p:column>
 
-						<p:column sortBy="#{paletero.marca.nombre}" filterMatchMode="contains"
-							filterBy="#{paletero.marca.nombre}" style="text-align:center"
-							headerText="Marca">
+						<p:column style="text-align:center" filterMatchMode="contains"
+							filterBy="#{paletero.referencia}" headerText="Referencia">
+							<h:outputText value="#{paletero.referencia}" />
+						</p:column>
+
+						<p:column sortBy="#{paletero.marca.nombre}"
+							filterMatchMode="contains" filterBy="#{paletero.marca.nombre}"
+							style="text-align:center" headerText="Marca">
 							<h:outputText value="#{paletero.marca.nombre}" />
 						</p:column>
 
@@ -56,7 +70,7 @@
 						<p:column style="text-align:center" headerText="Acciones">
 							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{paleteroController.verEditarPaletero(paletero)}"
+								action="#{paleteroController.verEditarPaletero(paletero, 'lista')}"
 								value="Editar">
 							</p:commandButton>
 							<p:commandButton styleClass="btn btn-primary" process="@this"

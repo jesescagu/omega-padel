@@ -1,5 +1,6 @@
 package com.omegapadel.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -13,13 +14,10 @@ import javax.validation.constraints.NotNull;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Producto extends EntidadBase {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6303477275427539644L;
 
 	@NotNull
-	private Integer stock; // Se puede cambiar manualmente para cuando compre
+	private Integer stock;
 
 	@ManyToOne(optional = false)
 	private Marca marca;
@@ -27,13 +25,9 @@ public class Producto extends EntidadBase {
 	@NotBlank
 	private String modelo;
 
-	// TODO
-//	@NotNull
-//	@Unique
-//	private String referencia;
-
-//	@ManyToMany(mappedBy="productos")
-//	private List<Anuncio> anuncios;
+	@NotNull
+	@Column(unique = true)
+	private String referencia;
 
 	public Integer getStock() {
 		return stock;
@@ -60,7 +54,15 @@ public class Producto extends EntidadBase {
 	}
 
 	public String nombreClase() {
-	    return this.getClass().getSimpleName();
+		return this.getClass().getSimpleName();
 	}
-	
+
+	public String getReferencia() {
+		return referencia;
+	}
+
+	public void setReferencia(String referencia) {
+		this.referencia = referencia;
+	}
+
 }

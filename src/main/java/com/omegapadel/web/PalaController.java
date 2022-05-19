@@ -54,9 +54,12 @@ public class PalaController implements Serializable {
 	private String marcaEscogida;
 	private Integer stockNuevaPala;
 	private String modeloNuevaPala;
+	private String referenciaNuevaPala;
 	private Integer temporadaEscogida;
 	private Boolean validacionImagenes;
 	private Collection<Marca> listaMarcas;
+
+	private String breadcrumb;
 
 	public static final String TEXTO_ERROR_IMAGENES_VACIAS = "Debe existir alguna imagen del producto.";
 
@@ -80,6 +83,7 @@ public class PalaController implements Serializable {
 			this.imagenesPalaNueva = new ArrayList<>();
 			this.stockNuevaPala = null;
 			this.modeloNuevaPala = "";
+			this.referenciaNuevaPala = "";
 			this.marcaEscogida = "";
 			this.temporadaEscogida = null;
 
@@ -88,8 +92,12 @@ public class PalaController implements Serializable {
 			this.imagenesPalaNueva = imagenService.getImagenesDelProducto(this.nuevaPala.getId());
 			this.stockNuevaPala = this.nuevaPala.getStock();
 			this.modeloNuevaPala = this.nuevaPala.getModelo();
+			this.referenciaNuevaPala = this.nuevaPala.getReferencia();
 			this.marcaEscogida = this.nuevaPala.getMarca().getNombre();
 			this.temporadaEscogida = this.nuevaPala.getTemporada();
+
+			Object breadcrumbObject = context.getExternalContext().getSessionMap().get("breadcrumb");
+			this.breadcrumb = (String) breadcrumbObject;
 
 		}
 
@@ -97,7 +105,16 @@ public class PalaController implements Serializable {
 		if (marcaDeAnunciosObject != null) {
 
 			String marcaDeAnuncios = (String) marcaDeAnunciosObject;
+			this.marcaEscogida = marcaDeAnuncios;
 			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorMarcaPala(marcaDeAnuncios);
+		} else {
+			this.marcaEscogida = "";
+		}
+
+		Object verTodasPalasObject = context.getExternalContext().getSessionMap().get("verTodasPalas");
+		if (verTodasPalasObject != null) {
+
+			this.listaAnunciosPorMarca = anuncioService.getAnunciosPorTipo("Pala");
 		}
 	}
 
@@ -139,6 +156,21 @@ public class PalaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
+		if (this.referenciaNuevaPala == null || this.referenciaNuevaPala.equals("")) {
+			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"La referencia de la pala no puede estar vacia.", null);
+			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+			validacionErronea = true;
+		} else {
+
+			if (this.nuevaPala == null && palaService.existeReferencia(this.referenciaNuevaPala)) {
+				FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"La referencia ya se encuentra en el sistema.", null);
+				FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
+				validacionErronea = true;
+			}
+
+		}
 
 		if (this.stockNuevaPala == null) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -162,7 +194,8 @@ public class PalaController implements Serializable {
 
 			if (this.nuevaPala == null) {
 				Marca marca = marcaService.getMarcaPorNombre(this.marcaEscogida);
-				Pala pala = palaService.create(marca, modeloNuevaPala, this.stockNuevaPala, this.temporadaEscogida);
+				Pala pala = palaService.create(marca, modeloNuevaPala, this.stockNuevaPala, this.temporadaEscogida,
+						this.referenciaNuevaPala);
 				Pala saved = palaService.save(pala);
 
 				List<Imagen> imagenesGuardadas = new ArrayList<>();
@@ -177,6 +210,7 @@ public class PalaController implements Serializable {
 
 				p.setMarca(marca);
 				p.setModelo(this.modeloNuevaPala);
+				p.setReferencia(this.referenciaNuevaPala);
 				p.setStock(this.stockNuevaPala);
 				p.setTemporada(this.temporadaEscogida);
 				Pala saved = palaService.save(p);
@@ -191,8 +225,14 @@ public class PalaController implements Serializable {
 			}
 		}
 		this.nuevaPala = null;
-		return "listaPalasCreadas";
 
+		if (this.breadcrumb.equals("bajoStock")) {
+			return "listaProductosBajoStock.xhtml";
+		} else if (this.breadcrumb.equals("desactivado")) {
+			return "listaProductosDesactivados.xhtml";
+		} else {
+			return "listaPalasCreadas.xhtml";
+		}
 	}
 
 	public List<Imagen> getImagenesDePala(Integer palaId) {
@@ -273,7 +313,8 @@ public class PalaController implements Serializable {
 			this.listaPalasCreadas = palaService.findAll();
 			return "";
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede eliminar mientras exista anuncios con este producto.", ""));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"No se puede eliminar mientras exista anuncios con este producto.", ""));
 			return null;
 		}
 	}
@@ -282,15 +323,17 @@ public class PalaController implements Serializable {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().remove("palaParaEditar");
-		
+
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevaPala.xhtml");
 
 	}
 
-	public void verEditarPala(Pala pala) throws IOException {
+	public void verEditarPala(Pala pala, String breadcrumb) throws IOException {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("palaParaEditar", pala);
+
+		context.getExternalContext().getSessionMap().put("breadcrumb", breadcrumb);
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevaPala.xhtml");
 
@@ -301,10 +344,27 @@ public class PalaController implements Serializable {
 
 	}
 
+	public Boolean renderMarcaPala() {
+		return this.marcaEscogida != null && !this.marcaEscogida.equals("");
+	}
+
 	public void verPalasMarcas(String marca) throws IOException {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("marcaDeAnuncios", marca);
+
+		context.getExternalContext().getSessionMap().remove("verTodasPalas");
+
+		FacesContext.getCurrentInstance().getExternalContext().redirect("palas.xhtml");
+
+	}
+
+	public void verPalasTodas() throws IOException {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().put("verTodasPalas", true);
+
+		context.getExternalContext().getSessionMap().remove("marcaDeAnuncios");
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("palas.xhtml");
 
@@ -400,6 +460,22 @@ public class PalaController implements Serializable {
 
 	public void setListaPalasCreadas(List<Pala> listaPalasCreadas) {
 		this.listaPalasCreadas = listaPalasCreadas;
+	}
+
+	public String getReferenciaNuevaPala() {
+		return referenciaNuevaPala;
+	}
+
+	public void setReferenciaNuevaPala(String referenciaNuevaPala) {
+		this.referenciaNuevaPala = referenciaNuevaPala;
+	}
+
+	public String getBreadcrumb() {
+		return breadcrumb;
+	}
+
+	public void setBreadcrumb(String breadcrumb) {
+		this.breadcrumb = breadcrumb;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.omegapadel.model.Marca;
 import com.omegapadel.model.Ropa;
 import com.omegapadel.model.TipoRopa;
+import com.omegapadel.repository.ProductoRepository;
 import com.omegapadel.repository.RopaRepository;
 
 @Service
@@ -20,6 +21,8 @@ public class RopaService {
 
 	@Inject
 	private RopaRepository ropaRepository;
+	@Inject
+	private ProductoRepository productoRepository;
 
 	public <S extends Ropa> S save(S entity) {
 		return ropaRepository.save(entity);
@@ -37,8 +40,8 @@ public class RopaService {
 		return ropaRepository.existsById(id);
 	}
 
-	public Iterable<Ropa> findAll() {
-		return ropaRepository.findAll();
+	public List<Ropa> findAll() {
+		return (List<Ropa>) ropaRepository.findAll();
 	}
 
 	public long count() {
@@ -53,19 +56,26 @@ public class RopaService {
 		ropaRepository.delete(entity);
 	}
 
-	public Ropa create(Marca marca, String modelo, Integer stock, String talla, String sexo, TipoRopa tipoRopa,
-			Map<String, Integer> mapaTallasStock) {
-		Ropa p = new Ropa();
-		p.setMarca(marca);
-		p.setModelo(modelo);
-		p.setStock(stock);
-		p.setMapaTallaStock(mapaTallasStock);
-		return p;
+	public Ropa create(Marca marca, String modelo, Integer stock, String sexo, TipoRopa tipoRopa,
+			Map<String, Integer> mapaTallasStock, String referencia) {
+		Ropa r = new Ropa();
+		r.setMarca(marca);
+		r.setModelo(modelo);
+		r.setStock(stock);
+		r.setSexo(sexo);
+		r.setTipoRopa(tipoRopa);
+		r.setMapaTallaStock(mapaTallasStock);
+		r.setReferencia(referencia);
+		return r;
 
 	}
 
 	public Integer countRopaPorTipoRopa(Integer tipoRopaId) {
 		return ropaRepository.countRopaPorTipoRopa(tipoRopaId);
+	}
+
+	public Boolean existeReferencia(String referencia) {
+		return productoRepository.existeReferencia(referencia) > 0;
 	}
 
 }

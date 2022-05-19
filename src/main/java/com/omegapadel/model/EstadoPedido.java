@@ -28,34 +28,6 @@ public class EstadoPedido extends EntidadBase implements Comparable<EstadoPedido
 	@Size(max = 500)
 	private String mensaje;
 
-	// TODO Eliminar
-//	public Integer getOrdenSegunEstado() {
-//
-//		switch (this.estado) {
-//		case "PAGO_PENDIENTE":
-//			return 1;
-//		case "PAGO_ACEPTADO":
-//			return 2;
-//		case "PENDIENTE_ENVIO":
-//			return 3;
-//		case "ENVIADO":
-//			return 4;
-//		case "ENTREGADO":
-//			return 5;
-//		case "CON_DISPUTA":
-//			return 6;
-//		case "DISPUTA_DENEGADA":
-//			return 7;
-//		case "PENDIENTE_REEMBOlSO":
-//			return 8;
-//		case "REEMBOLSADO":
-//			return 9;
-//		default:
-//			return 0;
-//		}
-//
-//	}
-
 	public String getEstado() {
 		return estado;
 	}

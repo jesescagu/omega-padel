@@ -14,6 +14,9 @@ public interface ProductoTallaRepository extends CrudRepository<ProductoTalla, I
 	
 	@Query("select a from ProductoTalla a where a.producto.id = ?1")
 	public List<ProductoTalla> getProductosTallaDeProducto(Integer producto);
+	
+	@Query("select a from ProductoTalla a where a.producto.id = ?1 and a.anuncioCantidad.id = ?2")
+	public ProductoTalla getProductoTallaDeAnuncioCantidadYProducto(Integer producto, Integer anuncioCantidad);
 
 }
  

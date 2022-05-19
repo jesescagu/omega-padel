@@ -61,9 +61,6 @@ public class PuestoTrabajoController implements Serializable {
 
 	public void eliminarPuestoTrabajo(PuestoTrabajo elem) throws IOException {
 
-		// TODO Mirar si hay algun trabajador activo con este puesto de trabajo o
-		// desactivarlo.
-		
 		List<Empleado> empleadosDelPuesto = puestoTrabajoService.getEmpleadosDeUnPuestoTrabajo(elem.getNombre());
 		if(CollectionUtils.isEmpty(empleadosDelPuesto)) {
 			puestoTrabajoService.delete(elem);

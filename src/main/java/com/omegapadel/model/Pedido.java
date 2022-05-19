@@ -1,11 +1,9 @@
 package com.omegapadel.model;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.SortedSet;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -27,7 +25,7 @@ public class Pedido extends EntidadBase {
 	@ManyToOne(optional = false)
 	private Cliente cliente;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OrderBy("orden ASC")
 	private SortedSet<EstadoPedido> listaEstados;
 
@@ -66,18 +64,14 @@ public class Pedido extends EntidadBase {
 
 	public void setListaEstados(SortedSet<EstadoPedido> listaEstados) {
 		this.listaEstados = listaEstados;
-		this.ultimoEstado = listaEstados.last().getEstado();
+		this.ultimoEstado = listaEstados.last().getDescripcion();
 	}
 	
 	public void addEstadoPedidoNuevo(EstadoPedido estado) {
 		this.listaEstados.add(estado);
-		this.ultimoEstado = estado.getEstado();
+		this.ultimoEstado = estado.getDescripcion();
 	}
 	
-	public EstadoPedido getUltimoEstadoPedido() {
-		return listaEstados.last();
-	}
-
 	public String getReferenciaPedido() {
 		return referenciaPedido;
 	}

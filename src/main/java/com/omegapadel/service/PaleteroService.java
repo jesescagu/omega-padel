@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.omegapadel.model.Marca;
 import com.omegapadel.model.Paletero;
 import com.omegapadel.repository.PaleteroRepository;
+import com.omegapadel.repository.ProductoRepository;
 
 @Service
 @Transactional
@@ -18,6 +19,12 @@ public class PaleteroService {
 
 	@Inject
 	private PaleteroRepository paleteroRepository;
+	@Inject
+	private ProductoRepository productoRepository;
+
+	public Boolean existeReferencia(String referencia) {
+		return productoRepository.existeReferencia(referencia) > 0;
+	}
 
 	public <S extends Paletero> S save(S entity) {
 		return paleteroRepository.save(entity);
@@ -51,8 +58,8 @@ public class PaleteroService {
 		paleteroRepository.delete(entity);
 	}
 
-	public Paletero create(Marca marca, String modelo, Integer stock) {
-		
+	public Paletero create(Marca marca, String modelo, Integer stock, String referencia) {
+
 		Optional<Paletero> paletero = getPaleteroUnica(marca.getNombre(), modelo);
 
 		Paletero p = null;
@@ -61,13 +68,14 @@ public class PaleteroService {
 		} else {
 			p = paletero.get();
 		}
-		
+
 		p.setMarca(marca);
 		p.setModelo(modelo);
 		p.setStock(stock);
+		p.setReferencia(referencia);
 		return p;
 	}
-	
+
 	public Optional<Paletero> getPaleteroUnica(String marca, String modelo) {
 		return paleteroRepository.getPaleteroUnica(marca, modelo);
 	}

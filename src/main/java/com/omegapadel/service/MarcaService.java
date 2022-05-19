@@ -63,8 +63,7 @@ public class MarcaService {
 		List<String> res = new ArrayList<String>();
 		for (Marca m : marcas) {
 
-//			List<Anuncio> anuncios = anuncioService.getAnunciosPorMarcaRopa(m.getNombre());
-			List<Anuncio> anuncios = anuncioService.findAll();
+			List<Anuncio> anuncios = anuncioService.getAnunciosPorMarcaRopa(m.getNombre());
 			if (!CollectionUtils.isEmpty(anuncios)) {
 				res.add(m.getNombre());
 			}

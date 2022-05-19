@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -24,19 +25,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-import com.omegapadel.model.Anuncio;
 import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Configuracion;
 import com.omegapadel.model.DireccionPostal;
 import com.omegapadel.model.Pedido;
+import com.omegapadel.model.ProductoTalla;
 import com.omegapadel.service.AnuncioCantidadService;
 import com.omegapadel.service.CestaService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.ConfiguracionService;
 import com.omegapadel.service.DireccionPostalService;
 import com.omegapadel.service.PedidoService;
+import com.omegapadel.service.ProductoService;
+import com.omegapadel.service.ProductoTallaService;
 
 import sis.redsys.api.ApiMacSha256;
 
@@ -59,6 +62,10 @@ public class CestaController implements Serializable {
 	private PedidoService pedidoService;
 	@Inject
 	private AnuncioCantidadService anuncioCantidadService;
+	@Inject
+	private ProductoTallaService productoTallaService;
+	@Inject
+	private ProductoService productoService;
 
 	private Cliente clienteLogado;
 
@@ -72,6 +79,8 @@ public class CestaController implements Serializable {
 	private String ds_SignatureVersion;
 	private String ds_MerchantParameters;
 	private String ds_Signature;
+
+	private String valorAux;
 
 	@PostConstruct
 	public void init() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
@@ -135,11 +144,6 @@ public class CestaController implements Serializable {
 					}
 				}
 			}
-
-			if (this.ds_SignatureVersion == null) {
-				inicializaVariablesRedsys();
-			}
-
 		}
 	}
 
@@ -157,14 +161,21 @@ public class CestaController implements Serializable {
 	public void cambioCantidadProducto(AnuncioCantidad anuncio) throws IOException {
 
 		Integer cantidad = this.valorCantidadEnEdicion;
-		anuncio.setCantidad(cantidad);
-		anuncioCantidadService.save(anuncio);
+		Boolean hayStock = productoService.hayStockDeProductos(anuncio, cantidad);
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getSessionMap().remove("anuncioIdParaEditar");
-		context.getExternalContext().getSessionMap().remove("valorCantidadEnEdicion");
+		if (hayStock) {
+			anuncio.setCantidad(cantidad);
+			anuncioCantidadService.save(anuncio);
 
-		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().getSessionMap().remove("anuncioIdParaEditar");
+			context.getExternalContext().getSessionMap().remove("valorCantidadEnEdicion");
+
+			FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"No existe esa cantidad de stock del producto, disculpe las molestias.", ""));
+		}
 	}
 
 	public void quitarUnProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
@@ -179,10 +190,20 @@ public class CestaController implements Serializable {
 	public void addUnProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
 
 		Integer cantidad = anuncio.getCantidad() + 1;
-		anuncio.setCantidad(cantidad);
-		anuncioCantidadService.save(anuncio);
+		Boolean hayStock = productoService.hayStockDeProductos(anuncio, cantidad);
 
-		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
+		if (hayStock) {
+
+			anuncio.setCantidad(cantidad);
+			anuncioCantidadService.save(anuncio);
+
+			FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
+
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"No existe esa cantidad de stock del producto, disculpe las molestias.", ""));
+
+		}
 	}
 
 	public Double totalPrecioProducto(AnuncioCantidad anuncio) {
@@ -197,9 +218,16 @@ public class CestaController implements Serializable {
 
 	public void eliminarProductoDelCarrito(AnuncioCantidad anuncio) throws IOException {
 
+		List<ProductoTalla> pts = productoTallaService.getProductosTallaDeAnuncioCantidad(anuncio.getId());
+		productoTallaService.deleteAll(pts);
 		anuncioCantidadService.deleteById(anuncio.getId());
 
 		FacesContext.getCurrentInstance().getExternalContext().redirect("cestaCliente.xhtml");
+	}
+
+	public List<ProductoTalla> getProductosTallaDeAnuncio(AnuncioCantidad ac) {
+		List<ProductoTalla> lpt = productoTallaService.getProductosTallaDeAnuncioCantidad(ac.getId());
+		return lpt;
 	}
 
 	public Double getTotalProductos() {
@@ -270,23 +298,11 @@ public class CestaController implements Serializable {
 		propiedades.load(this.getClass().getResourceAsStream("/redsys.properties"));
 
 		String dsMerchantcode = propiedades.getProperty("DS_MERCHANT_MERCHANTCODE");
-		logger.info("dsMerchantcode: " + dsMerchantcode);
-
 		String dsMerchantcurrency = propiedades.getProperty("DS_MERCHANT_CURRENCY");
-		logger.info("dsMerchantcurrency: " + dsMerchantcurrency);
-
 		String dsMerchantTerminal = propiedades.getProperty("DS_MERCHANT_TERMINAL");
-		logger.info("dsMerchantTerminal: " + dsMerchantTerminal);
-
 		String dsMerchantUrl = propiedades.getProperty("DS_MERCHANT_MERCHANTURL");
-		logger.info("dsMerchantUrl: " + dsMerchantUrl);
-
 		String dsMerchantUrlOk = propiedades.getProperty("DS_MERCHANT_URLOK");
-		logger.info("dsMerchantUrlOk: " + dsMerchantUrlOk);
-
 		String dsMerchantUrlKo = propiedades.getProperty("DS_MERCHANT_URLKO");
-		logger.info("dsMerchantUrlKo: " + dsMerchantUrlKo);
-
 		ApiMacSha256 apiMacSha256 = new ApiMacSha256();
 
 		Integer precio = (int) (getTotalPrecio() * 100);
@@ -314,6 +330,23 @@ public class CestaController implements Serializable {
 		this.ds_MerchantParameters = params;
 		this.ds_Signature = firma;
 
+		boolean res = renderHayStock();
+		if (res == true) {
+			this.valorAux = "true";
+		} else {
+			this.valorAux = "false";
+		}
+	}
+
+	public Boolean renderHayStock() {
+
+		for (AnuncioCantidad ac : this.listaProductosCesta) {
+			Boolean hayStock = productoService.hayStockDeProductos(ac, ac.getCantidad());
+			if (!hayStock) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public Boolean pagarCarrito() {
@@ -495,6 +528,14 @@ public class CestaController implements Serializable {
 
 	public void setDs_Signature(String ds_Signature) {
 		this.ds_Signature = ds_Signature;
+	}
+
+	public String getValorAux() {
+		return valorAux;
+	}
+
+	public void setValorAux(String valorAux) {
+		this.valorAux = valorAux;
 	}
 
 }

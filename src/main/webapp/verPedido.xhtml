@@ -9,10 +9,155 @@
 
 		<h:form id="detalleAnuncio">
 
-			<h3>
+			<h:panelGroup rendered="#{pedidoController.clienteLogado eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							process="@this" type="submit"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a" process="@this"
+							type="submit"
+							action="#{pedidoController.abrirPedidosParaTramitar()}"
+							value="Lista de pedidos a tramitar"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{pedidoController.abrirDetallesPedido(pedidoController.pedidoParaMostrar)}"
+							value="Detalles del pedido"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{pedidoController.clienteLogado ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a" process="@this"
+							type="submit"
+							action="#{pedidoController.abrirHistorialPedidos()}"
+							value="Mis pedidos"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{pedidoController.abrirDetallesPedido(pedidoController.pedidoParaMostrar)}"
+							value="Detalles del pedido"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<h1>
 				<h:outputText
 					value="Referencia del pedido: #{pedidoController.pedidoParaMostrar.referenciaPedido}" />
-			</h3>
+			</h1>
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Ir Atrás" process="@this"
+					rendered="#{pedidoController.estaEmpleadoLogado()}"
+					action="#{pedidoController.abrirPedidosParaTramitar()}" />
+
+				<p:commandButton value="Ir Atrás" process="@this"
+					rendered="#{pedidoController.clienteLogado ne null}"
+					action="#{pedidoController.abrirHistorialPedidos()}" />
+
+			</h:panelGroup>
+
+			<h:panelGroup rendered="#{pedidoController.clienteLogado ne null}"
+				layout="block" styleClass="container-fluid">
+
+				<p:commandButton styleClass="btn btn-primary"
+					rendered="#{pedidoController.renderBotonCancelarPedido(pedidoController.pedidoParaMostrar)}"
+					actionListener="#{pedidoController.cancelarPedido(pedidoController.pedidoParaMostrar)}"
+					process="@this" update=":detalleAnuncio" value="Cancelar pedido">
+					<p:confirm type="popup" header="Confirmar"
+						message="¿Está seguro de querer abrir cancelar el pedido?"
+						icon="pi pi-exclamation-triangle" />
+				</p:commandButton>
+
+				<p:commandButton styleClass="btn btn-primary"
+					rendered="#{pedidoController.renderBotonAbrirDisputaPedido(pedidoController.pedidoParaMostrar)}"
+					value="Abrir disputa" onclick="PF('textoCancelarPedido').show();">
+				</p:commandButton>
+
+				<p:dialog header="¿Cual es el problema que tiene su pedido?"
+					widgetVar="textoCancelarPedido" minHeight="40" width="350"
+					showEffect="fade">
+
+					<p:inputTextarea maxlength="500" required="true"
+						requiredMessage="Este campo es obligatorio"
+						value="#{pedidoController.textoMotivoAbrirDisputa}" />
+
+					<f:facet name="footer">
+						<p:commandButton value="Cancelar" type="button"
+							onclick="PF('textoCancelarPedido').hide();"
+							styleClass="ui-confirm-popup-no ui-button-flat" />
+
+						<p:commandButton styleClass="ui-confirm-popup-yes"
+							actionListener="#{pedidoController.abrirDisputaPedido(pedidoController.pedidoParaMostrar)}"
+							update=":detalleAnuncio" value="Aceptar" />
+					</f:facet>
+				</p:dialog>
+
+				<p:commandButton type="button" styleClass="btn btn-primary"
+					rendered="#{pedidoController.renderBotonPagarYEliminar(pedidoController.pedidoParaMostrar)}"
+					value="Realizar Pago"
+					onclick="somejavascript(#{pedidoController.pedidoParaMostrar.id});">
+					<p:confirm type="popup" header="Confirmar"
+						message="Se redireccionará a la pasarela de pagos. ¿Quiere continuar?"
+						icon="pi pi-exclamation-triangle" />
+				</p:commandButton>
+
+				<p:commandButton styleClass="btn btn-primary"
+					rendered="#{pedidoController.renderBotonPagarYEliminar(pedidoController.pedidoParaMostrar)}"
+					process="@this" update=":detalleAnuncio"
+					actionListener="#{pedidoController.eliminarPedidoSinPago(pedidoController.pedidoParaMostrar)}"
+					value="Eliminar">
+					<p:confirm type="popup" header="Confirmar"
+						message="Se cancelará el pedido pendiente. ¿Quiere continuar?"
+						icon="pi pi-exclamation-triangle" />
+				</p:commandButton>
+
+				<p:commandButton styleClass="btn btn-primary"
+					rendered="#{pedidoController.renderBotonRecibido(pedidoController.pedidoParaMostrar)}"
+					process="@this" update=":detalleAnuncio"
+					actionListener="#{pedidoController.marcarPedidoRecibido(pedidoController.pedidoParaMostrar)}"
+					value="Pedido entregado">
+					<p:confirm type="popup" header="Confirmar"
+						message="Va a marcar el pedido como entregado. ¿Quiere continuar?"
+						icon="pi pi-exclamation-triangle" />
+				</p:commandButton>
+			</h:panelGroup>
+
+			<h:panelGroup rendered="#{pedidoController.estaEmpleadoLogado()}"
+				layout="block" styleClass="container-fluid">
+
+				<!-- PENDIENTE ENVIO -->
+
+				<p:commandButton styleClass="btn btn-primary" process="@this"
+					update=":detalleAnuncio"
+					rendered="#{pedidoController.renderBotonRealizarEnvio(pedidoController.pedidoParaMostrar)}"
+					actionListener="#{pedidoController.realizarEnvio(pedidoController.pedidoParaMostrar)}"
+					value="Pasar a envio realizado">
+				</p:commandButton>
+
+				<!-- PENDIENTE REEMBOLSO -->
+
+				<p:commandButton styleClass="btn btn-primary" process="@this"
+					rendered="#{pedidoController.renderBotonRealizarReembolso(pedidoController.pedidoParaMostrar)}"
+					value="Realizar reembolso" update=":detalleAnuncio"
+					actionListener="#{pedidoController.realizarReembolso(pedidoController.pedidoParaMostrar)}">
+					<p:confirm type="popup" header="Confirmar"
+						message="Se reembolsará el pedido al cliente. ¿Quiere continuar?"
+						icon="pi pi-exclamation-triangle" />
+				</p:commandButton>
+
+
+				<!-- DISPUTA ABIERTA -->
+
+				<p:commandButton styleClass="btn btn-primary" process="@this"
+					update=":detalleAnuncio"
+					rendered="#{pedidoController.renderBotonResolucionDisputa(pedidoController.pedidoParaMostrar)}"
+					actionListener="#{pedidoController.aceptarDisputaPedido(pedidoController.pedidoParaMostrar)}"
+					value="Aceptar disputa">
+				</p:commandButton>
+				<p:commandButton styleClass="btn btn-primary" process="@this"
+					update=":detalleAnuncio"
+					rendered="#{pedidoController.renderBotonResolucionDisputa(pedidoController.pedidoParaMostrar)}"
+					actionListener="#{pedidoController.denegarDisputaPedido(pedidoController.pedidoParaMostrar)}"
+					value="Denegar disputa">
+				</p:commandButton>
+			</h:panelGroup>
 
 			<h:panelGroup layout="block" styleClass="container-fluid">
 
@@ -23,7 +168,11 @@
 					var="estado">
 
 					<p:column style="text-align:center" headerText="Estado">
-						<h:outputText value="#{estado.descripcion}" />
+						<b><h:outputText value="#{estado.descripcion}" /></b>
+						<br />
+						<h:outputText
+							rendered="#{estado.descripcion eq 'Disputa abierta'}"
+							value="#{estado.mensaje}" />
 					</p:column>
 
 					<p:column style="text-align:center" headerText="Fecha">
@@ -70,24 +219,56 @@
 					value="#{pedidoController.getAnunciosDelPedido(pedidoController.pedidoParaMostrar)}"
 					var="elem">
 
-					<p:column style="text-align:center" headerText="Producto">
-						<h:outputText
-							value="#{elem.anuncio.titulo}" />
+					<p:column width="30%" style="text-align:center"
+						headerText="Producto">
+						<b><p:commandLink process="@this"
+								action="#{anuncioController.mostrarAnuncio(elem.anuncio,'pedidos')}">
+								<h:outputText value="#{elem.anuncio.titulo}" />
+							</p:commandLink></b>
+						<br />
+						<ui:repeat var="prod" value="#{elem.anuncio.productos}">
+							<h:outputText value="#{prod.referencia}" />
+							<br />
+						</ui:repeat>
 					</p:column>
 
-					<p:column style="text-align:center" headerText="Cantidad">
+					<p:column width="30%" style="text-align:center" headerText="Tallas">
+						<h:panelGroup
+							rendered="#{pedidoController.isProductosTallaDeAnuncioCantidadVacio(elem) eq false and pedidoController.getProductosTallaDeAnuncioCantidad(elem).size() ne 1}">
+							<ui:repeat
+								value="#{pedidoController.getProductosTallaDeAnuncioCantidad(elem)}"
+								var="prod">
+								<h:outputText
+									value="#{prod.producto.marca.nombre} #{prod.producto.modelo} - Talla: #{prod.talla}" />
+								<br />
+							</ui:repeat>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{pedidoController.isProductosTallaDeAnuncioCantidadVacio(elem) eq false and pedidoController.getProductosTallaDeAnuncioCantidad(elem).size() eq 1}">
+							<h:outputText
+								value="#{pedidoController.getProductosTallaDeAnuncioCantidad(elem).get(0).talla}" />
+						</h:panelGroup>
+
 						<h:outputText
-							value="#{elem.cantidad}" />
+							rendered="#{pedidoController.isProductosTallaDeAnuncioCantidadVacio(elem) eq true}"
+							value="Talla única" />
 					</p:column>
 
-					<p:column style="text-align:center" headerText="Precio Unitario">
-						<h:outputText
-							value="#{elem.anuncio.precio} €" />
+
+					<p:column width="10%" style="text-align:center"
+						headerText="Cantidad">
+						<h:outputText value="#{elem.cantidad}" />
 					</p:column>
 
-					<p:column style="text-align:center" headerText="Precio Total">
-						<h:outputText
-							value="#{elem.anuncio.precio * elem.cantidad} €" />
+					<p:column width="15%" style="text-align:center"
+						headerText="Precio Unitario">
+						<h:outputText value="#{elem.anuncio.precio} €" />
+					</p:column>
+
+					<p:column width="15%" style="text-align:center"
+						headerText="Precio Total">
+						<h:outputText value="#{elem.anuncio.precio * elem.cantidad} €" />
 					</p:column>
 
 				</p:dataTable>
@@ -114,12 +295,40 @@
 
 			<hr />
 
-			<h:panelGroup layout="block" styleClass="container-fluid">
-				<p:commandButton value="Ir Atrás" process="@this" resetValues="true"
-					action="#{pedidoController.abrirHistorialPedidos()}" />
-			</h:panelGroup>
+			<p:confirmPopup global="true">
+				<p:commandButton value="Cancelar" type="button"
+					styleClass="ui-confirm-popup-no ui-button-flat" />
+				<p:commandButton value="Aceptar" type="button"
+					styleClass="ui-confirm-popup-yes" />
+			</p:confirmPopup>
 
 		</h:form>
+
+		<h:panelGroup id="panelPagarPagoPendiente" layout="block"
+			styleClass="container-fluid">
+			<form id="formPagarPagoPendienteId" method="post"
+				style="display: inline-block;"
+				action="https://sis-t.redsys.es:25443/sis/realizarPago">
+
+				<p:inputText value="#{pedidoController.ds_SignatureVersion}"
+					id="Ds_SignatureVersion" type="hidden" />
+				<p:inputText value="#{pedidoController.ds_MerchantParameters}"
+					id="Ds_MerchantParameters" type="hidden" />
+				<p:inputText value="#{pedidoController.ds_Signature}"
+					id="Ds_Signature" type="hidden" />
+
+			</form>
+		</h:panelGroup>
+
+		<p:remoteCommand name="inicializaVariables"
+			update=":panelPagarPagoPendiente"
+			actionListener="#{pedidoController.inicializaVariablesRedsys()}" />
+
+		<SCRIPT type="text/javascript">
+			function somejavascript(pedido) {
+				inicializaVariables([{name:'pedidoId', value:pedido}]).then(()=>{document.getElementById("formPagarPagoPendienteId").submit();})
+			}
+		</SCRIPT>
 
 	</ui:define>
 </ui:composition>

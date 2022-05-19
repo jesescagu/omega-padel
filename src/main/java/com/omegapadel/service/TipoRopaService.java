@@ -50,12 +50,12 @@ public class TipoRopaService {
 		tipoRopaRepository.delete(entity);
 	}
 
-	public TipoRopa create(String nombre,String tipoTalla) {
-		
-		 String primeraLetra = nombre.substring(0, 1).toUpperCase();
-	        String restoLetras = nombre.substring(1, nombre.length()).toLowerCase();
-	        String nombreReal = primeraLetra.concat(restoLetras);
-	        
+	public TipoRopa create(String nombre, String tipoTalla) {
+
+		String primeraLetra = nombre.substring(0, 1).toUpperCase();
+		String restoLetras = nombre.substring(1, nombre.length()).toLowerCase();
+		String nombreReal = primeraLetra.concat(restoLetras);
+
 		TipoRopa t = new TipoRopa();
 		t.setTipoRopa(nombreReal);
 		t.setTipoTalla(tipoTalla);

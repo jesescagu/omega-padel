@@ -22,6 +22,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -31,10 +32,13 @@ import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.EstadoPedido;
 import com.omegapadel.model.Pedido;
+import com.omegapadel.model.ProductoTalla;
 import com.omegapadel.service.AnuncioCantidadService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.EstadoPedidoService;
 import com.omegapadel.service.PedidoService;
+import com.omegapadel.service.ProductoService;
+import com.omegapadel.service.ProductoTallaService;
 
 import sis.redsys.api.ApiMacSha256;
 
@@ -50,8 +54,12 @@ public class PedidoController implements Serializable {
 	private PedidoService pedidoService;
 	@Inject
 	private EstadoPedidoService estadoPedidoService;
-	@Inject 
+	@Inject
 	private AnuncioCantidadService anuncioCantidadService;
+	@Inject
+	private ProductoTallaService productoTallaService;
+	@Inject
+	private ProductoService productoService;
 
 	private Cliente clienteLogado;
 	private List<Pedido> listaPedidos;
@@ -67,6 +75,8 @@ public class PedidoController implements Serializable {
 
 	private String textoMotivoAbrirDisputa;
 
+	private String valorAux;
+
 	@PostConstruct
 	public void init() {
 
@@ -74,7 +84,7 @@ public class PedidoController implements Serializable {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		if (estaEmpleadoLogado()) {
-			this.estadoSeleccionado = "PENDIENTE_ENVIO";
+			this.estadoSeleccionado = "Pendiente de envío";
 			this.listaPedidosParaTramitar = pedidoService.getPedidoPorUltimoEstado(this.estadoSeleccionado);
 
 			Object pedidoParaMostrar = context.getExternalContext().getSessionMap().get("pedidoParaVerDetalles");
@@ -84,8 +94,6 @@ public class PedidoController implements Serializable {
 		}
 
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-//			User user = (User) auth.getPrincipal();
-//			String nombreUsuario = user.getUsername();
 			String nombreUsuario = null;
 			Object princ = auth.getPrincipal();
 			if (princ instanceof User) {
@@ -172,11 +180,23 @@ public class PedidoController implements Serializable {
 		return false;
 
 	}
-	
-	public List<AnuncioCantidad> getAnunciosDelPedido(Pedido pedido){
-		
+
+	public List<AnuncioCantidad> getAnunciosDelPedido(Pedido pedido) {
+
 		return anuncioCantidadService.getAnunciosCantidadDePedido(pedido.getId());
-		
+
+	}
+
+	public List<ProductoTalla> getProductosTallaDeAnuncioCantidad(AnuncioCantidad ac) {
+
+		return productoTallaService.getProductosTallaDeAnuncioCantidad(ac.getId());
+
+	}
+
+	public Boolean isProductosTallaDeAnuncioCantidadVacio(AnuncioCantidad ac) {
+
+		return CollectionUtils.isEmpty(productoTallaService.getProductosTallaDeAnuncioCantidad(ac.getId()));
+
 	}
 
 	public void abrirDetallesPedido(Pedido pedido) throws IOException {
@@ -190,7 +210,7 @@ public class PedidoController implements Serializable {
 	public void abrirDisputaPedido(Pedido pedido) {
 
 		if (this.clienteLogado != null
-				&& (pedido.getUltimoEstado().equals("ENVIADO") || pedido.getUltimoEstado().equals("ENTREGADO"))) {
+				&& (pedido.getUltimoEstado().equals("Enviado") || pedido.getUltimoEstado().equals("Entregado"))) {
 
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoConDisputaAbierta(this.textoMotivoAbrirDisputa);
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
@@ -203,7 +223,7 @@ public class PedidoController implements Serializable {
 
 	public void cancelarPedido(Pedido pedido) {
 
-		if (this.clienteLogado != null && (pedido.getUltimoEstado().equals("PENDIENTE_ENVIO"))) {
+		if (this.clienteLogado != null && (pedido.getUltimoEstado().equals("Pendiente de envío"))) {
 
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoPendienteDeReembolso();
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
@@ -213,12 +233,18 @@ public class PedidoController implements Serializable {
 		}
 	}
 
-	public void eliminarPedidoSinPago(Pedido pedido) {
+	public void eliminarPedidoSinPago(Pedido pedido) throws IOException {
 
-		if (this.clienteLogado != null && (pedido.getUltimoEstado().equals("PAGO_PENDIENTE"))) {
+		if (this.clienteLogado != null && (pedido.getUltimoEstado().equals("Pago pendiente"))) {
 
+			List<AnuncioCantidad> acs = anuncioCantidadService.getAnunciosCantidadDePedido(pedido.getId());
+			for (AnuncioCantidad ac : acs) {
+				productoTallaService.deleteAll(ac.getId());
+			}
+			anuncioCantidadService.deleteAllPedidoId(pedido.getId());
 			pedidoService.delete(pedido);
 
+			FacesContext.getCurrentInstance().getExternalContext().redirect("listaPedidos.xhtml");
 		}
 	}
 
@@ -269,6 +295,12 @@ public class PedidoController implements Serializable {
 		this.ds_MerchantParameters = params;
 		this.ds_Signature = firma;
 
+		boolean res = renderHayStock(pedidoN);
+		if (res == true) {
+			this.valorAux = "true";
+		} else {
+			this.valorAux = "false";
+		}
 	}
 
 	public void realizarDevolucionRedsys()
@@ -317,6 +349,19 @@ public class PedidoController implements Serializable {
 
 	}
 
+	public Boolean renderHayStock(Pedido pedidoN) {
+
+		List<AnuncioCantidad> lac = anuncioCantidadService.getAnunciosCantidadDePedido(pedidoN.getId());
+
+		for (AnuncioCantidad ac : lac) {
+			Boolean hayStock = productoService.hayStockDeProductos(ac, 1);
+			if (!hayStock) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public Boolean estaEmpleadoLogado() {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -327,7 +372,7 @@ public class PedidoController implements Serializable {
 
 	public void realizarEnvio(Pedido pedido) {
 
-		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("PENDIENTE_ENVIO"))) {
+		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("Pendiente de envío"))) {
 
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoEnviado();
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
@@ -337,13 +382,9 @@ public class PedidoController implements Serializable {
 		}
 	}
 
-	public void realizarReembolso(Pedido pedido)
-			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException {
+	public void realizarReembolso(Pedido pedido) {
 
-		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("PENDIENTE_REEMBOlSO"))) {
-
-			realizarDevolucionRedsys();
+		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("Pendiente de reembolso"))) {
 
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoReembolsado();
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
@@ -353,9 +394,21 @@ public class PedidoController implements Serializable {
 		}
 	}
 
+	public void marcarPedidoRecibido(Pedido pedido) {
+
+		if (this.clienteLogado != null && (pedido.getUltimoEstado().equals("Enviado"))) {
+
+			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoEntregado();
+			pedido.addEstadoPedidoNuevo(nuevoEstado);
+
+			pedidoService.save(pedido);
+
+		}
+	}
+
 	public void aceptarDisputaPedido(Pedido pedido) {
 
-		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("CON_DISPUTA"))) {
+		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("Disputa abierta"))) {
 
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoPendienteDeReembolso();
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
@@ -367,9 +420,9 @@ public class PedidoController implements Serializable {
 
 	public void denegarDisputaPedido(Pedido pedido) {
 
-		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("CON_DISPUTA"))) {
+		if (estaEmpleadoLogado() && (pedido.getUltimoEstado().equals("Disputa abierta"))) {
 
-			// TODO
+			// TODO Este todo estaba puesto. Es para ponerle unmensaje creo.
 
 			EstadoPedido nuevoEstado = estadoPedidoService.createEstadoDisputaDenegada(this.textoMotivoAbrirDisputa);
 			pedido.addEstadoPedidoNuevo(nuevoEstado);
@@ -381,37 +434,43 @@ public class PedidoController implements Serializable {
 
 	public Boolean renderBotonPagarYEliminar(Pedido pedido) {
 
-		return pedido.getUltimoEstado().equals("PAGO_PENDIENTE");
+		return pedido.getUltimoEstado().equals("Pago pendiente");
 
 	}
 
 	public Boolean renderBotonCancelarPedido(Pedido pedido) {
 
-		return pedido.getUltimoEstado().equals("PENDIENTE_ENVIO");
+		return pedido.getUltimoEstado().equals("Pendiente de envío");
+
+	}
+
+	public Boolean renderBotonRecibido(Pedido pedido) {
+
+		return pedido.getUltimoEstado().equals("Enviado");
 
 	}
 
 	public Boolean renderBotonAbrirDisputaPedido(Pedido pedido) {
 
-		return pedido.getUltimoEstado().equals("ENVIADO") || pedido.getUltimoEstado().equals("ENTREGADO");
+		return pedido.getUltimoEstado().equals("Enviado") || pedido.getUltimoEstado().equals("Entregado");
 
 	}
 
 	public Boolean renderBotonRealizarReembolso(Pedido pedido) {
 
-		return pedido.getUltimoEstado().equals("PENDIENTE_REEMBOlSO");
+		return pedido.getUltimoEstado().equals("Pendiente de reembolso");
 
 	}
 
 	public Boolean renderBotonResolucionDisputa(Pedido pedido) {
 
-		return pedido.getUltimoEstado().equals("CON_DISPUTA");
+		return pedido.getUltimoEstado().equals("Disputa abierta");
 
 	}
 
 	public Boolean renderBotonRealizarEnvio(Pedido pedido) {
 
-		return pedido.getUltimoEstado().equals("PENDIENTE_ENVIO");
+		return pedido.getUltimoEstado().equals("Pendiente de envío");
 
 	}
 
@@ -485,6 +544,14 @@ public class PedidoController implements Serializable {
 
 	public void setTextoMotivoAbrirDisputa(String textoMotivoAbrirDisputa) {
 		this.textoMotivoAbrirDisputa = textoMotivoAbrirDisputa;
+	}
+
+	public String getValorAux() {
+		return valorAux;
+	}
+
+	public void setValorAux(String valorAux) {
+		this.valorAux = valorAux;
 	}
 
 }

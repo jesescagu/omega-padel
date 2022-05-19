@@ -35,11 +35,6 @@ public class Anuncio extends EntidadBase {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Producto> productos;
 
-	public String stock() {
-//		return "OUTOFSTOCK";
-		return "STOCK";
-	}
-
 	public String getTitulo() {
 		return titulo;
 	}

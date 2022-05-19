@@ -28,6 +28,16 @@ public class ProductoTallaService {
 		return productoTallaRepository.findById(id);
 	}
 
+	public void deleteAll(Integer anuncioCantidadID) {
+
+		List<ProductoTalla> pts = getProductosTallaDeAnuncioCantidad(anuncioCantidadID);
+		productoTallaRepository.deleteAll(pts);
+	}
+
+	public void deleteAll(List<ProductoTalla> arg0) {
+		productoTallaRepository.deleteAll(arg0);
+	}
+
 	public boolean existsById(Integer id) {
 		return productoTallaRepository.existsById(id);
 	}
@@ -54,6 +64,18 @@ public class ProductoTallaService {
 		p.setTalla(talla);
 		p.setAnuncioCantidad(anuncio);
 		return p;
+	}
+
+	public List<ProductoTalla> getProductosTallaDeAnuncioCantidad(Integer anuncioCantidad) {
+		return productoTallaRepository.getProductosTallaDeAnuncioCantidad(anuncioCantidad);
+	}
+
+	public List<ProductoTalla> getProductosTallaDeProducto(Integer producto) {
+		return productoTallaRepository.getProductosTallaDeProducto(producto);
+	}
+
+	public ProductoTalla getProductoTallaDeAnuncioCantidadYProducto(Integer producto, Integer anuncioCantidad) {
+		return productoTallaRepository.getProductoTallaDeAnuncioCantidadYProducto(producto, anuncioCantidad);
 	}
 
 }

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.omegapadel.model.Accesorio;
 import com.omegapadel.model.Administrador;
 import com.omegapadel.model.Anuncio;
 import com.omegapadel.model.Cliente;
@@ -36,18 +34,11 @@ import com.omegapadel.model.Empleado;
 import com.omegapadel.model.Imagen;
 import com.omegapadel.model.Marca;
 import com.omegapadel.model.Municipio;
-import com.omegapadel.model.Pala;
-import com.omegapadel.model.Paletero;
-import com.omegapadel.model.Pedido;
-import com.omegapadel.model.Pelota;
-import com.omegapadel.model.Producto;
 import com.omegapadel.model.PuestoTrabajo;
 import com.omegapadel.model.Rol;
-import com.omegapadel.model.Ropa;
 import com.omegapadel.model.TipoAccesorio;
 import com.omegapadel.model.TipoRopa;
 import com.omegapadel.model.Usuario;
-import com.omegapadel.model.Zapatilla;
 import com.omegapadel.service.AccesorioService;
 import com.omegapadel.service.AdministratorService;
 import com.omegapadel.service.AnuncioService;
@@ -58,7 +49,6 @@ import com.omegapadel.service.ConfiguracionService;
 import com.omegapadel.service.DireccionPostalService;
 import com.omegapadel.service.EmpleadoService;
 import com.omegapadel.service.ImagenService;
-import com.omegapadel.service.InstitucionService;
 import com.omegapadel.service.MarcaService;
 import com.omegapadel.service.MunicipioService;
 import com.omegapadel.service.PalaService;
@@ -69,7 +59,6 @@ import com.omegapadel.service.ProductoService;
 import com.omegapadel.service.PuestoTrabajoService;
 import com.omegapadel.service.RolService;
 import com.omegapadel.service.RopaService;
-import com.omegapadel.service.TarjetaBancariaService;
 import com.omegapadel.service.TipoAccesorioService;
 import com.omegapadel.service.TipoRopaService;
 import com.omegapadel.service.UsuarioService;
@@ -133,9 +122,6 @@ public class TemplateController implements Serializable {
 	private EmpleadoService empleadoService;
 
 	@Inject
-	private InstitucionService institucionService;
-
-	@Inject
 	private PalaService palaService;
 
 	@Inject
@@ -154,13 +140,13 @@ public class TemplateController implements Serializable {
 	private RolService rolService;
 
 	@Inject
-	private TarjetaBancariaService tarjetaBancariaService;
-
-	@Inject
 	private TipoAccesorioService tipoAccesorioService;
 
 	@Inject
 	private ImagenService imagenService;
+	
+	@Inject
+	private AnuncioController anuncioController;
 
 	private MenuModel model;
 	public List<String> listaMarcasPalas = new ArrayList<>();
@@ -557,7 +543,14 @@ public class TemplateController implements Serializable {
 
 		model = new DefaultMenuModel();
 
+		DefaultMenuItem itemIndex = DefaultMenuItem.builder().icon("pi pi-home").ajax(false)
+				.command("#{inicioController.verPaginaInicio()}").build();
+		model.getElements().add(itemIndex);
+
 		DefaultSubMenu submenuPacks = DefaultSubMenu.builder().label("Packs de padel").build();
+		DefaultMenuItem itemTodoPack = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{anuncioController.verTodosPacks()}").build();
+		submenuPacks.getElements().add(itemTodoPack);
 		if (!CollectionUtils.isEmpty(this.listaMarcasPacks)) {
 			for (String m : this.listaMarcasPacks) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
@@ -568,6 +561,9 @@ public class TemplateController implements Serializable {
 		model.getElements().add(submenuPacks);
 
 		DefaultSubMenu submenuPalas = DefaultSubMenu.builder().label("Palas").build();
+		DefaultMenuItem itemTodoPala = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{palaController.verPalasTodas()}").build();
+		submenuPalas.getElements().add(itemTodoPala);
 		if (!CollectionUtils.isEmpty(this.listaMarcasPalas)) {
 			for (String m : this.listaMarcasPalas) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
@@ -578,6 +574,9 @@ public class TemplateController implements Serializable {
 		model.getElements().add(submenuPalas);
 
 		DefaultSubMenu submenuPaleteros = DefaultSubMenu.builder().label("Paleteros").build();
+		DefaultMenuItem itemTodoPaletero = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{paleteroController.verPaleterosTodos()}").build();
+		submenuPaleteros.getElements().add(itemTodoPaletero);
 		if (!CollectionUtils.isEmpty(this.listaMarcasPaleteros)) {
 			for (String m : this.listaMarcasPaleteros) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
@@ -588,6 +587,9 @@ public class TemplateController implements Serializable {
 		model.getElements().add(submenuPaleteros);
 
 		DefaultSubMenu submenuZapatillas = DefaultSubMenu.builder().label("Zapatillas").build();
+		DefaultMenuItem itemTodoZapa = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{zapatillaController.verZapatillasTodas()}").build();
+		submenuZapatillas.getElements().add(itemTodoZapa);
 		if (!CollectionUtils.isEmpty(this.listaMarcasZapatillas)) {
 			for (String m : this.listaMarcasZapatillas) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
@@ -598,16 +600,32 @@ public class TemplateController implements Serializable {
 		model.getElements().add(submenuZapatillas);
 
 		DefaultSubMenu submenuRopa = DefaultSubMenu.builder().label("Ropa").build();
-		if (!CollectionUtils.isEmpty(this.listaTiposRopa)) {
-			for (TipoRopa m : this.listaTiposRopa) {
-				DefaultMenuItem item = DefaultMenuItem.builder().value(m.getTipoRopa()).ajax(false)
-						.command("#{ropaController.verRopaDelTipo(" + m.getTipoRopa() + ")}").build();
+		DefaultMenuItem itemTodoRopa = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{ropaController.verRopaTodas()}").build();
+		submenuRopa.getElements().add(itemTodoRopa);
+		// TODO Filtrar por tipo de ropa tambien.
+
+//		if (!CollectionUtils.isEmpty(this.listaTiposRopa)) {
+//			for (TipoRopa m : this.listaTiposRopa) {
+//				DefaultMenuItem item = DefaultMenuItem.builder().value(m.getTipoRopa()).ajax(false)
+//						.command("#{ropaController.verRopaDelTipo(" + m.getTipoRopa() + ")}").build();
+//				submenuRopa.getElements().add(item);
+//			}
+//		}
+		if (!CollectionUtils.isEmpty(this.listaMarcasRopa)) {
+			for (String m : this.listaMarcasRopa) {
+				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
+						.command("#{ropaController.verRopaMarcas(" + m + ")}").build();
 				submenuRopa.getElements().add(item);
 			}
 		}
+
 		model.getElements().add(submenuRopa);
 
 		DefaultSubMenu submenuPelotas = DefaultSubMenu.builder().label("Pelotas").build();
+		DefaultMenuItem itemTodoPelota = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{pelotaController.verPelotasTodas()}").build();
+		submenuPelotas.getElements().add(itemTodoPelota);
 		if (!CollectionUtils.isEmpty(this.listaMarcasPelotas)) {
 			for (String m : this.listaMarcasPelotas) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
@@ -618,10 +636,14 @@ public class TemplateController implements Serializable {
 		model.getElements().add(submenuPelotas);
 
 		DefaultSubMenu submenuAccs = DefaultSubMenu.builder().label("Accesorios").build();
+		DefaultMenuItem itemTodoAccs = DefaultMenuItem.builder().value("Todo").ajax(false)
+				.command("#{accesorioController.verAccesorioTodas()}").build();
+		submenuAccs.getElements().add(itemTodoAccs);
 		if (!CollectionUtils.isEmpty(this.listaTiposAccesorios)) {
 			for (TipoAccesorio m : this.listaTiposAccesorios) {
-				DefaultMenuItem item = DefaultMenuItem.builder().value(m.getNombre()).ajax(false)
-						.command("#{accesorioController.verAccesoriosDelTipo(" + m.getNombre() + ")}").build();
+				String nombreTipo = m.getNombre();
+				DefaultMenuItem item = DefaultMenuItem.builder().value(nombreTipo).ajax(false)
+						.command("#{accesorioController.verAccesoriosDelTipo(" + nombreTipo + ")}").build();
 				submenuAccs.getElements().add(item);
 			}
 		}
@@ -632,13 +654,21 @@ public class TemplateController implements Serializable {
 
 			DefaultSubMenu submenuEmpleado = DefaultSubMenu.builder().label("Menu Empleado").build();
 
-			DefaultMenuItem itemTA = DefaultMenuItem.builder().value("Nuevo tipo de accesorio").ajax(false)
-					.command("#{tipoAccesorioController.verTipoAccesorios()}").build();
-			submenuEmpleado.getElements().add(itemTA);
+			DefaultMenuItem pedidosParaTramitar = DefaultMenuItem.builder().value("Lista de pedidos para tramitar")
+					.ajax(false).command("#{pedidoController.abrirPedidosParaTramitar()}").build();
+			submenuEmpleado.getElements().add(pedidosParaTramitar);
 
-			DefaultMenuItem itemTR = DefaultMenuItem.builder().value("Nuevo tipo de ropa").ajax(false)
-					.command("#{tipoRopaController.verTipoRopa()}").build();
-			submenuEmpleado.getElements().add(itemTR);
+			DefaultMenuItem itemAnuncio = DefaultMenuItem.builder().value("Nuevo Anuncio").ajax(false)
+					.command("#{anuncioController.verNuevoAnuncio()}").build();
+			submenuEmpleado.getElements().add(itemAnuncio);
+
+			DefaultMenuItem itemListaAnuncios = DefaultMenuItem.builder().value("Lista anuncios desactivados")
+					.ajax(false).command("#{anuncioController.verListaAnunciosDesactivados()}").build();
+			submenuEmpleado.getElements().add(itemListaAnuncios);
+
+			DefaultMenuItem itemRopa = DefaultMenuItem.builder().value("Lista prendas de ropa").ajax(false)
+					.command("#{ropaController.verListaRopa()}").build();
+			submenuEmpleado.getElements().add(itemRopa);
 
 			DefaultMenuItem item = DefaultMenuItem.builder().value("Lista Palas").ajax(false)
 					.command("#{palaController.verListaPalas()}").build();
@@ -656,21 +686,30 @@ public class TemplateController implements Serializable {
 					.command("#{pelotaController.verListaPelotas()}").build();
 			submenuEmpleado.getElements().add(itemListaPelota);
 
+			DefaultMenuItem itemAccs = DefaultMenuItem.builder().value("Lista Accesorios").ajax(false)
+					.command("#{accesorioController.verListaAccesorio()}").build();
+			submenuEmpleado.getElements().add(itemAccs);
+
 			DefaultMenuItem marcas = DefaultMenuItem.builder().value("Lista Marcas").ajax(false)
 					.command("#{marcaController.verMarcas()}").build();
 			submenuEmpleado.getElements().add(marcas);
 
-			DefaultMenuItem itemAnuncio = DefaultMenuItem.builder().value("Nuevo Anuncio").ajax(false)
-					.command("#{anuncioController.verNuevoAnuncio()}").build();
-			submenuEmpleado.getElements().add(itemAnuncio);
+			DefaultMenuItem itemTA = DefaultMenuItem.builder().value("Lista de tipos de accesorio").ajax(false)
+					.command("#{tipoAccesorioController.verTipoAccesorios()}").build();
+			submenuEmpleado.getElements().add(itemTA);
 
-			DefaultMenuItem itemListaAnuncios = DefaultMenuItem.builder().value("Lista anuncios desactivados")
-					.ajax(false).command("#{anuncioController.verListaAnunciosDesactivados()}").build();
-			submenuEmpleado.getElements().add(itemListaAnuncios);
+			DefaultMenuItem itemTR = DefaultMenuItem.builder().value("Listas de tipos de ropa").ajax(false)
+					.command("#{tipoRopaController.verTipoRopa()}").build();
+			submenuEmpleado.getElements().add(itemTR);
 
-			DefaultMenuItem pedidosParaTramitar = DefaultMenuItem.builder().value("Lista de pedidos para tramitar")
-					.ajax(false).command("#{pedidoController.abrirPedidosParaTramitar()}").build();
-			submenuEmpleado.getElements().add(pedidosParaTramitar);
+			if (configuracionService.findConfiguracion().getLimiteStockBajo() > 0) {
+				DefaultMenuItem itemStockBajo = DefaultMenuItem.builder().value("Lista de productos con stock bajo")
+						.ajax(false).command("#{productoController.verListaProductosBajoStock()}").build();
+				submenuEmpleado.getElements().add(itemStockBajo);
+				DefaultMenuItem itemDes = DefaultMenuItem.builder().value("Lista de productos desactivados").ajax(false)
+						.command("#{productoController.verListaProductosDesactivados()}").build();
+				submenuEmpleado.getElements().add(itemDes);
+			}
 
 			model.getElements().add(submenuEmpleado);
 		}
@@ -679,17 +718,21 @@ public class TemplateController implements Serializable {
 
 			DefaultSubMenu submenuAdministrador = DefaultSubMenu.builder().label("Menu Administrador").build();
 
-			DefaultMenuItem itemPT = DefaultMenuItem.builder().value("Puestos de trabajo").ajax(false)
-					.command("#{puestoTrabajoController.verListaPuestoTrabajo()}").build();
-			submenuAdministrador.getElements().add(itemPT);
+			DefaultMenuItem itemDB = DefaultMenuItem.builder().value("Dashboard").ajax(false)
+					.command("#{dashboardController.mostrarDashboard()}").build();
+			submenuAdministrador.getElements().add(itemDB);
+			
+			DefaultMenuItem itemConfiguracion = DefaultMenuItem.builder().value("Configuracion").ajax(false)
+					.command("#{configuracionController.editarConfiguracion()}").build();
+			submenuAdministrador.getElements().add(itemConfiguracion);
 
 			DefaultMenuItem itemEmpleado = DefaultMenuItem.builder().value("Lista empleados").ajax(false)
 					.command("#{empleadoController.verListaEmpleados()}").build();
 			submenuAdministrador.getElements().add(itemEmpleado);
 
-			DefaultMenuItem itemConfiguracion = DefaultMenuItem.builder().value("Configuracion").ajax(false)
-					.command("#{configuracionController.editarConfiguracion()}").build();
-			submenuAdministrador.getElements().add(itemConfiguracion);
+			DefaultMenuItem itemPT = DefaultMenuItem.builder().value("Puestos de trabajo").ajax(false)
+					.command("#{puestoTrabajoController.verListaPuestoTrabajo()}").build();
+			submenuAdministrador.getElements().add(itemPT);
 
 			model.getElements().add(submenuAdministrador);
 		}
@@ -762,14 +805,14 @@ public class TemplateController implements Serializable {
 
 		}
 	}
-
+	
 	public String logout() {
 		SecurityContextHolder.clearContext();
 		return "index.xhtml";
 	}
 
 	public MenuModel getModel() {
-		return model;
+		return model; 
 	}
 
 	public List<String> getListaMarcasPalas() {

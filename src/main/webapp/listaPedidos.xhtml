@@ -10,6 +10,14 @@
 
 		<h:form id="listaPedidos">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						process="@this" action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a" process="@this" type="submit"
+						action="#{pedidoController.abrirHistorialPedidos()}"
+						value="Mis pedidos"></p:commandLink></li>
+			</ul>
+
 			<h:panelGroup layout="block" styleClass="row">
 
 				<div class="col-sm-1"></div>
@@ -30,12 +38,14 @@
 						</p:column>
 
 						<p:column sortBy="#{pedido.fechaCreacion}"
-							filterMatchMode="between" filterBy="#{pedido.fechaCreacion}" filterFunction="#{pedidoController.filtrarFechaCreacion}"
+							filterMatchMode="between" filterBy="#{pedido.fechaCreacion}"
+							filterFunction="#{pedidoController.filtrarFechaCreacion}"
 							style="text-align:center" headerText="Fecha">
 
 							<f:facet name="filter">
-								<p:datePicker widgetVar="widgetFiltroFecha" selectionMode="range" locale="es"
-									monthNavigator="true" yearNavigator="true" 
+								<p:datePicker widgetVar="widgetFiltroFecha"
+									selectionMode="range" locale="es" monthNavigator="true"
+									yearNavigator="true"
 									onchange="PF('tablaPedidos').filter(); PF('widgetFiltroFecha').hide()">
 								</p:datePicker>
 							</f:facet>
@@ -45,21 +55,19 @@
 							</h:outputText>
 						</p:column>
 
-						<p:column sortBy="#{pedido.getUltimoEstadoPedido().descripcion}"
-							filterMatchMode="startsWith"
-							filterBy="#{pedido.getUltimoEstadoPedido().descripcion}"
+						<p:column sortBy="#{pedido.ultimoEstado}"
+							filterMatchMode="startsWith" filterBy="#{pedido.ultimoEstado}"
 							style="text-align:center" headerText="Estado">
-							<h:outputText
-								value="#{pedido.getUltimoEstadoPedido().descripcion}" />
+							<h:outputText value="#{pedido.ultimoEstado}" />
 						</p:column>
 
 						<p:column filterBy="#{pedido.id}"
 							filterFunction="#{pedidoController.filtrarTablaPorProducto}"
 							style="text-align:center" headerText="Productos">
-							<ui:repeat value="#{pedidoController.getAnunciosDelPedido(pedido)}"
+							<ui:repeat
+								value="#{pedidoController.getAnunciosDelPedido(pedido)}"
 								var="elem">
-								<h:outputText
-									value="#{elem.anuncio.titulo} - #{elem.cantidad}" />
+								<h:outputText value="#{elem.anuncio.titulo} - #{elem.cantidad}" />
 								<br />
 							</ui:repeat>
 						</p:column>
@@ -94,10 +102,6 @@
 								rendered="#{pedidoController.renderBotonAbrirDisputaPedido(pedido)}"
 								value="Abrir disputa"
 								onclick="PF('textoCancelarPedido').show();">
-								<!-- actionListener="#{pedidoController.abrirDisputaPedido(pedido)}"
-								process="@this" update=":listaPedidos:datatablePedidos"
-								value="Abrir disputa">
-								 -->
 							</p:commandButton>
 
 							<p:dialog header="¿Cual es el problema que tiene su pedido?"
@@ -105,7 +109,7 @@
 								showEffect="fade">
 
 								<p:inputTextarea maxlength="500" required="true"
-									requiredMessage="Este campo es oblig atorio"
+									requiredMessage="Este campo es obligatorio"
 									value="#{pedidoController.textoMotivoAbrirDisputa}" />
 
 								<f:facet name="footer">
@@ -119,25 +123,20 @@
 								</f:facet>
 							</p:dialog>
 
-							<!-- 
-							<p:commandButton styleClass="btn btn-primary"
-								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido)}"
-								actionListener="#{pedidoController.pagarPedido(pedido)}"
-								process="@this" update=":listaPedidos:datatablePedidos"
-								value="Continuar con pago">
-								<p:confirm type="popup" header="Confirmar"
-									message="Se redireccionará a la pasarela de pagos. ¿Quiere continuar?"
-									icon="pi pi-exclamation-triangle" />
-							</p:commandButton>
-							 -->
-
 							<p:commandButton type="button" styleClass="btn btn-primary"
-								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido)}"
+								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido) and pedidoController.renderHayStock(pedido) eq true}"
 								value="Realizar Pago" onclick="somejavascript(#{pedido.id});">
 								<p:confirm type="popup" header="Confirmar"
 									message="Se redireccionará a la pasarela de pagos. ¿Quiere continuar?"
 									icon="pi pi-exclamation-triangle" />
 							</p:commandButton>
+							<p:commandButton id="botonRealizarPedidoDesactivado"
+								type="button" styleClass="showTooltip" disabled="true"
+								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido) and pedidoController.renderHayStock(pedido) eq false}"
+								value="Realizar Pago">
+							</p:commandButton>
+							<p:tooltip for="botonRealizarPedidoDesactivado"
+								value="No hay stock para realizar el pedido." trackMouse="true" />
 
 							<p:commandButton styleClass="btn btn-primary"
 								rendered="#{pedidoController.renderBotonPagarYEliminar(pedido)}"
@@ -146,6 +145,17 @@
 								value="Eliminar">
 								<p:confirm type="popup" header="Confirmar"
 									message="Se cancelará el pedido pendiente. ¿Quiere continuar?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+
+							<!-- Enviado -->
+							<p:commandButton styleClass="btn btn-primary"
+								rendered="#{pedidoController.renderBotonRecibido(pedido)}"
+								process="@this" update=":listaPedidos:datatablePedidos"
+								actionListener="#{pedidoController.marcarPedidoRecibido(pedido)}"
+								value="Pedido entregado">
+								<p:confirm type="popup" header="Confirmar"
+									message="Va a marcar el pedido como entregado. ¿Quiere continuar?"
 									icon="pi pi-exclamation-triangle" />
 							</p:commandButton>
 
@@ -174,6 +184,10 @@
 
 		<h:panelGroup id="panelPagarPagoPendiente" layout="block"
 			styleClass="container-fluid">
+
+			<h:inputHidden id="valorInicializaVariables"
+				value="#{pedidoController.valorAux}" />
+
 			<form id="formPagarPagoPendienteId" method="post"
 				style="display: inline-block;"
 				action="https://sis-t.redsys.es:25443/sis/realizarPago">
@@ -194,7 +208,16 @@
 
 		<SCRIPT type="text/javascript">
 			function somejavascript(pedido) {
-				inicializaVariables([{name:'pedidoId', value:pedido}]).then(()=>{document.getElementById("formPagarPagoPendienteId").submit();})
+				inicializaVariables([{name:'pedidoId', value:pedido}]).then(()=>{
+					
+					var val = document.getElementById('valorInicializaVariables').value;
+
+					if(val == 'true'){
+						document.getElementById("formPagarPagoPendienteId").submit();
+					}else{
+						window.alert("No hay suficiente stock para realizar el pedido. Disculpe las molestias.");
+					}
+				});
 			}
 		</SCRIPT>
 

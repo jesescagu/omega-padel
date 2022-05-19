@@ -8,17 +8,28 @@
 
 	<ui:define name="content">
 
+		<ul class="breadcrumb">
+			<li><p:commandLink styleClass="a" value="Principal"
+					action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+			<li><p:commandLink styleClass="a"
+					action="#{pedidoController.abrirPedidosParaTramitar()}"
+					value="Lista de pedidos a tramitar"></p:commandLink></li>
+		</ul>
+
+		<br />
+
 		<h:form id="listaPedidosParaTramitar">
 
 			<h:panelGroup layout="block" styleClass="container">
 
 				<p:selectOneButton unselectable="false"
 					value="#{pedidoController.estadoSeleccionado}">
-					<f:selectItem itemValue="PENDIENTE_ENVIO"
+					<f:selectItem itemValue="Pendiente de envío"
 						itemLabel="Pendiente de envío" />
-					<f:selectItem itemValue="PENDIENTE_REEMBOlSO"
+					<f:selectItem itemValue="Pendiente de reembolso"
 						itemLabel="Pendiente de reembolso" />
-					<f:selectItem itemValue="CON_DISPUTA" itemLabel="Disputa abierta" />
+					<f:selectItem itemValue="Disputa abierta"
+						itemLabel="Disputa abierta" />
 					<p:ajax update=":listaPedidosParaTramitar" process="@this"
 						listener="#{pedidoController.getListaPedidosParaTramitarPorEstado()}" />
 				</p:selectOneButton>
@@ -64,13 +75,18 @@
 							</h:outputText>
 						</p:column>
 
-						<p:column sortBy="#{pedido.getUltimoEstadoPedido().descripcion}"
-							filterMatchMode="contains"
-							filterBy="#{pedido.getUltimoEstadoPedido().descripcion}"
+						<p:column sortBy="#{pedido.ultimoEstado}"
+							filterMatchMode="contains" filterBy="#{pedido.ultimoEstado}"
 							style="text-align:center" headerText="Estado">
-							<h:outputText
-								value="#{pedido.getUltimoEstadoPedido().descripcion}" />
+							<h:outputText value="#{pedido.ultimoEstado}" />
 						</p:column>
+
+						<p:column style="text-align:center"
+							rendered="#{pedido.ultimoEstado eq 'Disputa abierta'}"
+							headerText="Mensaje disputa">
+							<h:outputText value="#{pedido.listaEstados.last().mensaje}" />
+						</p:column>
+
 
 						<p:column filterBy="#{pedido.id}"
 							filterFunction="#{pedidoController.filtrarTablaPorProducto}"
@@ -111,11 +127,14 @@
 							<!-- avisar de que no hay stock del producto?? -->
 
 							<!-- PENDIENTE REEMBOLSO -->
-
-							<p:commandButton type="button" styleClass="btn btn-primary"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
 								rendered="#{pedidoController.renderBotonRealizarReembolso(pedido)}"
+								update=":listaPedidosParaTramitar:datatablePedidosATramitar"
 								value="Realizar reembolso"
-								onclick="somejavascript(#{pedido.id});">
+								actionListener="#{pedidoController.realizarReembolso(pedido)}">
+								<p:confirm type="popup" header="Confirmar"
+									message="Se reembolsará el pedido al cliente. ¿Quiere continuar?"
+									icon="pi pi-exclamation-triangle" />
 							</p:commandButton>
 
 
@@ -150,33 +169,15 @@
 					action="#{inicioController.verPaginaInicio()}" />
 			</h:panelGroup>
 
+
+			<p:confirmPopup global="true">
+				<p:commandButton value="Cancelar" type="button"
+					styleClass="ui-confirm-popup-no ui-button-flat" />
+				<p:commandButton value="Aceptar" type="button"
+					styleClass="ui-confirm-popup-yes" />
+			</p:confirmPopup>
+
 		</h:form>
-
-		<h:panelGroup id="panelPagarPagoPendiente" layout="block"
-			styleClass="container-fluid">
-			<form id="formPagarPagoPendienteId" method="post"
-				style="display: inline-block;"
-				action="https://sis-t.redsys.es:25443/sis/realizarPago">
-
-				<p:inputText value="#{pedidoController.ds_SignatureVersion}"
-					id="Ds_SignatureVersion" type="hidden" />
-				<p:inputText value="#{pedidoController.ds_MerchantParameters}"
-					id="Ds_MerchantParameters" type="hidden" />
-				<p:inputText value="#{pedidoController.ds_Signature}"
-					id="Ds_Signature" type="hidden" />
-
-			</form>
-		</h:panelGroup>
-
-		<p:remoteCommand name="inicializaVariablesDevolucion"
-			actionListener="#{pedidoController.realizarDevolucionRedsys()}" />
-
-		<SCRIPT type="text/javascript">
-			function somejavascript(pedido) {
-				console.log(pedido);
-				inicializaVariablesDevolucion([{name:'pedidoId', value:pedido}]).then(()=>{document.getElementById("formPagarPagoPendienteId").submit();})
-			}
-		</SCRIPT>
 
 	</ui:define>
 </ui:composition>

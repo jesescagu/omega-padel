@@ -10,6 +10,16 @@
 
 		<h:form id="listaZapatillas">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{zapatillaController.verListaZapatillas()}"
+						value="Lista de zapatillas"></p:commandLink></li>
+			</ul>
+
+			<br />
+
 			<h:panelGroup layout="block" styleClass="row">
 
 				<p:messages errorStyle="color: red" globalOnly="true" />
@@ -35,6 +45,11 @@
 										style="width: 100px; height: 100px;" />
 								</ui:repeat>
 							</div>
+						</p:column>
+
+						<p:column style="text-align:center" filterMatchMode="contains"
+							filterBy="#{zapatilla.referencia}" headerText="Referencia">
+							<h:outputText value="#{zapatilla.referencia}" />
 						</p:column>
 
 						<p:column sortBy="#{zapatilla.marca.nombre}"
@@ -74,7 +89,7 @@
 						<p:column style="text-align:center" headerText="Acciones">
 							<p:commandButton styleClass="btn btn-primary" process="@this"
 								resetValues="true"
-								action="#{zapatillaController.verEditarZapatilla(zapatilla)}"
+								action="#{zapatillaController.verEditarZapatilla(zapatilla, 'lista')}"
 								value="Editar">
 							</p:commandButton>
 							<p:commandButton styleClass="btn btn-primary" process="@this"

@@ -8,21 +8,24 @@
 
 	<ui:define name="content">
 
-		<h:form prependId="false">
+		<form name='f' action="perform_login" method='POST'>
 
 			<p:panelGrid columns="1" styleClass="ui-fluid center ui-noborder">
 				<h2>Por favor, introduce su usuario</h2>
 
-				<p:outputLabel value="Datos erroneos!" styleClass="red"
+				<p:outputLabel value="Datos erroneos!" style="color:red;"
 					rendered="${!empty param['error']}" />
 
 				<p:inputText id="username" placeholder="Nombre de usuario" />
 				<p:password id="password" placeholder="Contraseña" />
 
-				<p:commandButton value="Login" ajax="false" />
+				<h:commandButton
+					styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+					style="height:35px;" value="Login" type="submit" />
 			</p:panelGrid>
 
-		</h:form>
+		</form>
+
 
 	</ui:define>
 

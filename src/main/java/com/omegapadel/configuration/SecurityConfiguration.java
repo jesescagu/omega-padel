@@ -22,12 +22,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(final HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/javax.faces.resource/**").permitAll().and().authorizeRequests()
 				.antMatchers("/login.xhtml").permitAll().antMatchers("/", "/index.xhtml", "/error.xhtml").permitAll()
+				.antMatchers("/cestaCliente.xhtml").hasAuthority("cliente")
+				.antMatchers("/editarConfiguracion.xhtml.xhtml").hasAuthority("cliente")
+				.antMatchers("/compraErronea.xhtml").hasAuthority("cliente")
+				.antMatchers("/editarConfiguracion.xhtml").hasAuthority("admin")
 				.antMatchers("/listaMarcas.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/dashboard.xhtml").hasAuthority("admin")
 				.antMatchers("/listaTipoAccesorio.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/listaPalasCreadas.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/listaAccesorio.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/nuevaPala.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/nuevasPackPelotas.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/listaPelotasCreadas.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/listaPedidos.xhtml").hasAuthority("cliente")
+				.antMatchers("/listaTipoRopa.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/listaRopa.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/nuevoAccesorio.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/nuevaZapatilla.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/nuevaRopa.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/listaProductosBajoStock.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/listaProductosDesactivados.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/listaAnunciosDesactivados.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/nuevasPackPelotas.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/nuevoAnuncio.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/nuevoPaletero.xhtml").hasAnyAuthority("empleado", "admin")
@@ -41,10 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/editarCliente.xhtml").hasAuthority("cliente").antMatchers("/editarEmpleado.xhtml")
 				.hasAnyAuthority("admin", "empleado");
 
-		http.formLogin().loginPage("/login.xhtml").permitAll().failureUrl("/login.xhtml?error=true");
-
-//		http.logout(
-//				logout -> logout.logoutUrl("/logout").addLogoutHandler(new SecurityContextLogoutHandler()));
+		http.formLogin().loginPage("/login.xhtml").loginProcessingUrl("/perform_login").permitAll().failureUrl("/login.xhtml?error=true");
 
 		http.csrf().disable();
 

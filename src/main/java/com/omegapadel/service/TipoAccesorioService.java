@@ -50,14 +50,15 @@ public class TipoAccesorioService {
 		tipoAccesorioRepository.delete(entity);
 	}
 
-	public TipoAccesorio create(String nombre) {
-		
-		 String primeraLetra = nombre.substring(0, 1).toUpperCase();
-	        String restoLetras = nombre.substring(1, nombre.length()).toLowerCase();
-	        String nombreReal = primeraLetra.concat(restoLetras);
-		
+	public TipoAccesorio create(String nombre, String tipoTalla) {
+
+		String primeraLetra = nombre.substring(0, 1).toUpperCase();
+		String restoLetras = nombre.substring(1, nombre.length()).toLowerCase();
+		String nombreReal = primeraLetra.concat(restoLetras);
+
 		TipoAccesorio t = new TipoAccesorio();
 		t.setNombre(nombreReal);
+		t.setTipoTalla(tipoTalla);
 		return t;
 	}
 

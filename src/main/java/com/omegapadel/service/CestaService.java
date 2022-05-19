@@ -1,11 +1,15 @@
 package com.omegapadel.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.omegapadel.model.Anuncio;
@@ -13,6 +17,8 @@ import com.omegapadel.model.AnuncioCantidad;
 import com.omegapadel.model.Cesta;
 import com.omegapadel.model.Cliente;
 import com.omegapadel.model.Pedido;
+import com.omegapadel.model.Producto;
+import com.omegapadel.model.ProductoTalla;
 import com.omegapadel.repository.CestaRepository;
 
 @Service
@@ -25,6 +31,8 @@ public class CestaService {
 	private PedidoService pedidoService;
 	@Inject
 	private AnuncioCantidadService anuncioCantidadService;
+	@Inject
+	private ProductoTallaService productoTallaService;
 
 	public <S extends Cesta> S save(S entity) {
 		return cestRepository.save(entity);
@@ -87,25 +95,96 @@ public class CestaService {
 		}
 	}
 
-	public void addAnuncioAlCarrito(Anuncio anuncio, Cliente clienteLogado) {
+	public void addAnuncioAlCarrito(Anuncio anuncio, Cliente clienteLogado, Map<Producto, String> tallasPorProducto) {
 
 		if (clienteLogado != null) {
 			Cesta cestaCliente = clienteLogado.getCesta();
 
-			Optional<AnuncioCantidad> anuncioTCOpt = null;
-			anuncioTCOpt = anuncioCantidadService.getAnunciosCantidadDeCestaYAnuncio(cestaCliente.getId(),
-					anuncio.getId());
+			List<AnuncioCantidad> anuncioTCOpt = anuncioCantidadService
+					.getAnunciosCantidadDeCestaYAnuncio(cestaCliente.getId(), anuncio.getId());
 
-			if (anuncioTCOpt.isPresent()) {
-				AnuncioCantidad anuncioTC = anuncioTCOpt.get();
-				Integer cantidad = anuncioTC.getCantidad() + 1;
-				anuncioTC.setCantidad(cantidad);
-				anuncioCantidadService.save(anuncioTC);
+			if (!CollectionUtils.isEmpty(anuncioTCOpt)) {
+
+				AnuncioCantidad anuncioTC = null;
+				List<AnuncioCantidad> listaAc = new ArrayList<AnuncioCantidad>(anuncioTCOpt);
+
+				if (listaAc.size() > 1) {
+					for (AnuncioCantidad ac : anuncioTCOpt) {
+						List<ProductoTalla> lpt = productoTallaService.getProductosTallaDeAnuncioCantidad(ac.getId());
+						for (ProductoTalla pt : lpt) {
+							String tallaElegida = tallasPorProducto.get(pt.getProducto());
+							if (!pt.getTalla().equals(tallaElegida)) {
+								listaAc.remove(ac);
+								break;
+							}
+						}
+					}
+				}
+
+				if (CollectionUtils.isEmpty(listaAc)) {
+					creaAnuncioCantidadNuevo(anuncio, cestaCliente, tallasPorProducto);
+				}
+
+				if (listaAc.size() == 1) {
+
+					anuncioTC = listaAc.get(0);
+					List<ProductoTalla> prodsT = productoTallaService
+							.getProductosTallaDeAnuncioCantidad(anuncioTC.getId());
+
+					if (prodsT.size() != 0) {
+
+						if (prodsT.size() != tallasPorProducto.size()) {
+							creaAnuncioCantidadNuevo(anuncio, cestaCliente, tallasPorProducto);
+						} else {
+
+							Boolean esMismaTalla = true;
+							for (ProductoTalla pt : prodsT) {
+								String tallaEscogida = tallasPorProducto.get(pt.getProducto());
+								if (!pt.getTalla().equals(tallaEscogida)) {
+									esMismaTalla = false;
+									break;
+								}
+							}
+
+							if (esMismaTalla) {
+								aumentaCantidadAnuncioCantidad(anuncioTC);
+							} else {
+								creaAnuncioCantidadNuevo(anuncio, cestaCliente, tallasPorProducto);
+							}
+
+						}
+					} else {
+						aumentaCantidadAnuncioCantidad(anuncioTC);
+					}
+				}
 			} else {
-				AnuncioCantidad anuncioTC = anuncioCantidadService.create(anuncio, cestaCliente);
-				anuncioCantidadService.save(anuncioTC);
+				creaAnuncioCantidadNuevo(anuncio, cestaCliente, tallasPorProducto);
 			}
 		}
+	}
+
+	private void creaAnuncioCantidadNuevo(Anuncio anuncio, Cesta cestaCliente,
+			Map<Producto, String> tallasPorProducto) {
+
+		AnuncioCantidad anuncioTCN = anuncioCantidadService.create(anuncio, cestaCliente);
+		AnuncioCantidad acSaved = anuncioCantidadService.save(anuncioTCN);
+
+		if (tallasPorProducto.size() != 0) {
+			for (Producto p : tallasPorProducto.keySet()) {
+				String talla = tallasPorProducto.get(p);
+				ProductoTalla pt = productoTallaService.create(acSaved, p, talla);
+				productoTallaService.save(pt);
+			}
+		}
+
+	}
+
+	private void aumentaCantidadAnuncioCantidad(AnuncioCantidad anuncioTC) {
+
+		Integer cantidad = anuncioTC.getCantidad() + 1;
+		anuncioTC.setCantidad(cantidad);
+		anuncioCantidadService.save(anuncioTC);
+
 	}
 
 	public Optional<Cesta> getCestaPorReferencia(String referencia) {

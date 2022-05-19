@@ -10,7 +10,15 @@
 
 		<h:form id="nuevoConfiguracionForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{configuracionController.editarConfiguracion()}"
+						value="Configuración"></p:commandLink></li>
+			</ul>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -21,6 +29,15 @@
 						value="Precio del envío" />
 					<p:inputText id="precioEnvioConfiguracion" styleClass="col-sm-6"
 						value="#{configuracionController.precioEnvio}" />
+				</h:panelGroup>
+
+				<h:panelGroup styleClass="row">
+					<p:outputLabel styleClass="col-sm-6" for="limiteStockBajoNumber"
+						value="Limite stock bajo" />
+					<p:inputNumber id="limiteStockBajoNumber" padControl="false"
+						style="padding:0px;" styleClass="col-sm-6" thousandSeparator=""
+						decimalSeparator="." decimalPlaces="0"
+						value="#{configuracionController.limiteStockBajo}" />
 				</h:panelGroup>
 
 				<h:panelGroup styleClass="row">

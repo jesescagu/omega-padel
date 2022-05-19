@@ -9,6 +9,9 @@
 
 		<h:form id="detalleCesta">
 
+			<p:messages globalOnly="true" />
+			<br />
+
 			<h:panelGroup id="grupoProductosCesta" layout="block"
 				styleClass="container-fluid">
 
@@ -20,7 +23,7 @@
 					<p:column width="45%" headerText="Descripción">
 
 						<p:commandLink
-							actionListener="#{anuncioController.mostrarAnuncio(prod.anuncio)}">
+							actionListener="#{anuncioController.mostrarAnuncio(prod.anuncio,'cesta')}">
 							<h:panelGroup styleClass="row">
 								<h:panelGroup styleClass="col-sm-5">
 
@@ -34,11 +37,41 @@
 									<h2>
 										<h:outputText value="#{prod.anuncio.titulo}" />
 									</h2>
-									<br />
-									<h:outputText value="prod.anuncio.referencia" />
-									<br />
 									<b><h:outputText value="Precio individual: " /></b>
 									<h:outputText value="#{prod.anuncio.precio} €" />
+									<br />
+									<h:panelGroup
+										rendered="#{cestaController.getProductosTallaDeAnuncio(prod).size() eq 1}">
+										<ui:repeat var="elem"
+											value="#{cestaController.getProductosTallaDeAnuncio(prod)}">
+											<h:outputText
+												value="- talla: #{elem.talla}, ref: #{elem.producto.referencia}" />
+											<br />
+										</ui:repeat>
+									</h:panelGroup>
+									<h:panelGroup
+										rendered="#{cestaController.getProductosTallaDeAnuncio(prod).size() eq 0}">
+										<h:panelGroup rendered="#{prod.anuncio.productos.size() eq 1}">
+											<h:outputText
+												value="- ref: #{prod.anuncio.productos.get(0).referencia}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{prod.anuncio.productos.size() > 1}">
+											<ui:repeat var="elem" value="#{prod.anuncio.productos}">
+												<h:outputText
+													value="- #{elem.marca.nombre} #{elem.modelo}, ref: #{elem.referencia}" />
+												<br />
+											</ui:repeat>
+										</h:panelGroup>
+									</h:panelGroup>
+									<h:panelGroup
+										rendered="#{cestaController.getProductosTallaDeAnuncio(prod).size() > 1}">
+										<ui:repeat var="elem"
+											value="#{cestaController.getProductosTallaDeAnuncio(prod)}">
+											<h:outputText
+												value="- #{elem.producto.marca.nombre} #{elem.producto.modelo}, talla: #{elem.talla}, ref: #{elem.producto.referencia}" />
+											<br />
+										</ui:repeat>
+									</h:panelGroup>
 								</h:panelGroup>
 
 							</h:panelGroup>
@@ -60,8 +93,7 @@
 							<h:inputText style="width:70%; text-align:center" readonly="true"
 								value="#{prod.cantidad}" />
 
-							<p:commandButton process="@this" style="width:15%;"
-								update=":detalleCesta:grupoProductosCesta"
+							<p:commandButton process="@this" style="width:15%;" update="@all"
 								actionListener="#{cestaController.addUnProductoDelCarrito(prod)}"
 								value="+" />
 						</h:panelGroup>
@@ -88,7 +120,7 @@
 						</p:commandButton>
 
 						<p:commandButton styleClass="btn btn-primary" process="@form"
-							update=":detalleCesta:datatableDestalleCestaId"
+							update="@all"
 							rendered="#{cestaController.renderModificarCantidadManualmente(prod) eq true}"
 							actionListener="#{cestaController.cambioCantidadProducto(prod)}"
 							value="Guardar cantidad">
@@ -172,33 +204,59 @@
 				value="Cancelar compra">
 			</p:commandButton>
 
-			<p:remoteCommand name="inicializaVariables"
-				actionListener="#{cestaController.inicializaVariablesRedsys()}" />
-			<p:remoteCommand name="pagarCarrito"
-				actionListener="#{cestaController.pagarCarrito()}" />
+			<p:commandButton type="button" styleClass="btn btn-primary"
+				process="@this" update=":panelRealizarPedidoform"
+				disabled="#{empty cestaController.listaProductosCesta or cestaController.direccionPostalSeleccionada eq null or cestaController.renderHayStock() eq false}"
+				value="Realizar Pago" onclick="somejavascript();" />
+
+			<p:staticMessage styleClass="col-sm-12"
+				rendered="#{cestaController.renderHayStock() eq false}"
+				severity="warn"
+				detail="No hay sufieciente stock de algunos de sus productos. Sentimos las molestias."
+				style="width: 100%" />
 
 		</h:form>
 
-		<form id="formPagarCarritoId" method="post"
-			style="display: inline-block;"
-			action="https://sis-t.redsys.es:25443/sis/realizarPago">
+		<h:panelGroup id="panelRealizarPedidoform" layout="block"
+			styleClass="container-fluid">
 
-			<p:inputText value="#{cestaController.ds_SignatureVersion}"
-				id="Ds_SignatureVersion" type="hidden" />
-			<p:inputText value="#{cestaController.ds_MerchantParameters}"
-				id="Ds_MerchantParameters" type="hidden" />
-			<p:inputText value="#{cestaController.ds_Signature}"
-				id="Ds_Signature" type="hidden" />
+			<h:inputHidden id="valorInicializaVariables"
+				value="#{cestaController.valorAux}" />
 
-			<p:commandButton type="button" styleClass="btn btn-primary"
-				disabled="#{empty cestaController.listaProductosCesta or cestaController.direccionPostalSeleccionada eq null}"
-				value="Realizar Pago" onclick="somejavascript();" />
+			<form id="formPagarCarritoId" method="post"
+				style="display: inline-block;"
+				action="https://sis-t.redsys.es:25443/sis/realizarPago">
 
-		</form>
+				<p:inputText value="#{cestaController.ds_SignatureVersion}"
+					id="Ds_SignatureVersion" type="hidden" />
+				<p:inputText value="#{cestaController.ds_MerchantParameters}"
+					id="Ds_MerchantParameters" type="hidden" />
+				<p:inputText value="#{cestaController.ds_Signature}"
+					id="Ds_Signature" type="hidden" />
+
+			</form>
+		</h:panelGroup>
+
+		<p:remoteCommand name="inicializaVariables"
+			update=":panelRealizarPedidoform" 
+			actionListener="#{cestaController.inicializaVariablesRedsys()}" />
+		<p:remoteCommand name="pagarCarrito" update=":panelRealizarPedidoform"
+			actionListener="#{cestaController.pagarCarrito()}" />
 
 		<SCRIPT type="text/javascript">
 			function somejavascript() {
-				inicializaVariables().then(()=>{pagarCarrito();}).then(()=>{document.getElementById("formPagarCarritoId").submit();});
+				inicializaVariables().then(()=>{
+					
+					var val = document.getElementById('valorInicializaVariables').value;
+					
+					if(val == 'true'){
+
+						document.getElementById("formPagarCarritoId").submit();
+						pagarCarrito();
+					}else{
+						window.alert("No hay suficiente stock para realizar el pedido. Disculpe las molestias.");
+					}
+				});
 			}
 		</SCRIPT>
 

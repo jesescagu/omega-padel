@@ -10,7 +10,29 @@
 
 		<h:form id="editarEmpleadoForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<h:panelGroup rendered="#{empleadoController.empleadoLogado eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{empleadoController.verListaEmpleados()}"
+							value="Lista de puestos de empleados"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{empleadoController.abrirEditarEmpleado(empleadoController.empleadoParaEditar)}"
+							value="Editar datos empleado"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{empleadoController.empleadoLogado ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{empleadoController.abrirEditarEmpleado()}"
+							value="Editar mis datos"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -41,7 +63,7 @@
 
 					<p:outputLabel styleClass="col-sm-6" for="contrasenyaEmpleado"
 						rendered="#{!empleadoController.edicionPorAdministrador}"
-						value="Contraseña" />
+						value="Nueva Contraseña" />
 					<p:password id="contrasenyaEmpleado"
 						rendered="#{!empleadoController.edicionPorAdministrador}"
 						styleClass="col-sm-6"
@@ -53,7 +75,7 @@
 
 					<p:outputLabel styleClass="col-sm-6"
 						rendered="#{!empleadoController.edicionPorAdministrador}"
-						for="contrasenyaConfirmacionEmpleado" value="Confirmar Contraseña" />
+						for="contrasenyaConfirmacionEmpleado" value="Confirmar Nueva Contraseña" />
 					<p:password id="contrasenyaConfirmacionEmpleado"
 						styleClass="col-sm-6"
 						rendered="#{!empleadoController.edicionPorAdministrador}"

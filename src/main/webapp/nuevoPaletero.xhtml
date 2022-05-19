@@ -10,7 +10,50 @@
 
 		<h:form id="nuevaPaleteroForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<h:panelGroup rendered="#{paleteroController.nuevoPaletero eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{paleteroController.verListaPaleteros()}"
+							value="Lista de paletero"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{paleteroController.verNuevoPaletero()}"
+							value="Añadir paletero"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{paleteroController.nuevoPaletero ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+					<h:panelGroup
+						rendered="#{paleteroController.breadcrumb eq 'lista'}">
+						<li><p:commandLink styleClass="a"
+								action="#{paleteroController.verListaPaleteros()}"
+								value="Lista de paletero"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{paleteroController.breadcrumb eq 'bajoStock'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosBajoStock()}"
+								value="Lista de productos con bajo stock"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{paleteroController.breadcrumb eq 'desactivado'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosDesactivados()}"
+								value="Lista de productos desactivados"></p:commandLink></li>
+					</h:panelGroup>
+
+
+					<li><p:commandLink styleClass="a"
+							action="#{paleteroController.verEditarPaletero(paleteroController.nuevoPaletero, paleteroController.breadcrumb)}"
+							value="Editar paletero"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -42,7 +85,13 @@
 						value="Modelo" />
 					<p:inputText id="modeloPaleteroTexto" styleClass="col-sm-6"
 						value="#{paleteroController.modeloNuevoPaletero}" />
+				</div>
 
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="referenciaPaleteroTexto"
+						value="Referencia" />
+					<p:inputText id="referenciaPaleteroTexto" styleClass="col-sm-6"
+						value="#{paleteroController.referenciaNuevoPaletero}" />
 				</div>
 
 			</h:panelGroup>
@@ -77,7 +126,8 @@
 					</p:fileUpload>
 				</div>
 				<div class="col-sm">
-					<p:commandButton id="btnfileUploadPaletero" update=":ImagenesNuevoPaleteroForm"
+					<p:commandButton id="btnfileUploadPaletero"
+						update=":ImagenesNuevoPaleteroForm"
 						actionListener="#{paleteroController.nuevaImagen()}"
 						value="Adjuntar" styleClass="btn btn-primary btn-block">
 					</p:commandButton>
@@ -111,11 +161,11 @@
 								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
 							</p:column>
 							<p:column headerText="Acciones">
-								<h:commandButton styleClass="btn btn-primary" process="@this"
+								<p:commandButton styleClass="btn btn-primary" process="@this"
 									update=":ImagenesNuevoPaleteroForm"
 									actionListener="#{paleteroController.eliminaImagen(elem)}"
 									value="Eliminar">
-								</h:commandButton>
+								</p:commandButton>
 							</p:column>
 						</p:dataTable>
 

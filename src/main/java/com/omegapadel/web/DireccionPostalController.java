@@ -19,7 +19,6 @@ import com.omegapadel.model.Cliente;
 import com.omegapadel.model.DireccionPostal;
 import com.omegapadel.model.Empleado;
 import com.omegapadel.model.Municipio;
-import com.omegapadel.service.ActorService;
 import com.omegapadel.service.ClienteService;
 import com.omegapadel.service.DireccionPostalService;
 import com.omegapadel.service.EmpleadoService;
@@ -33,16 +32,10 @@ public class DireccionPostalController implements Serializable {
 
 	@Inject
 	private DireccionPostalService direccionPostalService;
-
 	@Inject
 	private ClienteService clienteService;
-
-	@Inject
-	private ActorService actorService;
-
 	@Inject
 	private EmpleadoService empleadoService;
-
 	@Inject
 	private MunicipioService municipioService;
 
@@ -59,7 +52,32 @@ public class DireccionPostalController implements Serializable {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		Object DPSeleccionadaObject = context.getExternalContext().getSessionMap().get("direccionSeleccionada");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
+
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
+
+			Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
+			this.listaDireccionesPostales = clienteLogado.getDireccionesPostales();
+
+		}
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("empleado"))) {
+			User user = (User) auth.getPrincipal();
+			String nombreUsuario = user.getUsername();
+
+			Empleado empleadoLogado = empleadoService.buscaEmpleadoPorNombreUsuario(nombreUsuario);
+			this.listaDireccionesPostales = empleadoLogado.getDireccionesPostales();
+
+		}
+		
 		if (DPSeleccionadaObject != null && DPSeleccionadaObject instanceof DireccionPostal) {
 
 			this.direccionPostalSeleccionada = (DireccionPostal) DPSeleccionadaObject;
@@ -70,34 +88,6 @@ public class DireccionPostalController implements Serializable {
 			this.codigoMunicipioSeleccionado = this.direccionPostalSeleccionada.getMunicipio().getCodigo();
 
 		} else {
-
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-			if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-//				User user = (User) auth.getPrincipal();
-//				String nombreUsuario = user.getUsername();
-				
-				String nombreUsuario = null;
-				Object princ = auth.getPrincipal();
-				if (princ instanceof User) {
-					User user = (User) princ;
-					nombreUsuario = user.getUsername();
-				} else {
-					nombreUsuario = (String) auth.getPrincipal();
-				}
-
-				Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
-				this.listaDireccionesPostales = clienteLogado.getDireccionesPostales();
-
-			}
-			if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("empleado"))) {
-				User user = (User) auth.getPrincipal();
-				String nombreUsuario = user.getUsername();
-
-				Empleado empleadoLogado = empleadoService.buscaEmpleadoPorNombreUsuario(nombreUsuario);
-				this.listaDireccionesPostales = empleadoLogado.getDireccionesPostales();
-
-			}
 
 			this.listaMunicipios = municipioService.findAllOrdered();
 			this.direccionPostalSeleccionada = null;
@@ -122,6 +112,9 @@ public class DireccionPostalController implements Serializable {
 
 	public void abrirNuevaDireccionPostal() throws IOException {
 
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("direccionSeleccionada");
+		
 		FacesContext.getCurrentInstance().getExternalContext().redirect("nuevaDireccionPostal.xhtml");
 
 	}
@@ -129,22 +122,19 @@ public class DireccionPostalController implements Serializable {
 	public String guardarDireccionPostal() throws IOException {
 		Boolean validacionErronea = false;
 
-		if (this.direccionSeleccionada == null || this.direccionSeleccionada.isEmpty()
-				) {
+		if (this.direccionSeleccionada == null || this.direccionSeleccionada.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir una dirección.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.codigoPostalSeleccionado == null || this.codigoPostalSeleccionado.isEmpty()
-				) {
+		if (this.codigoPostalSeleccionado == null || this.codigoPostalSeleccionado.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe introducir un código postal.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
 			validacionErronea = true;
 		}
-		if (this.codigoMunicipioSeleccionado == null || this.codigoMunicipioSeleccionado.isEmpty()
-				) {
+		if (this.codigoMunicipioSeleccionado == null || this.codigoMunicipioSeleccionado.isEmpty()) {
 			FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe seleccionar un municipio válido.", null);
 			FacesContext.getCurrentInstance().addMessage(null, facesMsgModelo);
@@ -169,9 +159,7 @@ public class DireccionPostalController implements Serializable {
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 				if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-//					User user = (User) auth.getPrincipal();
-//					String nombreUsuario = user.getUsername();
-					
+
 					String nombreUsuario = null;
 					Object princ = auth.getPrincipal();
 					if (princ instanceof User) {
@@ -216,18 +204,10 @@ public class DireccionPostalController implements Serializable {
 		Boolean esDireccionConPedidos = dp.getPedidos().size() != 0;
 		if (esDireccionConPedidos) {
 
-//			Actor a = dp.getActor();
-//			List<DireccionPostal> listDPs = a.getDireccionesPostales();
-//			listDPs.remove(dp);
-//			a.setDireccionesPostales(listDPs);
-//			actorService.save(a);
-
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 			if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-//				User user = (User) auth.getPrincipal();
-//				String nombreUsuario = user.getUsername();
-				
+
 				String nombreUsuario = null;
 				Object princ = auth.getPrincipal();
 				if (princ instanceof User) {
@@ -239,7 +219,7 @@ public class DireccionPostalController implements Serializable {
 
 				Cliente clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 				List<DireccionPostal> listDPs = clienteLogado.getDireccionesPostales();
-				Boolean b = listDPs.remove(dp);
+				listDPs.remove(dp);
 				clienteLogado.setDireccionesPostales(listDPs);
 				clienteService.save(clienteLogado);
 

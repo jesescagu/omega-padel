@@ -17,7 +17,7 @@ public interface AnuncioCantidadRepository extends CrudRepository<AnuncioCantida
 	public List<AnuncioCantidad> getAnunciosCantidadDePedido(Integer pedido);
 
 	@Query("select a from AnuncioCantidad a where a.cesta.id = ?1 and a.anuncio.id = ?2")
-	public Optional<AnuncioCantidad> getAnunciosCantidadDeCestaYAnuncio(Integer cestaId, Integer anuncioId);
+	public List<AnuncioCantidad> getAnunciosCantidadDeCestaYAnuncio(Integer cestaId, Integer anuncioId);
 	
 }
  

@@ -7,20 +7,34 @@
 
 	<ui:define name="content">
 
+		<ul class="breadcrumb">
+			<li><p:commandLink styleClass="a" value="Principal"
+					action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+			<li><p:commandLink styleClass="a"
+					action="#{zapatillaController.verZapatillasTodas()}"
+					value="Lista de zapatillas"></p:commandLink></li>
+			<li><h:panelGroup layout="block"
+					rendered="#{zapatillaController.renderMarcaZapatilla() eq true}">
+					<p:commandLink styleClass="a"
+						action="#{zapatillaController.verZapatillasMarcas(zapatillaController.marcaEscogida)}"
+						value="#{zapatillaController.marcaEscogida}" />
+				</h:panelGroup></li>
+		</ul>
+
 		<h:form id="productDetailZapatillas">
 
 			<div class="container-fluid">
 
-				<p:dataView value="#{zapatillaController.listaAnunciosPorMarca}" var="product" gridIcon="pi pi-th-large"
-					listIcon="pi pi-bars" rows="12" paginator="true"
-					paginatorPosition="bottom" paginatorAlwaysVisible="false"
-					rowsPerPageTemplate="6,12,16"
+				<p:dataView value="#{zapatillaController.listaAnunciosPorMarca}"
+					var="product" gridIcon="pi pi-th-large" listIcon="pi pi-bars"
+					rows="12" paginator="true" paginatorPosition="bottom"
+					paginatorAlwaysVisible="false" rowsPerPageTemplate="6,12,16"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					layout="grid">
 
 					<p:dataViewGridItem columns="4">
 						<p:commandLink
-							action="#{anuncioController.mostrarAnuncio(product)}">
+							action="#{anuncioController.mostrarAnuncio(product,'prod')}">
 							<p:panel id="productGridZapatillas" header="#{product.titulo}"
 								style="text-align:center;">
 								<h:panelGrid columns="1" style="width:100%">
@@ -39,7 +53,6 @@
 												styleClass="product-pwrrice">
 												<f:convertNumber currencySymbol="€" type="currency" />
 											</h:outputText>
-											<span class="product-badge">#{product.stock().toLowerCase()}</span>
 										</div>
 									</div>
 								</h:panelGrid>

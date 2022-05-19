@@ -10,7 +10,15 @@
 
 		<h:form id="nuevoClienteForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{clienteController.abrirNuevoCliente()}"
+						value="Registrarse"></p:commandLink></li>
+			</ul>
+ 
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 

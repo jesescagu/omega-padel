@@ -10,29 +10,45 @@
 
 		<h:form id="listaDireccionPostal">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{direccionPostalController.abrirListaDireccionesActor()}"
+						value="Lista de direcciones postales"></p:commandLink></li>
+			</ul>
+
 			<h:panelGroup layout="block" styleClass="row">
 
 				<div class="col-sm-1"></div>
 
 				<div class="col-sm-10">
 					<p:dataTable emptyMessage="No tiene direcciones postales válidas."
-					allowUnsorting="true" sortMode="single"
-					rows="5"
-					paginator="true" paginatorPosition="bottom"
-					paginatorAlwaysVisible="false" rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
-					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						allowUnsorting="true" sortMode="single" rows="5" paginator="true"
+						paginatorPosition="bottom" paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						value="#{direccionPostalController.listaDireccionesPostales}"
 						var="direccionPostal">
 
-						<p:column sortBy="#{direccionPostal.direccion}" filterMatchMode="contains" filterBy="#{direccionPostal.direccion}" style="text-align:center" headerText="Dirección">
+						<p:column sortBy="#{direccionPostal.direccion}"
+							filterMatchMode="contains"
+							filterBy="#{direccionPostal.direccion}" style="text-align:center"
+							headerText="Dirección">
 							<h:outputText value="#{direccionPostal.direccion}" />
 						</p:column>
 
-						<p:column sortBy="#{direccionPostal.codigoPostal}" filterMatchMode="contains" filterBy="#{direccionPostal.codigoPostal}" style="text-align:center" headerText="Código postal">
+						<p:column sortBy="#{direccionPostal.codigoPostal}"
+							filterMatchMode="contains"
+							filterBy="#{direccionPostal.codigoPostal}"
+							style="text-align:center" headerText="Código postal">
 							<h:outputText value="#{direccionPostal.codigoPostal}" />
 						</p:column>
 
-						<p:column sortBy="#{direccionPostal.municipio.descripcion}" filterMatchMode="contains" filterBy="#{direccionPostal.municipio.descripcion}" style="text-align:center" headerText="Municipio">
+						<p:column sortBy="#{direccionPostal.municipio.descripcion}"
+							filterMatchMode="contains"
+							filterBy="#{direccionPostal.municipio.descripcion}"
+							style="text-align:center" headerText="Municipio">
 							<h:outputText value="#{direccionPostal.municipio.descripcion}" />
 						</p:column>
 
@@ -43,8 +59,7 @@
 								value="Editar">
 							</p:commandButton>
 
-							<p:commandButton styleClass="btn btn-primary"
-							 process="@this"
+							<p:commandButton styleClass="btn btn-primary" process="@this"
 								update=":listaDireccionPostal"
 								actionListener="#{direccionPostalController.eliminarDireccionPostal(direccionPostal)}"
 								value="Eliminar">

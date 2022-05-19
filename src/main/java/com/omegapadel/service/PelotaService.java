@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.omegapadel.model.Marca;
 import com.omegapadel.model.Pelota;
 import com.omegapadel.repository.PelotaRepository;
+import com.omegapadel.repository.ProductoRepository;
 
 @Service
 @Transactional
@@ -18,6 +19,12 @@ public class PelotaService {
 
 	@Inject
 	private PelotaRepository pelotaRepository;
+	@Inject
+	private ProductoRepository productoRepository;
+
+	public Boolean existeReferencia(String referencia) {
+		return productoRepository.existeReferencia(referencia) > 0;
+	}
 
 	public <S extends Pelota> S save(S entity) {
 		return pelotaRepository.save(entity);
@@ -51,13 +58,11 @@ public class PelotaService {
 		return pelotaRepository.getPelotasDeMarca(m);
 	}
 
-	
-	
 	public Optional<Pelota> getPelotaUnica(String marca, String modelo, Integer numero) {
 		return pelotaRepository.getPelotaUnica(marca, modelo, numero);
 	}
 
-	public Pelota create(Marca marca, String modelo, Integer numero, Integer stock) {
+	public Pelota create(Marca marca, String modelo, Integer numero, Integer stock, String referencia) {
 		Optional<Pelota> pelota = getPelotaUnica(marca.getNombre(), modelo, numero);
 
 		Pelota p = null;
@@ -70,6 +75,7 @@ public class PelotaService {
 		p.setModelo(modelo);
 		p.setNumero(numero);
 		p.setStock(stock);
+		p.setReferencia(referencia);
 		return p;
 	}
 

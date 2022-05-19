@@ -10,7 +10,46 @@
 
 		<h:form id="nuevaPalaForm" enctype="multipart/form-data">
 
-			<h:messages errorStyle="color: red" globalOnly="true" />
+			<h:panelGroup rendered="#{palaController.nuevaPala eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{palaController.verListaPalas()}" value="Lista de pala"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{palaController.verNuevaPala()}" value="Añadir pala"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{palaController.nuevaPala ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+					<h:panelGroup
+						rendered="#{palaController.breadcrumb eq 'lista'}">
+						<li><p:commandLink styleClass="a"
+								action="#{palaController.verListaPalas()}" value="Lista de pala"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{palaController.breadcrumb eq 'bajoStock'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosBajoStock()}"
+								value="Lista de productos con bajo stock"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{palaController.breadcrumb eq 'desactivado'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosDesactivados()}"
+								value="Lista de productos desactivados"></p:commandLink></li>
+					</h:panelGroup>
+
+					<li><p:commandLink styleClass="a"
+							action="#{palaController.verEditarPala(palaController.nuevaPala, palaController.breadcrumb)}"
+							value="Editar pala"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
 
@@ -28,9 +67,10 @@
 				<div class="row">
 					<p:outputLabel styleClass="col-sm-6" for="stockPalaNumber"
 						value="Stock inicial" />
-					<p:inputNumber id="stockPalaNumber" padControl="false" style="padding:0px;"
-						styleClass="col-sm-6" thousandSeparator="" decimalSeparator="."
-						decimalPlaces="0" value="#{palaController.stockNuevaPala}" />
+					<p:inputNumber id="stockPalaNumber" padControl="false"
+						style="padding:0px;" styleClass="col-sm-6" thousandSeparator=""
+						decimalSeparator="." decimalPlaces="0"
+						value="#{palaController.stockNuevaPala}" />
 				</div>
 
 
@@ -39,7 +79,13 @@
 						value="Modelo" />
 					<p:inputText id="modeloPalaTexto" styleClass="col-sm-6"
 						value="#{palaController.modeloNuevaPala}" />
+				</div>
 
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="referenciaPalaTexto"
+						value="Referencia" />
+					<p:inputText id="referenciaPalaTexto" styleClass="col-sm-6"
+						value="#{palaController.referenciaNuevaPala}" />
 				</div>
 
 				<div class="row">
@@ -75,7 +121,7 @@
 					<h1>
 						<h:outputText value="Imágenes" />
 					</h1>
-					
+
 					<p:fileUpload id="fileUploadPala" label="Examinar..."
 						styleClass="block" mode="simple" multiple="false"
 						skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"

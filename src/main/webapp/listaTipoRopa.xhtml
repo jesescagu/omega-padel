@@ -9,6 +9,17 @@
 
 		<h:form id="nuevaTipoRopaForm">
 
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						process="@this" type="submit"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a" process="@this" type="submit"
+						action="#{tipoRopaController.verTipoRopa()}"
+						value="Lista de tipos de ropa"></p:commandLink></li>
+			</ul>
+
+			<br />
+
 			<p:messages errorStyle="color: red" globalOnly="true" />
 
 			<br />
@@ -93,9 +104,7 @@
 							<h:outputText value="#{tipoRopa.tipoRopa}" />
 						</p:column>
 
-						<p:column sortBy="#{tipoRopa.tipoTalla}"
-							filterMatchMode="contains" filterBy="#{tipoRopa.tipoTalla}"
-							style="text-align:center" headerText="tipo de talla">
+						<p:column style="text-align:center" headerText="tipo de talla">
 							<h:outputText value="#{tipoRopa.tipoTalla}" />
 						</p:column>
 

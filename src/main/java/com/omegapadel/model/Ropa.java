@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -12,12 +13,9 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "ropa")
 public class Ropa extends Producto {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 659083532689046607L;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	private Map<String, Integer> mapaTallaStock;
 
 	@NotBlank
