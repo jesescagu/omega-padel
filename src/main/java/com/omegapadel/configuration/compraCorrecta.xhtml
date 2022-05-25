@@ -1,0 +1,29 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="compraCorrecta">
+
+			<b><h:outputText rendered="#{respuestaRedsysController.esCorrecto}"
+				value="Su compra se ha realizado correctamente" /></b>
+			<b><h:outputText rendered="#{not respuestaRedsysController.esCorrecto}"
+				value="Ha habido algún error y no se ha completado el proceso de compra" /></b>
+
+<hr/>
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Ver pedidos realizados" process="@this"
+					resetValues="true"
+					action="#{pedidoController.abrirHistorialPedidos()}" />
+				<p:commandButton value="Ir a inicio" process="@this"
+					resetValues="true" action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

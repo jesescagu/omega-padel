@@ -1,0 +1,227 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="listaProductos">
+
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{productoController.verListaProductosBajoStock()}"
+						value="Lista de productos con bajo stock"></p:commandLink></li>
+			</ul>
+
+			<h:panelGroup layout="block" styleClass="row">
+
+				<div class="col-sm-1"></div>
+
+				<div class="col-sm-10">
+					<p:dataTable
+						value="#{productoController.listaProductosConStockBajo}"
+						allowUnsorting="true" sortMode="single" rows="5" paginator="true"
+						paginatorPosition="bottom" paginatorAlwaysVisible="false"
+						rowsPerPageTemplate="5,10,20,30,{ShowAll|'Todo'}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						var="producto">
+
+						<p:column headerText="Imagen">
+							<h:panelGroup
+								rendered="#{producto['class'].simpleName eq 'Pala'}" class="row">
+								<ui:repeat
+									value="#{palaController.getImagenesDePala(producto.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{palaController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</h:panelGroup>
+							<h:panelGroup
+								rendered="#{producto['class'].simpleName eq 'Paletero'}"
+								class="row">
+								<ui:repeat
+									value="#{paleteroController.getImagenesDePaletero(producto.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{paleteroController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</h:panelGroup>
+							<h:panelGroup
+								rendered="#{producto['class'].simpleName eq 'Pelota'}"
+								class="row">
+								<ui:repeat
+									value="#{pelotaController.getImagenesDePelota(producto.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{pelotaController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</h:panelGroup>
+							<h:panelGroup
+								rendered="#{producto['class'].simpleName eq 'Ropa'}" class="row">
+								<ui:repeat
+									value="#{ropaController.getImagenesDeRopa(producto.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{ropaController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</h:panelGroup>
+							<h:panelGroup
+								rendered="#{producto['class'].simpleName eq 'Zapatilla'}"
+								class="row">
+								<ui:repeat
+									value="#{zapatillaController.getImagenesDeZapatilla(producto.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{zapatillaController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</h:panelGroup>
+							<h:panelGroup
+								rendered="#{producto['class'].simpleName eq 'Accesorio'}"
+								class="row">
+								<ui:repeat
+									value="#{accesorioController.getImagenesDeAccesorio(producto.id)}"
+									var="elem">
+									<h:graphicImage
+										value="data:image/jpg;base64,#{accesorioController.getBytesDeImagen(elem)}"
+										style="width: 100px; height: 100px;" />
+								</ui:repeat>
+							</h:panelGroup>
+						</p:column>
+
+						<p:column sortBy="#{producto['class'].simpleName}"
+							style="text-align:center" filterMatchMode="contains"
+							filterBy="#{producto['class'].simpleName}"
+							headerText="Tipo de producto">
+							<h:outputText value="#{producto['class'].simpleName}" />
+						</p:column>
+
+						<p:column style="text-align:center" filterMatchMode="contains"
+							filterBy="#{producto.referencia}" headerText="Referencia">
+							<h:outputText value="#{producto.referencia}" />
+						</p:column>
+
+						<p:column sortBy="#{producto.marca.nombre}"
+							filterMatchMode="contains" filterBy="#{producto.marca.nombre}"
+							style="text-align:center" headerText="Marca">
+							<h:outputText value="#{producto.marca.nombre}" />
+						</p:column>
+
+						<p:column filterMatchMode="contains" sortBy="#{producto.modelo}"
+							filterBy="#{producto.modelo}" style="text-align:center"
+							headerText="Modelo">
+							<h:outputText value="#{producto.modelo}" />
+						</p:column>
+
+						<p:column sortBy="#{producto.stock}" style="text-align:center"
+							headerText="Stock - Talla / Stock">
+							<h:outputText
+								rendered="#{!productoController.esProductoConTallas(producto) and producto.stock ge 0}"
+								value="#{producto.stock}" />
+							<h:outputText rendered="#{producto.stock lt 0}"
+								value="Desactivado" />
+
+							<h:panelGroup
+								rendered="#{productoController.esProductoConTallas(producto) and producto.stock ge 0}"
+								layout="block">
+
+								<ui:repeat
+									value="#{productoController.getMapaTallasStockProducto(producto).keySet()}"
+									var="elem">
+									<h:outputText
+										value="#{elem} / #{productoController.getMapaTallasStockProducto(producto).get(elem)}" />
+									<br />
+								</ui:repeat>
+
+							</h:panelGroup>
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+
+							<h:panelGroup layout="block" rendered="#{producto.stock ge 0}">
+								<p:commandButton
+									rendered="#{producto['class'].simpleName eq 'Pala'}"
+									styleClass="btn btn-primary" process="@this" resetValues="true"
+									action="#{palaController.verEditarPala(producto, 'bajoStock')}"
+									value="Editar">
+								</p:commandButton>
+								<p:commandButton
+									rendered="#{producto['class'].simpleName eq 'Paletero'}"
+									styleClass="btn btn-primary" process="@this" resetValues="true"
+									action="#{paleteroController.verEditarPaletero(producto, 'bajoStock')}"
+									value="Editar">
+								</p:commandButton>
+								<p:commandButton
+									rendered="#{producto['class'].simpleName eq 'Pelota'}"
+									styleClass="btn btn-primary" process="@this" resetValues="true"
+									action="#{pelotaController.verEditarPelota(producto, 'bajoStock')}"
+									value="Editar">
+								</p:commandButton>
+								<p:commandButton
+									rendered="#{producto['class'].simpleName eq 'Ropa'}"
+									styleClass="btn btn-primary" process="@this" resetValues="true"
+									action="#{ropaController.verEditarRopa(producto, 'bajoStock')}"
+									value="Editar">
+								</p:commandButton>
+								<p:commandButton
+									rendered="#{producto['class'].simpleName eq 'Zapatilla'}"
+									styleClass="btn btn-primary" process="@this" resetValues="true"
+									action="#{zapatillaController.verEditarZapatilla(producto, 'bajoStock')}"
+									value="Editar">
+								</p:commandButton>
+								<p:commandButton
+									rendered="#{producto['class'].simpleName eq 'Accesorio'}"
+									styleClass="btn btn-primary" process="@this" resetValues="true"
+									action="#{accesorioController.verEditarAccesorio(producto, 'bajoStock')}"
+									value="Editar">
+								</p:commandButton>
+							</h:panelGroup>
+
+							<p:commandButton rendered="#{producto.stock eq 0}"
+								styleClass="btn btn-primary" process="@this"
+								update=":listaProductos"
+								actionListener="#{productoController.desactivarProducto(producto)}"
+								value="Desactivar">
+
+								<p:confirm type="popup" header="Confirmar"
+									message="Se va a desactivar el producto y todos los anuncios que lo contienen. ¿Quiere continuar?"
+									icon="pi pi-exclamation-triangle" />
+
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<div class="col-sm-1"></div>
+
+			</h:panelGroup>
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+			<p:confirmPopup global="true">
+				<p:commandButton value="Cancelar" type="button"
+					styleClass="ui-confirm-popup-no ui-button-flat" />
+				<p:commandButton value="Aceptar" type="button"
+					styleClass="ui-confirm-popup-yes" />
+			</p:confirmPopup>
+
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

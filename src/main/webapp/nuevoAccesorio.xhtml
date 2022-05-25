@@ -1,0 +1,252 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevoAccesorioForm" enctype="multipart/form-data">
+
+			<h:panelGroup
+				rendered="#{accesorioController.nuevoAccesorio eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{accesorioController.verListaAccesorio()}"
+							value="Lista de accesorio"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{accesorioController.verNuevoAccesorio()}"
+							value="Añadir accesorio"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup
+				rendered="#{accesorioController.nuevoAccesorio ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+					<h:panelGroup
+						rendered="#{accesorioController.breadcrumb eq 'lista'}">
+						<li><p:commandLink styleClass="a"
+								action="#{accesorioController.verListaAccesorio()}"
+								value="Lista de accesorio"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{accesorioController.breadcrumb eq 'bajoStock'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosBajoStock()}"
+								value="Lista de productos con bajo stock"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{accesorioController.breadcrumb eq 'desactivado'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosDesactivados()}"
+								value="Lista de productos desactivados"></p:commandLink></li>
+					</h:panelGroup>
+
+
+					<li><p:commandLink styleClass="a"
+							action="#{accesorioController.verEditarAccesorio(accesorioController.nuevoAccesorio, accesorioController.breadcrumb)}"
+							value="Editar accesorio"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="marcaAccesorio"
+						value="Marca" />
+					<p:selectOneMenu label="Marca" id="marcaAccesorio"
+						styleClass="col-sm-6" value="#{accesorioController.marcaEscogida}">
+						<f:selectItems var="marca"
+							value="#{accesorioController.listaMarcas}"
+							itemLabel="#{marca.nombre}" itemValue="#{marca.nombre}" />
+					</p:selectOneMenu>
+				</div>
+
+				<h:panelGroup id="accesorioStockTexto">
+					<h:panelGroup layout="block"
+						rendered="#{accesorioController.renderTallasDeAccesorio() eq false}"
+						class="row">
+						<p:outputLabel styleClass="col-sm-6" for="stockAccesorioNumber"
+							value="Stock inicial" />
+						<p:inputNumber id="stockAccesorioNumber" padControl="false"
+							style="padding:0px;" styleClass="col-sm-6" thousandSeparator=""
+							decimalSeparator="." decimalPlaces="0"
+							value="#{accesorioController.stockNuevoAccesorio}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="modeloAccesorioTexto"
+						value="Modelo" />
+					<p:inputText id="modeloAccesorioTexto" styleClass="col-sm-6"
+						value="#{accesorioController.modeloNuevoAccesorio}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="referenciaAccesorioTexto"
+						value="Referencia" />
+					<p:inputText id="referenciaAccesorioTexto" styleClass="col-sm-6"
+						value="#{accesorioController.referenciaNuevoAccesorio}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="tipoAccesorioTexto"
+						value="Tipo" />
+					<p:selectOneMenu styleClass="col-sm-6" style="padding:0px;"
+						id="tipoAccesorioTexto"
+						value="#{accesorioController.tipoNuevoAccesorio}">
+						<f:selectItems var="tipo"
+							value="#{accesorioController.getTipoAccesorioCreados()}"
+							itemLabel="#{tipo.nombre}" itemValue="#{tipo.nombre}" />
+						<p:ajax process="@this"
+							update=":nuevoAccesorioForm:panelTallasAccesorio :nuevoAccesorioForm:accesorioStockTexto" />
+					</p:selectOneMenu>
+
+				</div>
+			</h:panelGroup>
+
+			<h:panelGroup id="panelTallasAccesorio">
+				<h:panelGroup layout="block" styleClass="container"
+					rendered="#{accesorioController.renderTallasDeAccesorio() eq true}">
+
+					<hr />
+
+					<div class="row">
+						<p:outputLabel styleClass="col-sm-3" for="tallaAccesorioTexto"
+							value="Talla" />
+						<p:inputText id="tallaAccesorioTexto" styleClass="col-sm-3"
+							value="#{accesorioController.tallaNuevoAccesorio}" />
+
+						<p:outputLabel styleClass="col-sm-3"
+							for="stockTallaAccesorioTexto" value="Stock de talla" />
+						<p:inputNumber id="stockTallaAccesorioTexto" padControl="false"
+							style="padding:0px;" styleClass="col-sm-3" thousandSeparator=""
+							decimalSeparator="." decimalPlaces="0"
+							value="#{accesorioController.stockNuevoTallaAccesorio}" />
+
+						<p:commandButton styleClass="container-fluid" value="Añadir talla"
+							type="submit" resetValues="true" update=":nuevoAccesorioForm"
+							action="#{accesorioController.addTallaAAccesorio()}" />
+					</div>
+
+					<br />
+
+					<div class="row">
+						<p:dataTable id="datatableTallas"
+							value="#{accesorioController.mapaTallaStockNuevoAccesorio.keySet()}"
+							var="elem">
+
+							<p:column style="text-align:center" headerText="Talla">
+								<h:outputText value="#{elem}" />
+							</p:column>
+
+							<p:column style="text-align:center" headerText="Stock de talla">
+								<h:outputText
+									value="#{accesorioController.mapaTallaStockNuevoAccesorio.get(elem)}" />
+							</p:column>
+
+							<p:column style="text-align:center" headerText="Acciones">
+								<p:commandButton styleClass="btn btn-primary" process="@this"
+									update=":nuevoAccesorioForm:datatableTallas"
+									actionListener="#{accesorioController.eliminarTallaDeAccesorio(elem)}"
+									value="Eliminar">
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</div>
+				</h:panelGroup>
+			</h:panelGroup>
+			<hr />
+
+			<h:panelGroup layout="block" styleClass="container">
+				<p:commandButton value="Guardar" type="submit" update="@all"
+					resetValues="true"
+					action="#{accesorioController.guardarAccesorio()}" />
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+		<h:form id="ImagenesNuevoAccesorioForm" enctype="multipart/form-data">
+
+			<h:panelGroup id="uploadFileAccesorioId" layout="block"
+				styleClass="container-fluid">
+
+				<div class="col-sm">
+					<h1>
+						<h:outputText value="Imágenes" />
+					</h1>
+					<p:fileUpload id="fileUploadAccesorio" label="Examinar..."
+						styleClass="block" mode="simple" multiple="false"
+						skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+						fileLimit="1" cancelLabel="Cancelar" uploadLabel="Adjuntar"
+						dragDropSupport="true"
+						value="#{accesorioController.imagenAccesorioNuevo}">
+					</p:fileUpload>
+				</div>
+				<div class="col-sm">
+					<p:commandButton id="btnfileUploadAccesorio"
+						update=":ImagenesNuevoAccesorioForm"
+						actionListener="#{accesorioController.nuevaImagen()}"
+						value="Adjuntar" styleClass="btn btn-primary btn-block">
+					</p:commandButton>
+				</div>
+			</h:panelGroup>
+
+			<h:panelGroup id="tablaImagenesAccesorio"
+				rendered="#{not empty accesorioController.imagenesAccesorioNuevo}"
+				layout="block" styleClass="container-fluid">
+				<div class="col-sm-12">
+					<h1>
+						<h:outputText value="Imagenes adjuntadas" />
+					</h1>
+				</div>
+
+				<div class="row">
+
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:dataTable var="elem"
+							value="#{accesorioController.imagenesAccesorioNuevo}"
+							class="table table-striped table-responsive table-bordered nowrap"
+							id="tablaDocumentos">
+							<p:column headerText="Imagen">
+								<h:graphicImage
+									value="data:image/jpg;base64,#{accesorioController.getBytesDeImagen(elem)}"
+									width="100%" height="100%" />
+							</p:column>
+							<p:column headerText="Nombre imagen">
+								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
+							</p:column>
+							<p:column headerText="Acciones">
+								<p:commandButton styleClass="btn btn-primary" process="@this"
+									update=":ImagenesNuevoAccesorioForm"
+									actionListener="#{accesorioController.eliminaImagen(elem)}"
+									value="Eliminar">
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="col-sm-3"></div>
+
+				</div>
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

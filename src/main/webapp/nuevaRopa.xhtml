@@ -1,0 +1,236 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="nuevaRopaForm" enctype="multipart/form-data">
+
+			<h:panelGroup rendered="#{ropaController.nuevaRopa eq null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{ropaController.verListaRopa()}" value="Lista de ropa"></p:commandLink></li>
+					<li><p:commandLink styleClass="a"
+							action="#{ropaController.verNuevaRopa()}" value="Añadir ropa"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{ropaController.nuevaRopa ne null}">
+				<ul class="breadcrumb">
+					<li><p:commandLink styleClass="a" value="Principal"
+							action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+
+					<h:panelGroup rendered="#{ropaController.breadcrumb eq 'lista'}">
+						<li><p:commandLink styleClass="a"
+								action="#{ropaController.verListaRopa()}" value="Lista de ropa"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{ropaController.breadcrumb eq 'bajoStock'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosBajoStock()}"
+								value="Lista de productos con bajo stock"></p:commandLink></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{ropaController.breadcrumb eq 'desactivado'}">
+						<li><p:commandLink styleClass="a"
+								action="#{productoController.verListaProductosDesactivados()}"
+								value="Lista de productos desactivados"></p:commandLink></li>
+					</h:panelGroup>
+
+
+					<li><p:commandLink styleClass="a"
+							action="#{ropaController.verEditarRopa(ropaController.nuevaRopa, ropaController.breadcrumb)}"
+							value="Editar ropa"></p:commandLink></li>
+				</ul>
+			</h:panelGroup>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="marcaRopa" value="Marca" />
+					<p:selectOneMenu label="Marca" id="marcaRopa" styleClass="col-sm-6"
+						value="#{ropaController.marcaEscogida}">
+						<f:selectItems var="marca" value="#{ropaController.listaMarcas}"
+							itemLabel="#{marca.nombre}" itemValue="#{marca.nombre}" />
+					</p:selectOneMenu>
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="modeloRopaTexto"
+						value="Modelo" />
+					<p:inputText id="modeloRopaTexto" styleClass="col-sm-6"
+						value="#{ropaController.modeloNuevaRopa}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="referenciaRopaTexto"
+						value="Referencia" />
+					<p:inputText id="referenciaRopaTexto" styleClass="col-sm-6"
+						value="#{ropaController.referenciaNuevaRopa}" />
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="sexoRopaTexto"
+						value="Sexo" />
+					<p:selectOneButton styleClass="col-sm-6" style="padding:0px;"
+						id="sexoRopaTexto" value="#{ropaController.sexoNuevaRopa}">
+						<f:selectItem itemLabel="Hombre" itemValue="HOMBRE" />
+						<f:selectItem itemLabel="Mujer" itemValue="MUJER" />
+						<f:selectItem itemLabel="Junior" itemValue="JUNIOR" />
+					</p:selectOneButton>
+
+				</div>
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="tipoRopaTexto"
+						value="Tipo" />
+					<p:selectOneMenu styleClass="col-sm-6" style="padding:0px;"
+						id="tipoRopaTexto" value="#{ropaController.tipoNuevaRopa}">
+						<f:selectItems var="tipo"
+							value="#{ropaController.getTipoRopaCreados()}"
+							itemLabel="#{tipo.tipoRopa}" itemValue="#{tipo.tipoRopa}" />
+					</p:selectOneMenu>
+
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-3" for="tallaRopaTexto"
+						value="Talla" />
+					<p:inputText id="tallaRopaTexto" styleClass="col-sm-3"
+						value="#{ropaController.tallaNuevaRopa}" />
+
+					<p:outputLabel styleClass="col-sm-3" for="stockTallaRopaTexto"
+						value="Stock de talla" />
+					<p:inputNumber id="stockTallaRopaTexto" padControl="false"
+						style="padding:0px;" styleClass="col-sm-3" thousandSeparator=""
+						decimalSeparator="." decimalPlaces="0"
+						value="#{ropaController.stockNuevaTallaRopa}" />
+
+					<p:commandButton styleClass="container-fluid" value="Añadir talla"
+						type="submit" resetValues="true" update=":nuevaRopaForm"
+						action="#{ropaController.addTallaARopa()}" />
+
+				</div>
+
+				<br />
+
+				<div class="row">
+					<p:dataTable id="datatableTallas"
+						value="#{ropaController.mapaTallaStockNuevaRopa.keySet()}"
+						var="elem">
+
+						<p:column style="text-align:center" headerText="Talla">
+							<h:outputText value="#{elem}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Stock de talla">
+							<h:outputText
+								value="#{ropaController.mapaTallaStockNuevaRopa.get(elem)}" />
+						</p:column>
+
+						<p:column style="text-align:center" headerText="Acciones">
+							<p:commandButton styleClass="btn btn-primary" process="@this"
+								update=":nuevaRopaForm:datatableTallas"
+								actionListener="#{ropaController.eliminarTallaDeRopa(elem)}"
+								value="Eliminar">
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+			</h:panelGroup>
+
+			<hr />
+
+			<h:panelGroup layout="block" styleClass="container">
+				<p:commandButton value="Guardar" type="submit" update="@all"
+					resetValues="true" action="#{ropaController.guardarRopa()}" />
+				<p:commandButton value="Cancelar" process="@this" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+		<h:form id="ImagenesNuevaRopaForm" enctype="multipart/form-data">
+
+			<h:panelGroup id="uploadFileRopaId" layout="block"
+				styleClass="container-fluid">
+
+				<div class="col-sm">
+					<h1>
+						<h:outputText value="Imágenes" />
+					</h1>
+					<p:fileUpload id="fileUploadRopa" label="Examinar..."
+						styleClass="block" mode="simple" multiple="false"
+						skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+						fileLimit="1" cancelLabel="Cancelar" uploadLabel="Adjuntar"
+						dragDropSupport="true" value="#{ropaController.imagenRopaNueva}">
+					</p:fileUpload>
+				</div>
+				<div class="col-sm">
+					<p:commandButton id="btnfileUploadRopa"
+						update=":ImagenesNuevaRopaForm"
+						actionListener="#{ropaController.nuevaImagen()}" value="Adjuntar"
+						styleClass="btn btn-primary btn-block">
+					</p:commandButton>
+				</div>
+			</h:panelGroup>
+
+			<h:panelGroup id="tablaImagenesRopa"
+				rendered="#{not empty ropaController.imagenesRopaNueva}"
+				layout="block" styleClass="container-fluid">
+				<div class="col-sm-12">
+					<h1>
+						<h:outputText value="Imagenes adjuntadas" />
+					</h1>
+				</div>
+
+				<div class="row">
+
+					<div class="col-sm-3"></div>
+
+					<div class="col-sm-6">
+						<p:dataTable var="elem"
+							value="#{ropaController.imagenesRopaNueva}"
+							class="table table-striped table-responsive table-bordered nowrap"
+							id="tablaDocumentos">
+							<p:column headerText="Imagen">
+								<h:graphicImage
+									value="data:image/jpg;base64,#{ropaController.getBytesDeImagen(elem)}"
+									width="100%" height="100%" />
+							</p:column>
+							<p:column headerText="Nombre imagen">
+								<h:outputText title="#{elem.nombre}" value="#{elem.nombre}" />
+							</p:column>
+							<p:column headerText="Acciones">
+								<p:commandButton styleClass="btn btn-primary" process="@this"
+									update=":ImagenesNuevaRopaForm"
+									actionListener="#{ropaController.eliminaImagen(elem)}"
+									value="Eliminar">
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="col-sm-3"></div>
+
+				</div>
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,62 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="productDetail">
+
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+			</ul>
+
+			<h:panelGroup styleClass="row">
+				<p:staticMessage styleClass="col-sm-12" severity="info"
+					detail="Se muestra el resulado de su busqueda." style="width: 100%" />
+			</h:panelGroup>
+
+			<div class="container-fluid">
+
+				<p:dataView value="#{inicioController.listaAnunciosFiltrados}"
+					var="product" gridIcon="pi pi-th-large" listIcon="pi pi-bars"
+					rows="12" paginator="true" paginatorPosition="bottom"
+					paginatorAlwaysVisible="false" rowsPerPageTemplate="6,12,16"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					layout="grid">
+
+					<p:dataViewGridItem columns="4">
+						<p:commandLink
+							action="#{anuncioController.mostrarAnuncio(product,'prod')}">
+							<p:panel id="productGrid" header="#{product.titulo}"
+								style="text-align:center;">
+								<h:panelGrid columns="1" style="width:100%">
+									<div class="product-grid-item card border-1">
+
+										<h:graphicImage style="border:solid;"
+											value="data:image/jpg;base64,#{anuncioController.getBytesDeImagen(anuncioController.getPrimeraImagenDelAnuncio(product.id))}"
+											width="200" height="200" />
+
+										<div>
+											<p:rating readonly="true"
+												value="#{anuncioController.notaMedia(product)}" />
+										</div>
+										<div>
+											<h:outputText value="#{product.precio}" style="color:red;"
+												styleClass="product-pwrrice">
+												<f:convertNumber currencySymbol="€" type="currency" />
+											</h:outputText>
+										</div>
+									</div>
+								</h:panelGrid>
+							</p:panel>
+						</p:commandLink>
+					</p:dataViewGridItem>
+				</p:dataView>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
