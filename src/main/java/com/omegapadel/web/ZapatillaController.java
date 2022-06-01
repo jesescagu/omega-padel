@@ -280,6 +280,10 @@ public class ZapatillaController implements Serializable {
 		}
 		this.nuevaZapatilla = null;
 
+		if(this.breadcrumb == null) {
+			return "listaZapatillas.xhtml";
+		}
+		
 		if (this.breadcrumb.equals("bajoStock")) {
 			return "listaProductosBajoStock.xhtml";
 		} else if (this.breadcrumb.equals("desactivado")) {

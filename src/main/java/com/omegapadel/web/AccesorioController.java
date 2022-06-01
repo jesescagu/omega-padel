@@ -330,6 +330,10 @@ public class AccesorioController implements Serializable {
 		}
 		this.nuevoAccesorio = null;
 
+		if (this.breadcrumb == null) {
+			return "listaAccesorio.xhtml";
+		}
+		
 		if (this.breadcrumb.equals("bajoStock")) {
 			return "listaProductosBajoStock.xhtml";
 		} else if (this.breadcrumb.equals("desactivado")) {

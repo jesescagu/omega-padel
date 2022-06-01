@@ -1,0 +1,81 @@
+<ui:composition template="/WEB-INF/plantilla/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form id="editarAdministradorForm" enctype="multipart/form-data">
+
+			<ul class="breadcrumb">
+				<li><p:commandLink styleClass="a" value="Principal"
+						action="#{inicioController.verPaginaInicio()}"></p:commandLink></li>
+				<li><p:commandLink styleClass="a"
+						action="#{administradorController.abrirEditarAdministrador()}"
+						value="Editar mis datos"></p:commandLink></li>
+			</ul>
+
+			<p:messages errorStyle="color: red" globalOnly="true" />
+
+			<br />
+
+			<h:panelGroup layout="block" styleClass="container">
+
+				<div class="row">
+					<p:outputLabel styleClass="col-sm-6" for="nickAdministrador"
+						value="Nombre de usuario" />
+					<p:inputText id="nickAdministrador" styleClass="col-sm-6"
+						value="#{administradorController.nickEscogido}" />
+
+				</div>
+
+				<div class="row">
+
+					<p:outputLabel styleClass="col-sm-6"
+						for="contrasenyaActualAdministrador" value="Contraseña Actual" />
+					<p:password id="contrasenyaActualAdministrador"
+						styleClass="col-sm-6"
+						value="#{administradorController.contrasenyaActual}" />
+
+				</div>
+
+				<div class="row">
+
+					<p:outputLabel styleClass="col-sm-6" for="contrasenyaAdministrador"
+						value="Nueva Contraseña" />
+					<p:password id="contrasenyaAdministrador" styleClass="col-sm-6"
+						value="#{administradorController.contrasenyaEscogida}" />
+
+				</div>
+
+				<div class="row">
+
+					<p:outputLabel styleClass="col-sm-6"
+						for="contrasenyaConfirmacionAdministrador"
+						value="Confirmar Nueva Contraseña" />
+					<p:password id="contrasenyaConfirmacionAdministrador"
+						styleClass="col-sm-6"
+						value="#{administradorController.contrasenyaConfirmacion}" />
+
+				</div>
+
+
+			</h:panelGroup>
+
+			<hr />
+
+			<h:panelGroup layout="block" styleClass="container-fluid">
+				<p:commandButton value="Guardar" type="submit" update="@all"
+					resetValues="true"
+					action="#{administradorController.guardarEdicionAdministrador()}" />
+				<p:commandButton value="Cancelar" resetValues="true"
+					action="#{inicioController.verPaginaInicio()}" />
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

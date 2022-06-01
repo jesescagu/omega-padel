@@ -603,15 +603,6 @@ public class TemplateController implements Serializable {
 		DefaultMenuItem itemTodoRopa = DefaultMenuItem.builder().value("Todo").ajax(false)
 				.command("#{ropaController.verRopaTodas()}").build();
 		submenuRopa.getElements().add(itemTodoRopa);
-		// TODO Filtrar por tipo de ropa tambien.
-
-//		if (!CollectionUtils.isEmpty(this.listaTiposRopa)) {
-//			for (TipoRopa m : this.listaTiposRopa) {
-//				DefaultMenuItem item = DefaultMenuItem.builder().value(m.getTipoRopa()).ajax(false)
-//						.command("#{ropaController.verRopaDelTipo(" + m.getTipoRopa() + ")}").build();
-//				submenuRopa.getElements().add(item);
-//			}
-//		}
 		if (!CollectionUtils.isEmpty(this.listaMarcasRopa)) {
 			for (String m : this.listaMarcasRopa) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(m).ajax(false)
@@ -763,9 +754,6 @@ public class TemplateController implements Serializable {
 				nombreUsuario = (String) auth.getPrincipal();
 			}
 
-//			User user = (User) auth.getPrincipal();
-//			String nombreUsuario = user.getUsername();
-
 			DefaultSubMenu subMenuUsuario = DefaultSubMenu.builder().label(nombreUsuario)
 					.style("float:right;width:150px;").build();
 
@@ -794,6 +782,14 @@ public class TemplateController implements Serializable {
 				DefaultMenuItem misDirecciones = DefaultMenuItem.builder().value("Mis direcciones").ajax(false)
 						.command("#{direccionPostalController.abrirListaDireccionesActor()}").build();
 				subMenuUsuario.getElements().add(misDirecciones);
+
+			}
+			
+			if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
+
+				DefaultMenuItem editarEmpleado = DefaultMenuItem.builder().value("Editar perfil").ajax(false)
+						.command("#{administradorController.abrirEditarAdministrador()}").build();
+				subMenuUsuario.getElements().add(editarEmpleado);
 
 			}
 

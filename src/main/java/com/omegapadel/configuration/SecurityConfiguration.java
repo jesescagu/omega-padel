@@ -24,17 +24,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login.xhtml").permitAll().antMatchers("/", "/index.xhtml", "/error.xhtml").permitAll()
 				.antMatchers("/cestaCliente.xhtml").hasAuthority("cliente")
 				.antMatchers("/editarConfiguracion.xhtml.xhtml").hasAuthority("cliente")
-				.antMatchers("/compraErronea.xhtml").hasAuthority("cliente")
-				.antMatchers("/editarConfiguracion.xhtml").hasAuthority("admin")
-				.antMatchers("/listaMarcas.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/dashboard.xhtml").hasAuthority("admin")
-				.antMatchers("/listaTipoAccesorio.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/listaPalasCreadas.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/listaAccesorio.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/nuevaPala.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/nuevasPackPelotas.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/listaPelotasCreadas.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/listaPedidos.xhtml").hasAuthority("cliente")
+				.antMatchers("/compraErronea.xhtml").hasAuthority("cliente").antMatchers("/editarConfiguracion.xhtml")
+				.hasAuthority("admin").antMatchers("/listaMarcas.xhtml").hasAnyAuthority("empleado", "admin")
+				.antMatchers("/dashboard.xhtml").hasAuthority("admin").antMatchers("/listaTipoAccesorio.xhtml")
+				.hasAnyAuthority("empleado", "admin").antMatchers("/listaPalasCreadas.xhtml")
+				.hasAnyAuthority("empleado", "admin").antMatchers("/listaAccesorio.xhtml")
+				.hasAnyAuthority("empleado", "admin").antMatchers("/nuevaPala.xhtml")
+				.hasAnyAuthority("empleado", "admin").antMatchers("/nuevasPackPelotas.xhtml")
+				.hasAnyAuthority("empleado", "admin").antMatchers("/listaPelotasCreadas.xhtml")
+				.hasAnyAuthority("empleado", "admin").antMatchers("/listaPedidos.xhtml").hasAuthority("cliente")
 				.antMatchers("/listaTipoRopa.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/listaRopa.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/nuevoAccesorio.xhtml").hasAnyAuthority("empleado", "admin")
@@ -50,13 +48,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/nuevoZapatilla.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/listaPedidosParaTramitar.xhtml").hasAnyAuthority("empleado", "admin")
 				.antMatchers("/listaZapatillas.xhtml").hasAnyAuthority("empleado", "admin")
-				.antMatchers("/listaEmpleados.xhtml").hasAuthority("admin")
-				.antMatchers("/nuevoEmpleado.xhtml").hasAuthority("admin").antMatchers("/listaPuestoTrabajo.xhtml")
-				.hasAuthority("admin").antMatchers("/listaEmpleados.xhtml").hasAuthority("admin")
-				.antMatchers("/editarCliente.xhtml").hasAuthority("cliente").antMatchers("/editarEmpleado.xhtml")
-				.hasAnyAuthority("admin", "empleado");
+				.antMatchers("/listaEmpleados.xhtml").hasAuthority("admin").antMatchers("/nuevoEmpleado.xhtml")
+				.hasAuthority("admin").antMatchers("/listaPuestoTrabajo.xhtml").hasAuthority("admin")
+				.antMatchers("/listaEmpleados.xhtml").hasAuthority("admin").antMatchers("/editarCliente.xhtml")
+				.hasAuthority("cliente").antMatchers("/editarEmpleado.xhtml").hasAnyAuthority("admin", "empleado")
+				.antMatchers("/editarAdmin.xhtml").hasAuthority("admin");
 
-		http.formLogin().loginPage("/login.xhtml").loginProcessingUrl("/perform_login").permitAll().failureUrl("/login.xhtml?error=true");
+		http.formLogin().loginPage("/login.xhtml").loginProcessingUrl("/perform_login").permitAll()
+				.failureUrl("/login.xhtml?error=true");
 
 		http.csrf().disable();
 

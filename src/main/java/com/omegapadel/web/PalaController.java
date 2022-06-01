@@ -226,6 +226,10 @@ public class PalaController implements Serializable {
 		}
 		this.nuevaPala = null;
 
+		if (this.breadcrumb == null) {
+			return "listaPalasCreadas.xhtml";
+		}
+		
 		if (this.breadcrumb.equals("bajoStock")) {
 			return "listaProductosBajoStock.xhtml";
 		} else if (this.breadcrumb.equals("desactivado")) {

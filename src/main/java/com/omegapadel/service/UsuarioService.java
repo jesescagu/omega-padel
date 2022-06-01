@@ -45,7 +45,7 @@ public class UsuarioService {
 	public void delete(Usuario entity) {
 		usuarioRepository.delete(entity);
 	}
-	
+
 	public Usuario create(String usuario, String contrasenya) {
 		Usuario u = new Usuario();
 		u.setActivo(true);
@@ -58,6 +58,9 @@ public class UsuarioService {
 		Integer i = usuarioRepository.cuentaNombreUsuario(nombreUsuario);
 		return i != 0;
 	}
-	
-	
+
+	public Usuario getUsuarioPorNombre(String nombreUsuario) {
+		return usuarioRepository.getUsuarioPorNombre(nombreUsuario);
+	}
+
 }

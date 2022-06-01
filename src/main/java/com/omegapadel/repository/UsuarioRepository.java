@@ -10,4 +10,7 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Integer>{
 	@Query("select count(u) from Usuario u where u.usuario = ?1")
 	public Integer cuentaNombreUsuario(String nombreUsuario);
 	
+	@Query("select u from Usuario u where u.usuario = ?1")
+	public Usuario getUsuarioPorNombre(String nombreUsuario);
+	
 }

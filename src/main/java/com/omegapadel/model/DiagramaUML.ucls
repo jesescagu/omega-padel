@@ -3,7 +3,7 @@
   associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="com.omegapadel.model.Marca" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Marca.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="422" y="1127"/>    
+    <position height="-1" width="-1" x="613" y="1123"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -12,7 +12,7 @@
   </class>  
   <class id="2" language="java" name="com.omegapadel.model.Accesorio" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Accesorio.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="689" y="1301"/>    
+    <position height="-1" width="-1" x="550" y="1299"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -21,7 +21,7 @@
   </class>  
   <class id="3" language="java" name="com.omegapadel.model.Empleado" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Empleado.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1145" y="411"/>    
+    <position height="-1" width="-1" x="1040" y="394"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -39,7 +39,7 @@
   </class>  
   <class id="5" language="java" name="com.omegapadel.model.Pala" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Pala.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="984" y="1296"/>    
+    <position height="-1" width="-1" x="787" y="1298"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -48,7 +48,7 @@
   </class>  
   <class id="6" language="java" name="com.omegapadel.model.TipoRopa" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/TipoRopa.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1305" y="1489"/>    
+    <position height="-1" width="-1" x="1020" y="1449"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -57,7 +57,7 @@
   </class>  
   <class id="7" language="java" name="com.omegapadel.model.Comentario" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Comentario.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1600" y="358"/>    
+    <position height="-1" width="-1" x="1431" y="425"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -75,7 +75,7 @@
   </class>  
   <class id="9" language="java" name="com.omegapadel.model.Cesta" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Cesta.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="576" y="550"/>    
+    <position height="-1" width="-1" x="804" y="623"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -84,7 +84,7 @@
   </class>  
   <class id="10" language="java" name="com.omegapadel.model.Administrador" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Administrador.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="527" y="355"/>    
+    <position height="-1" width="-1" x="673" y="357"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -93,7 +93,7 @@
   </class>  
   <class id="11" language="java" name="com.omegapadel.model.Pedido" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Pedido.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="181" y="414"/>    
+    <position height="-1" width="-1" x="492" y="472"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -102,7 +102,7 @@
   </class>  
   <class id="12" language="java" name="com.omegapadel.model.TipoAccesorio" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/TipoAccesorio.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="688" y="1486"/>    
+    <position height="-1" width="-1" x="555" y="1449"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -111,7 +111,7 @@
   </class>  
   <class id="13" language="java" name="com.omegapadel.model.DireccionPostal" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/DireccionPostal.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="181" y="201"/>    
+    <position height="-1" width="-1" x="543" y="200"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -120,7 +120,7 @@
   </class>  
   <class id="14" language="java" name="com.omegapadel.model.ProductoTalla" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/ProductoTalla.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="577" y="877"/>    
+    <position height="-1" width="-1" x="703" y="949"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -129,7 +129,7 @@
   </class>  
   <class id="15" language="java" name="com.omegapadel.model.EstadoPedido" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/EstadoPedido.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="179" y="680"/>    
+    <position height="-1" width="-1" x="447" y="708"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -147,7 +147,7 @@
   </class>  
   <class id="17" language="java" name="com.omegapadel.model.Municipio" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Municipio.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="182" y="44"/>    
+    <position height="-1" width="-1" x="553" y="45"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -156,7 +156,7 @@
   </class>  
   <class id="18" language="java" name="com.omegapadel.model.Zapatilla" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Zapatilla.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1589" y="1295"/>    
+    <position height="-1" width="-1" x="1309" y="1298"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -165,7 +165,7 @@
   </class>  
   <class id="19" language="java" name="com.omegapadel.model.PuestoTrabajo" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/PuestoTrabajo.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1369" y="380"/>    
+    <position height="-1" width="-1" x="1241" y="380"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -183,7 +183,7 @@
   </class>  
   <class id="21" language="java" name="com.omegapadel.model.AnuncioCantidad" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/AnuncioCantidad.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="578" y="686"/>    
+    <position height="-1" width="-1" x="703" y="780"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -192,7 +192,7 @@
   </class>  
   <class id="22" language="java" name="com.omegapadel.model.Imagen" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Imagen.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1660" y="873"/>    
+    <position height="-1" width="-1" x="1537" y="874"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -210,7 +210,7 @@
   </class>  
   <class id="24" language="java" name="com.omegapadel.model.Ropa" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Ropa.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1310" y="1317"/>    
+    <position height="-1" width="-1" x="1015" y="1301"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -219,7 +219,7 @@
   </class>  
   <class id="25" language="java" name="com.omegapadel.model.Paletero" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Paletero.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1774" y="1272"/>    
+    <position height="-1" width="-1" x="1481" y="1284"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -237,7 +237,7 @@
   </class>  
   <class id="27" language="java" name="com.omegapadel.model.Pelota" project="omegapadel" 
     file="/omegapadel/src/main/java/com/omegapadel/model/Pelota.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1923" y="1282"/>    
+    <position height="-1" width="-1" x="1596" y="1292"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="false" protected="false" private="true" static="false"/>      
@@ -245,263 +245,347 @@
     </display>  
   </class>  
   <association id="28">    
-    <end type="SOURCE" refId="26" navigable="false">      
-      <attribute id="29" name="usuario"/>      
-      <multiplicity id="30" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="16" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="31">    
-    <bendpoint x="527" y="291"/>    
-    <bendpoint x="856" y="291"/>    
-    <end type="SOURCE" refId="10"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <association id="32">    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="33" name="anuncioCantidad">        
-        <position height="20" width="104" x="397" y="694"/>      
+    <end type="SOURCE" refId="22" navigable="false">      
+      <attribute id="29" name="anuncio">        
+        <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="34" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="21" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="35">    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="36" name="listaEstados"/>      
-      <multiplicity id="37" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="15" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="38">    
-    <bendpoint x="1145" y="292"/>    
-    <bendpoint x="856" y="292"/>    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <association id="39">    
-    <end type="SOURCE" refId="21" navigable="false">      
-      <attribute id="40" name="cesta"/>      
-      <multiplicity id="41" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="42">    
-    <bendpoint x="984" y="1200"/>    
-    <bendpoint x="1310" y="1200"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <association id="43">    
-    <end type="SOURCE" refId="13" navigable="true">      
-      <attribute id="44" name="actor"/>      
-      <multiplicity id="45" minimum="0" maximum="1">        
-        <position height="18" width="27" x="929" y="170"/>      
+      <multiplicity id="30" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="26" navigable="true">      
-      <attribute id="46" name="direccionesPostales"/>      
-      <multiplicity id="47" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="48">    
-    <end type="SOURCE" refId="13" navigable="true">      
-      <attribute id="49" name="pedidos"/>      
-      <multiplicity id="50" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true">      
-      <attribute id="51" name="direccionPostal"/>      
-      <multiplicity id="52" minimum="0" maximum="1"/>    
-    </end>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="53">    
-    <bendpoint x="1589" y="1201"/>    
-    <bendpoint x="1310" y="1201"/>    
-    <bendpoint x="1309" y="1177"/>    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <association id="54">    
-    <bendpoint x="1600" y="200"/>    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="55" name="actor">        
-        <position height="20" width="41" x="942" y="218"/>      
-      </attribute>      
-      <multiplicity id="56" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="26" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="57">    
-    <end type="SOURCE" refId="23" navigable="false">      
-      <attribute id="58" name="anunciosFavoritos"/>      
-      <multiplicity id="59" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="20" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="60">    
+  <association id="31">    
     <end type="SOURCE" refId="20" navigable="false">      
-      <attribute id="61" name="empleado"/>      
-      <multiplicity id="62" minimum="0" maximum="1"/>    
+      <attribute id="32" name="empleado">        
+        <position height="0" width="0" x="-105" y="-17"/>      
+      </attribute>      
+      <multiplicity id="33" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-105" y="-17"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="63">    
-    <bendpoint x="1923" y="1199"/>    
-    <bendpoint x="1310" y="1200"/>    
-    <end type="SOURCE" refId="27"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <generalization id="64">    
-    <bendpoint x="1774" y="1201"/>    
-    <bendpoint x="1311" y="1201"/>    
-    <end type="SOURCE" refId="25"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <association id="65">    
-    <bendpoint x="1194" y="1127"/>    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="66" name="marca">        
-        <position height="20" width="44" x="494" y="1108"/>      
+  <association id="34">    
+    <end type="SOURCE" refId="20" navigable="false">      
+      <attribute id="35" name="productos">        
+        <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="67" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="68">    
-    <end type="SOURCE" refId="21" navigable="false">      
-      <attribute id="69" name="pedido"/>      
-      <multiplicity id="70" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="71">    
-    <end type="SOURCE" refId="13" navigable="false">      
-      <attribute id="72" name="municipio"/>      
-      <multiplicity id="73" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="17" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="74">    
-    <bendpoint x="1661" y="1072"/>    
-    <end type="SOURCE" refId="22" navigable="false">      
-      <attribute id="75" name="producto">        
-        <position height="20" width="58" x="1403" y="1048"/>      
-      </attribute>      
-      <multiplicity id="76" minimum="0" maximum="1"/>    
+      <multiplicity id="36" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="77">    
-    <end type="SOURCE" refId="23" navigable="false">      
-      <attribute id="78" name="cesta"/>      
-      <multiplicity id="79" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="80">    
-    <end type="SOURCE" refId="23"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <generalization id="81">    
-    <end type="SOURCE" refId="24"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <association id="82">    
-    <bendpoint x="1600" y="683"/>    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="83" name="anuncio">        
-        <position height="20" width="57" x="1270" y="793"/>      
-      </attribute>      
-      <multiplicity id="84" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="20" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="85">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="86" name="puesto"/>      
-      <multiplicity id="87" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="19" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="88">    
-    <bendpoint x="690" y="1201"/>    
-    <bendpoint x="1310" y="1198"/>    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <association id="89">    
-    <end type="SOURCE" refId="21" navigable="false">      
-      <attribute id="90" name="anuncio">        
-        <position height="20" width="53" x="1046" y="845"/>      
-      </attribute>      
-      <multiplicity id="91" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="20" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="92">    
-    <end type="SOURCE" refId="22" navigable="false">      
-      <attribute id="93" name="anuncio"/>      
-      <multiplicity id="94" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="20" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="95">    
-    <bendpoint x="577" y="1073"/>    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="96" name="producto"/>      
-      <multiplicity id="97" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="98">    
-    <end type="SOURCE" refId="24" navigable="false">      
-      <attribute id="99" name="tipoRopa"/>      
-      <multiplicity id="100" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="101">    
+  <association id="37">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="102" name="tipo"/>      
-      <multiplicity id="103" minimum="0" maximum="1"/>    
+      <attribute id="38" name="tipo">        
+        <position height="0" width="0" x="-133" y="-37"/>      
+      </attribute>      
+      <multiplicity id="39" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-133" y="-37"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="104">    
+  <association id="40">    
+    <bendpoint x="1430" y="199"/>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="41" name="actor">        
+        <position height="20" width="41" x="942" y="218"/>      
+      </attribute>      
+      <multiplicity id="42" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="26" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="43">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="44" name="anuncio">        
+        <position height="20" width="53" x="1046" y="845"/>      
+      </attribute>      
+      <multiplicity id="45" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="46">    
     <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="105" name="cliente"/>      
-      <multiplicity id="106" minimum="0" maximum="1"/>    
+      <attribute id="47" name="listaEstados">        
+        <position height="0" width="0" x="268" y="28"/>      
+      </attribute>      
+      <multiplicity id="48" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="268" y="28"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="49">    
+    <bendpoint x="550" y="1198"/>    
+    <bendpoint x="1310" y="1198"/>    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <association id="50">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="51" name="pedido">        
+        <position height="0" width="0" x="311" y="58"/>      
+      </attribute>      
+      <multiplicity id="52" minimum="0" maximum="1">        
+        <position height="0" width="0" x="311" y="58"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="53">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="54" name="cesta">        
+        <position height="0" width="0" x="228" y="73"/>      
+      </attribute>      
+      <multiplicity id="55" minimum="0" maximum="1">        
+        <position height="0" width="0" x="228" y="73"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="56">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <association id="57">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="58" name="anunciosFavoritos">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="59" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="60">    
+    <bendpoint x="1597" y="1200"/>    
+    <bendpoint x="1310" y="1200"/>    
+    <end type="SOURCE" refId="27"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <generalization id="61">    
+    <bendpoint x="1015" y="1198"/>    
+    <bendpoint x="1310" y="1198"/>    
+    <end type="SOURCE" refId="24"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <association id="62">    
+    <end type="SOURCE" refId="26" navigable="false">      
+      <attribute id="63" name="usuario">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="64" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="65">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="66" name="anuncio">        
+        <position height="20" width="57" x="1270" y="793"/>      
+      </attribute>      
+      <multiplicity id="67" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="68">    
+    <bendpoint x="1041" y="291"/>    
+    <bendpoint x="856" y="292"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <association id="69">    
+    <bendpoint x="1193" y="1124"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="70" name="marca">        
+        <position height="20" width="44" x="685" y="1104"/>      
+      </attribute>      
+      <multiplicity id="71" minimum="0" maximum="1">        
+        <position height="0" width="0" x="191" y="-4"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="72">    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <generalization id="73">    
+    <bendpoint x="673" y="291"/>    
+    <bendpoint x="856" y="291"/>    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <association id="74">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="75" name="anuncioCantidad">        
+        <position height="20" width="104" x="559" y="729"/>      
+      </attribute>      
+      <multiplicity id="76" minimum="0" maximum="1">        
+        <position height="0" width="0" x="125" y="94"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="77">    
+    <end type="SOURCE" refId="24" navigable="false">      
+      <attribute id="78" name="tipoRopa">        
+        <position height="0" width="0" x="-285" y="-40"/>      
+      </attribute>      
+      <multiplicity id="79" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-285" y="-40"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="80">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="81" name="cliente">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="82" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="23" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="107">    
-    <end type="SOURCE" refId="20" navigable="false">      
-      <attribute id="108" name="productos"/>      
-      <multiplicity id="109" minimum="0" maximum="2147483647"/>    
+  <association id="83">    
+    <end type="SOURCE" refId="13" navigable="true">      
+      <attribute id="84" name="actor">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="85" minimum="0" maximum="1">        
+        <position height="18" width="27" x="929" y="170"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="26" navigable="true">      
+      <attribute id="86" name="direccionesPostales">        
+        <position height="0" width="0" x="362" y="-1"/>      
+      </attribute>      
+      <multiplicity id="87" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="362" y="-1"/>      
+      </multiplicity>    
+    </end>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="88">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="89" name="puesto">        
+        <position height="0" width="0" x="-128" y="0"/>      
+      </attribute>      
+      <multiplicity id="90" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-128" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="19" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="91">    
+    <bendpoint x="703" y="1072"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="92" name="producto">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="93" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="94">    
+    <bendpoint x="787" y="1200"/>    
+    <bendpoint x="1310" y="1200"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <association id="95">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="96" name="cesta">        
+        <position height="0" width="0" x="228" y="73"/>      
+      </attribute>      
+      <multiplicity id="97" minimum="0" maximum="1">        
+        <position height="0" width="0" x="228" y="73"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="98">    
+    <bendpoint x="1538" y="1072"/>    
+    <end type="SOURCE" refId="22" navigable="false">      
+      <attribute id="99" name="producto">        
+        <position height="20" width="58" x="1403" y="1048"/>      
+      </attribute>      
+      <multiplicity id="100" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="101">    
+    <bendpoint x="1481" y="1200"/>    
+    <bendpoint x="1311" y="1201"/>    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <association id="102">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="103" name="municipio">        
+        <position height="0" width="0" x="371" y="1"/>      
+      </attribute>      
+      <multiplicity id="104" minimum="0" maximum="1">        
+        <position height="0" width="0" x="371" y="1"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="105">    
+    <end type="SOURCE" refId="13" navigable="true">      
+      <attribute id="106" name="pedidos">        
+        <position height="0" width="0" x="311" y="58"/>      
+      </attribute>      
+      <multiplicity id="107" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="311" y="58"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true">      
+      <attribute id="108" name="direccionPostal">        
+        <position height="0" width="0" x="362" y="-1"/>      
+      </attribute>      
+      <multiplicity id="109" minimum="0" maximum="1">        
+        <position height="0" width="0" x="362" y="-1"/>      
+      </multiplicity>    
+    </end>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 

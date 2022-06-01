@@ -426,8 +426,6 @@ public class AnuncioController implements Serializable {
 			}
 
 			if (!hayError) {
-//				User user = (User) auth.getPrincipal();
-//				String nombreUsuario = user.getUsername();
 
 				String nombreUsuario = null;
 				Object princ = auth.getPrincipal();

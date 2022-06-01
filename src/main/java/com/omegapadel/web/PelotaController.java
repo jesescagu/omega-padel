@@ -202,6 +202,10 @@ public class PelotaController implements Serializable {
 		}
 		this.nuevaPelota = null;
 
+		if(this.breadcrumb == null) {
+			return "listaPelotasCreadas.xhtml";
+		}
+		
 		if (this.breadcrumb.equals("bajoStock")) {
 			return "listaProductosBajoStock.xhtml";
 		} else if (this.breadcrumb.equals("desactivado")) {

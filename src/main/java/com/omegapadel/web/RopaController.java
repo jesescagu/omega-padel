@@ -295,6 +295,10 @@ public class RopaController implements Serializable {
 		}
 		this.nuevaRopa = null;
 
+		if(this.breadcrumb == null) {
+			return "listaRopa.xhtml";
+		}
+		
 		if (this.breadcrumb.equals("bajoStock")) {
 			return "listaProductosBajoStock.xhtml";
 		} else if (this.breadcrumb.equals("desactivado")) {

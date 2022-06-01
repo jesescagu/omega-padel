@@ -61,8 +61,15 @@ public class ClienteController implements Serializable {
 
 		if (this.auth != null
 				&& this.auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("cliente"))) {
-			User user = (User) this.auth.getPrincipal();
-			String nombreUsuario = user.getUsername();
+
+			String nombreUsuario = null;
+			Object princ = auth.getPrincipal();
+			if (princ instanceof User) {
+				User user = (User) princ;
+				nombreUsuario = user.getUsername();
+			} else {
+				nombreUsuario = (String) auth.getPrincipal();
+			}
 
 			this.clienteLogado = clienteService.buscaClientePorNombreUsuario(nombreUsuario);
 
@@ -231,7 +238,7 @@ public class ClienteController implements Serializable {
 			Usuario usuario = this.clienteLogado.getUsuario();
 			Rol r = rolService.buscaRolPorNombreUsuario(usuario.getUsuario()).get();
 
-			Usuario usuarioSaved = usuario;
+			Usuario usuarioAnterior = usuarioService.getUsuarioPorNombre(usuario.getUsuario());
 
 			if (this.contrasenyaEscogida != null && !this.contrasenyaEscogida.isEmpty()) {
 				// Quiere cambiar contraseña. Se modifica rol y usuario.
@@ -257,7 +264,15 @@ public class ClienteController implements Serializable {
 
 					String passCifrada = bCryptPasswordEncoder.encode(this.contrasenyaEscogida);
 					usuario.setContrasenya(passCifrada);
-					usuarioSaved = usuarioService.save(usuario);
+					Usuario usuarioSaved = usuarioService.save(usuario);
+
+					Authentication authentication = new UsernamePasswordAuthenticationToken(this.nickEscogido,
+							usuarioSaved.getContrasenya(), this.auth.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+
+					this.clienteLogado.setUsuario(usuarioSaved);
+					clienteService.save(this.clienteLogado);
+					usuarioService.delete(usuarioAnterior);
 
 				} else {
 					FacesMessage facesMsgModelo = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -279,17 +294,20 @@ public class ClienteController implements Serializable {
 						return "";
 					}
 
-					Usuario usuarioAnterior = this.clienteLogado.getUsuario();
 					usuario.setUsuario(this.nickEscogido);
-					usuarioSaved = usuarioService.save(usuario);
-					usuarioService.delete(usuarioAnterior);
-					
-					Authentication authentication = new UsernamePasswordAuthenticationToken(this.nickEscogido, usuarioSaved.getContrasenya(), this.auth.getAuthorities());
+					Usuario usuarioSaved = usuarioService.save(usuario);
+
+					Authentication authentication = new UsernamePasswordAuthenticationToken(this.nickEscogido,
+							usuarioSaved.getContrasenya(), this.auth.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 
 					Rol rolNuevo = rolService.create(this.nickEscogido, rol);
 					rolService.saveRol(rolNuevo);
 					rolService.delete(r);
+
+					this.clienteLogado.setUsuario(usuarioSaved);
+					clienteService.save(this.clienteLogado);
+					usuarioService.delete(usuarioAnterior);
 				}
 
 			}
@@ -297,9 +315,8 @@ public class ClienteController implements Serializable {
 			this.clienteLogado.setNombre(this.nombreEscogido);
 			this.clienteLogado.setApellidos(this.apellidosEscogido);
 			this.clienteLogado.setEmail(this.emailEscogido);
-			this.clienteLogado.setUsuario(usuarioSaved);
-
 			clienteService.save(this.clienteLogado);
+
 		}
 
 		// TODO Mensaje de confirmacion y directo al login? Confirmar correo quiza?
